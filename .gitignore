@@ -1,7 +1,6 @@
 HELP.md
 .gradle
 build/
-memory
 
 ### IntelliJ IDEA ###
 .idea
@@ -10,3 +9,8 @@ memory
 *.ipr
 out/
 
+### Strange file
+memory
+
+### Test DB file
+rainments-test.db
