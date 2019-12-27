@@ -1,6 +1,7 @@
 HELP.md
 .gradle
 build/
+memory
 
 ### IntelliJ IDEA ###
 .idea
