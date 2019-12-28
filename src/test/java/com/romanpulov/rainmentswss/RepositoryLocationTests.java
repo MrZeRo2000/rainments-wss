@@ -57,20 +57,18 @@ public class RepositoryLocationTests {
     private LocationRepository locationRepository;
 
     @Test
-    void getTest() {
-        log.info("getTest started");
-        Iterable<Location> locations = locationRepository.findAll();
-        assertThat(locations).isNotNull();
-        log.info("getTest completed");
-    }
+    void mainTest() {
+        Iterable<Location> locations;
 
-    @Test
-    void insertTest() {
+        log.info("mainTest started");
+        locations = locationRepository.findAll();
+        assertThat(locations).isNotNull();
+
         Location newLocation = new Location();
         newLocation.setName("New Name");
         locationRepository.save(newLocation);
 
-        Iterable<Location> locations = locationRepository.findAll();
+        locations = locationRepository.findAllByOrderByIdAsc();
         Location savedEntity = locations.iterator().next();
 
         log.info("Saved entity: " + savedEntity);
@@ -80,5 +78,7 @@ public class RepositoryLocationTests {
         locationRepository.deleteAll();
         locations = locationRepository.findAll();
         Assertions.assertFalse(locations.iterator().hasNext());
+
+        log.info("getTest completed");
     }
 }
