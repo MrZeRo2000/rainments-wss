@@ -23,6 +23,6 @@ public class DateTests {
         date = LocalDate.of(2019, 12, 29);
         Long longDate = date.toEpochDay() * 24 * 60 * 60;
 
-        assertThat(longDate).isEqualTo(1577577600);
+        assertThat(longDate).isEqualTo(1577577600L);
     }
 }
