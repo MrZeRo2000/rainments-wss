@@ -4,11 +4,11 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "locations")
-public class Location {
+@Table(name = "payment_objects")
+public class PaymentObject {
 
     @Id
-    @Column(name = "location_id")
+    @Column(name = "payment_object_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -16,7 +16,7 @@ public class Location {
         return id;
     }
 
-    @Column(name = "location_name")
+    @Column(name = "payment_object_name")
     private String name;
 
     public String getName() {
@@ -29,7 +29,7 @@ public class Location {
 
     @Override
     public String toString() {
-        return "Location{" +
+        return "PaymentObject{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
@@ -39,8 +39,8 @@ public class Location {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Location location = (Location) o;
-        return id.equals(location.id);
+        PaymentObject paymentObject = (PaymentObject) o;
+        return id.equals(paymentObject.id);
     }
 
     @Override
