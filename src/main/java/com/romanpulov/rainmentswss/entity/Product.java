@@ -44,8 +44,7 @@ public class Product extends PaymentDictionarySuperclass {
         this.unitName = unitName;
     }
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id", referencedColumnName = "product_id")
+    @OneToMany(mappedBy = "product")
     private Set<Payment> payments = new HashSet<>();
 
     @PreRemove

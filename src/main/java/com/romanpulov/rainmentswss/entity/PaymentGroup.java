@@ -47,8 +47,7 @@ public class PaymentGroup extends PaymentDictionarySuperclass{
         this.url = url;
     }
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "payment_group_id", referencedColumnName = "payment_group_id")
+    @OneToMany(mappedBy = "paymentGroup")
     private Set<Payment> payments = new HashSet<>();
 
     @PreRemove
