@@ -1,11 +1,16 @@
 package com.romanpulov.rainmentswss.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.util.Objects;
 
 @Entity
 @Table(name = "payment_groups")
 public class PaymentGroup {
+
+    public PaymentGroup() {
+        super();
+    }
 
     @Id
     @Column(name = "payment_group_id")
@@ -16,6 +21,7 @@ public class PaymentGroup {
         return id;
     }
 
+    @NotEmpty
     @Column(name = "payment_group_name")
     private String name;
 

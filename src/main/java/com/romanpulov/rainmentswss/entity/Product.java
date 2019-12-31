@@ -1,11 +1,16 @@
 package com.romanpulov.rainmentswss.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.util.Objects;
 
 @Entity
 @Table(name = "products")
 public class Product {
+
+    public Product() {
+        super();
+    }
 
     @Id
     @Column(name = "product_id")
@@ -16,6 +21,7 @@ public class Product {
         return id;
     }
 
+    @NotEmpty
     @Column(name = "product_name")
     private String name;
 

@@ -11,6 +11,10 @@ import java.util.Objects;
 @Table(name = "payment_objects")
 public class PaymentObject {
 
+    public PaymentObject() {
+        super();
+    }
+
     @Id
     @Column(name = "payment_object_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

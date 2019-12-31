@@ -1,7 +1,11 @@
 package com.romanpulov.rainmentswss.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.PositiveOrZero;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 @Table(name = "payments")
@@ -12,24 +16,143 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     @Column(name = "payment_date")
     @Convert(converter = DateConverter.class)
     private LocalDate paymentDate;
 
+    @NotNull
     @Column(name = "payment_period_date")
     @Convert(converter = DateConverter.class)
     private LocalDate paymentPeriodDate;
 
-    @Column(name = "payment_object_id")
-    private Long paymentObjectId;
+    @NotNull
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "payment_object_id", referencedColumnName = "payment_object_id")
+    private PaymentObject paymentObject;
 
-    @Column(name = "payment_group_id")
-    private Long paymentGroupId;
+    @NotNull
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "payment_group_id", referencedColumnName = "payment_group_id")
+    private PaymentGroup paymentGroup;
 
-    @Column(name = "product_id")
-    private Long productId;
+    @NotNull
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_id", referencedColumnName = "product_id")
+    private Product product;
 
     @Column(name = "product_counter")
     private String productCounter;
 
+    @NotNull
+    @PositiveOrZero
+    @Convert(converter = AmountConverter.class)
+    @Column(name = "payment_amount")
+    private BigDecimal paymentAmount;
+
+    @NotNull
+    @PositiveOrZero
+    @Convert(converter = AmountConverter.class)
+    @Column(name = "commission_amount")
+    private BigDecimal commissionAmount;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public LocalDate getPaymentDate() {
+        return paymentDate;
+    }
+
+    public void setPaymentDate(LocalDate paymentDate) {
+        this.paymentDate = paymentDate;
+    }
+
+    public LocalDate getPaymentPeriodDate() {
+        return paymentPeriodDate;
+    }
+
+    public void setPaymentPeriodDate(LocalDate paymentPeriodDate) {
+        this.paymentPeriodDate = paymentPeriodDate;
+    }
+
+    public PaymentObject getPaymentObject() {
+        return paymentObject;
+    }
+
+    public void setPaymentObject(PaymentObject paymentObject) {
+        this.paymentObject = paymentObject;
+    }
+
+    public PaymentGroup getPaymentGroup() {
+        return paymentGroup;
+    }
+
+    public void setPaymentGroup(PaymentGroup paymentGroup) {
+        this.paymentGroup = paymentGroup;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public String getProductCounter() {
+        return productCounter;
+    }
+
+    public void setProductCounter(String productCounter) {
+        this.productCounter = productCounter;
+    }
+
+    public BigDecimal getPaymentAmount() {
+        return paymentAmount;
+    }
+
+    public void setPaymentAmount(BigDecimal paymentAmount) {
+        this.paymentAmount = paymentAmount;
+    }
+
+    public BigDecimal getCommissionAmount() {
+        return commissionAmount;
+    }
+
+    public void setCommissionAmount(BigDecimal commissionAmount) {
+        this.commissionAmount = commissionAmount;
+    }
+
+    @Override
+    public String toString() {
+        return "Payment{" +
+                "id=" + id +
+                ", paymentDate=" + paymentDate +
+                ", paymentPeriodDate=" + paymentPeriodDate +
+                ", paymentObject=" + paymentObject +
+                ", paymentGroup=" + paymentGroup +
+                ", product=" + product +
+                ", productCounter='" + productCounter + '\'' +
+                ", paymentAmount=" + paymentAmount +
+                ", commissionAmount=" + commissionAmount +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Payment payment = (Payment) o;
+        return id.equals(payment.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
