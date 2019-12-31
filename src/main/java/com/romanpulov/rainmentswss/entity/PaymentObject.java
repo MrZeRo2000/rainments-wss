@@ -1,6 +1,10 @@
 package com.romanpulov.rainmentswss.entity;
 
+import org.springframework.lang.NonNull;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Entity
@@ -16,6 +20,7 @@ public class PaymentObject {
         return id;
     }
 
+    @NotEmpty
     @Column(name = "payment_object_name")
     private String name;
 

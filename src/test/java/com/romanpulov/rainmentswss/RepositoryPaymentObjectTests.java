@@ -50,4 +50,13 @@ public class RepositoryPaymentObjectTests {
 
         log.info("getTest completed");
     }
+
+    @Test
+    void validationTest() {
+        Assertions.assertThrows(javax.validation.ConstraintViolationException.class,
+                ()-> {
+                        PaymentObject newPaymentObject = new PaymentObject();
+                        paymentObjectRepository.save(newPaymentObject);
+                    });
+    }
 }

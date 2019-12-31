@@ -14,3 +14,6 @@ memory
 
 ### Test DB file
 rainments-test.db
+
+### Initial data
+db/initial
