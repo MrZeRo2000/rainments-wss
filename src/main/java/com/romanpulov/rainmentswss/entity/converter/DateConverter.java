@@ -1,4 +1,4 @@
-package com.romanpulov.rainmentswss.entity;
+package com.romanpulov.rainmentswss.entity.converter;
 
 import javax.persistence.AttributeConverter;
 import java.time.Instant;

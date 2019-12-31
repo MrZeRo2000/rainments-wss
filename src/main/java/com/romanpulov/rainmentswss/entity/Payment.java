@@ -1,5 +1,8 @@
 package com.romanpulov.rainmentswss.entity;
 
+import com.romanpulov.rainmentswss.entity.converter.AmountConverter;
+import com.romanpulov.rainmentswss.entity.converter.DateConverter;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
