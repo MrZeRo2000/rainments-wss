@@ -13,10 +13,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.logging.Logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -108,5 +110,42 @@ public class RepositoryPaymentTests {
         newPayment = paymentRepository.findAll().iterator().next();
         assertThat(product2).isEqualTo(newPayment.getProduct());
         assertThat(newPaymentAmount).isEqualTo(newPayment.getPaymentAmount());
+
+        //another payment
+        Payment newPayment2 = new Payment();
+        newPayment2.setPaymentDate(LocalDate.now());
+        newPayment2.setPaymentPeriodDate(LocalDate.now().minusMonths(1L).withDayOfMonth(1));
+        newPayment2.setPaymentObject(newPaymentObject);
+        newPayment2.setPaymentGroup(newPaymentGroup);
+        newPayment2.setProduct(product2);
+        newPayment2.setPaymentAmount(new BigDecimal("63.76"));
+        newPayment2.setCommissionAmount(BigDecimal.ZERO);
+
+        paymentRepository.save(newPayment2);
+
+        //delete parent entity custom handling
+        Assertions.assertThrows(RuntimeException.class, ()->{
+            paymentObjectRepository.deleteAll();
+        });
+
+        //delete parent entity custom handling
+        Assertions.assertThrows(RuntimeException.class, ()->{
+            paymentGroupRepository.deleteAll();
+        });
+
+        //delete parent entity custom handling
+        Assertions.assertThrows(RuntimeException.class, ()->{
+            productRepository.deleteAll();
+        });
+
+        PaymentObject paymentObject = new PaymentObject();
+        paymentObject.setName("Orphaned payment object");
+        paymentObjectRepository.save(paymentObject);
+
+        List<PaymentObject> paymentObjects = paymentObjectRepository.findAllByOrderByIdAsc();
+        PaymentObject orphanedPaymentObject = paymentObjects.get(paymentObjects.size()-1);
+
+        //deleting orphaned object should work
+        paymentObjectRepository.delete(orphanedPaymentObject);
     }
 }

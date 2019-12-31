@@ -27,17 +27,17 @@ public class Payment {
     private LocalDate paymentPeriodDate;
 
     @NotNull
-    @OneToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "payment_object_id", referencedColumnName = "payment_object_id")
     private PaymentObject paymentObject;
 
     @NotNull
-    @OneToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "payment_group_id", referencedColumnName = "payment_group_id")
     private PaymentGroup paymentGroup;
 
     @NotNull
-    @OneToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "product_id", referencedColumnName = "product_id")
     private Product product;
 

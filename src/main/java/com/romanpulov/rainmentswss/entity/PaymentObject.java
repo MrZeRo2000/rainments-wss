@@ -5,11 +5,14 @@ import org.springframework.lang.NonNull;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "payment_objects")
-public class PaymentObject {
+public class PaymentObject extends PaymentDictionarySuperclass{
 
     public PaymentObject() {
         super();
@@ -34,6 +37,17 @@ public class PaymentObject {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "payment_object_id", referencedColumnName = "payment_object_id")
+    private Set<Payment> payments = new HashSet<>();
+
+    @PreRemove
+    private void preRemove() {
+        if (payments.size() > 0) {
+            throw new RuntimeException("Unable to delete " + this + " because it has child payments");
+        }
     }
 
     @Override

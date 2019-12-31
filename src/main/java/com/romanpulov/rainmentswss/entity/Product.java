@@ -2,11 +2,11 @@ package com.romanpulov.rainmentswss.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "products")
-public class Product {
+public class Product extends PaymentDictionarySuperclass {
 
     public Product() {
         super();
@@ -44,6 +44,17 @@ public class Product {
         this.unitName = unitName;
     }
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_id", referencedColumnName = "product_id")
+    private Set<Payment> payments = new HashSet<>();
+
+    @PreRemove
+    private void preRemove() {
+        if (payments.size() > 0) {
+            throw new RuntimeException("Unable to delete " + this + " because it has child payments");
+        }
+    }
+
     @Override
     public String toString() {
         return "Product{" +
@@ -65,4 +76,5 @@ public class Product {
     public int hashCode() {
         return Objects.hash(id);
     }
+
 }

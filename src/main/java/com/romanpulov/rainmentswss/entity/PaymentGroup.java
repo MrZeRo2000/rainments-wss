@@ -2,11 +2,14 @@ package com.romanpulov.rainmentswss.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "payment_groups")
-public class PaymentGroup {
+public class PaymentGroup extends PaymentDictionarySuperclass{
 
     public PaymentGroup() {
         super();
@@ -42,6 +45,17 @@ public class PaymentGroup {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "payment_group_id", referencedColumnName = "payment_group_id")
+    private Set<Payment> payments = new HashSet<>();
+
+    @PreRemove
+    private void preRemove() {
+        if (payments.size() > 0) {
+            throw new RuntimeException("Unable to delete " + this + " because it has child payments");
+        }
     }
 
     @Override
