@@ -5,6 +5,10 @@ plugins {
 	id 'war'
 }
 
+bootWar {
+	archiveFileName = "rainments-wss.war"
+}
+
 group = 'com.romanpulov'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
@@ -24,6 +28,24 @@ dependencies {
 	}
 }
 
+//configurations {
+//	runtime.exclude module: 'spring-boot-starter-tomcat'
+//}
+
 test {
 	useJUnitPlatform()
+}
+
+ext {
+	tomcat_home='D:/prj/apache-tomcat-9.0.14'
+	tomcat_webapps = tomcat_home + '/webapps'
+}
+
+tasks.register("deploy") {
+	dependsOn 'war'
+	copy {
+		from "build/libs"
+		into tomcat_webapps
+		include "*.war"
+	}
 }

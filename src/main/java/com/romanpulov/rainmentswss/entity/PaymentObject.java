@@ -1,12 +1,8 @@
 package com.romanpulov.rainmentswss.entity;
 
-import org.springframework.lang.NonNull;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -16,6 +12,12 @@ public class PaymentObject extends PaymentDictionarySuperclass{
 
     public PaymentObject() {
         super();
+    }
+
+    public PaymentObject(long id, String name) {
+        super();
+        this.id = id;
+        this.name = name;
     }
 
     @Id
