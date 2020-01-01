@@ -24,6 +24,10 @@ public class PaymentGroup extends PaymentDictionarySuperclass{
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     @NotEmpty
     @Column(name = "payment_group_name")
     private String name;

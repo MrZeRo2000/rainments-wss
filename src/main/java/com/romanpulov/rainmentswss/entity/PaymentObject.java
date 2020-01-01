@@ -27,6 +27,10 @@ public class PaymentObject extends PaymentDictionarySuperclass{
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     @NotEmpty
     @Column(name = "payment_object_name")
     private String name;

@@ -21,6 +21,10 @@ public class Product extends PaymentDictionarySuperclass {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     @NotEmpty
     @Column(name = "product_name")
     private String name;

@@ -45,6 +45,7 @@ public class Payment {
     private Product product;
 
     @Column(name = "product_counter")
+    @PositiveOrZero
     private Long productCounter;
 
     @NotNull
