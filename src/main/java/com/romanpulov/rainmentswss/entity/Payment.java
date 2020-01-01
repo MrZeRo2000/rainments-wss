@@ -45,7 +45,7 @@ public class Payment {
     private Product product;
 
     @Column(name = "product_counter")
-    private String productCounter;
+    private Long productCounter;
 
     @NotNull
     @PositiveOrZero
@@ -107,11 +107,11 @@ public class Payment {
         this.product = product;
     }
 
-    public String getProductCounter() {
+    public Long getProductCounter() {
         return productCounter;
     }
 
-    public void setProductCounter(String productCounter) {
+    public void setProductCounter(Long productCounter) {
         this.productCounter = productCounter;
     }
 

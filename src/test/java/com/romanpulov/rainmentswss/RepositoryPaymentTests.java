@@ -77,7 +77,7 @@ public class RepositoryPaymentTests {
         newProduct = productRepository.findAll().iterator().next();
         newPayment.setProduct(newProduct);
 
-        newPayment.setProductCounter("Product Counter");
+        newPayment.setProductCounter(34L);
 
         BigDecimal newPaymentAmount = new BigDecimal("12.56");
         newPayment.setPaymentAmount(newPaymentAmount);
@@ -88,6 +88,7 @@ public class RepositoryPaymentTests {
         paymentRepository.save(newPayment);
         log.info("Setting commission amount");
         newPayment.setCommissionAmount(new BigDecimal("0.7"));
+        paymentRepository.save(newPayment);
 
         log.info("Reading new payment");
         newPayment = paymentRepository.findAll().iterator().next();
