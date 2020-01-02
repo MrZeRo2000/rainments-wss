@@ -2,7 +2,9 @@ package com.romanpulov.rainmentswss.entitymapper;
 
 import com.romanpulov.rainmentswss.dto.PaymentObjectDTO;
 import com.romanpulov.rainmentswss.entity.PaymentObject;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PaymentObjectDTOMapper implements EntityDTOMapper <PaymentObject, PaymentObjectDTO>{
     @Override
     public PaymentObjectDTO entityToDTO(PaymentObject entity) {
