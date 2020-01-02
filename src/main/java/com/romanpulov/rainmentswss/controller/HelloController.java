@@ -15,6 +15,6 @@ public class HelloController {
     @GetMapping(produces = MediaType.TEXT_HTML_VALUE)
     public String index() {
         logger.info("Hello from logger");
-        return "Hello from " + getClass().getName();
+        return "Hello from " + getClass().getSimpleName();
     }
 }
