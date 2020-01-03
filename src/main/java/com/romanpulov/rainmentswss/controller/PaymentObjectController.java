@@ -5,13 +5,14 @@ import com.romanpulov.rainmentswss.entity.PaymentObject;
 import com.romanpulov.rainmentswss.entitymapper.PaymentObjectDTOMapper;
 import com.romanpulov.rainmentswss.repository.PaymentObjectRepository;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequestMapping(value = "/paymentobjects")
 public class PaymentObjectController {
 
     private final PaymentObjectRepository paymentObjectRepository;
@@ -22,15 +23,21 @@ public class PaymentObjectController {
         this.paymentObjectDTOMapper = paymentObjectDTOMapper;
     }
 
-    @GetMapping(path = "/paymentobjects", produces = MediaType.APPLICATION_JSON_VALUE)
-    List<PaymentObjectDTO> all() {
-        //return paymentObjectRepository.findAll();
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<List<PaymentObjectDTO>> all() {
         List<PaymentObjectDTO> result = new ArrayList<>();
 
         paymentObjectRepository.findAll().forEach(paymentObject -> result.add(paymentObjectDTOMapper.entityToDTO(paymentObject)));
 
-        return result;
+        return ResponseEntity.ok(result);
     }
 
-
+    @PostMapping(
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    ResponseEntity<PaymentObjectDTO> save(@RequestBody PaymentObjectDTO paymentObjectDTO) {
+        PaymentObject paymentObject = paymentObjectDTOMapper.dtoTOEntity(paymentObjectDTO);
+        PaymentObject newPaymentObject = paymentObjectRepository.save(paymentObject);
+        return ResponseEntity.ok(paymentObjectDTOMapper.entityToDTO(newPaymentObject));
+    }
 }

@@ -14,7 +14,7 @@ public class PaymentObject extends PaymentDictionarySuperclass{
         super();
     }
 
-    public PaymentObject(long id, String name) {
+    public PaymentObject(Long id, String name) {
         super();
         this.id = id;
         this.name = name;

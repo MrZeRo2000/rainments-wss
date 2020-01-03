@@ -1,26 +1,36 @@
 package com.romanpulov.rainmentswss.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
 public class PaymentObjectDTO {
-    private long id;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Long id;
 
     private String name;
 
-    public long getId() {
+    public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @JsonCreator
     public PaymentObjectDTO(
-            @JsonProperty("id") long id,
+            @JsonProperty("id") Long id,
             @JsonProperty("name") String name
     ) {
         this.id = id;
@@ -32,7 +42,7 @@ public class PaymentObjectDTO {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PaymentObjectDTO that = (PaymentObjectDTO) o;
-        return id == that.id;
+        return id.equals(that.id);
     }
 
     @Override
