@@ -25,25 +25,44 @@ public class ControllerPaymentObjectTest extends ControllerMockMvcTest {
     @Test
     void mainTest() throws Exception {
 
-        this.mvc.perform(MockMvcRequestBuilders.get("/paymentobjects")
+        this.mvc.perform(MockMvcRequestBuilders.get("/paymentobjects/all")
                 .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
                 .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(0)))
         ;
 
-
         PaymentObjectDTO paymentObjectDTO = new PaymentObjectDTO(null, "New Payment Object");
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(paymentObjectDTO);
-        this.mvc.perform(MockMvcRequestBuilders.post("/paymentobjects")
+        this.mvc.perform(MockMvcRequestBuilders.post("/paymentobjects/save")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json)
                 .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.status().isOk())
         ;
 
+        this.mvc.perform(MockMvcRequestBuilders.get("/paymentobjects/all")
+                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(1)))
+        ;
 
+        this.mvc.perform(MockMvcRequestBuilders.delete("/paymentobjects/0")
+                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+        this.mvc.perform(MockMvcRequestBuilders.delete("/paymentobjects/1")
+                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        this.mvc.perform(MockMvcRequestBuilders.get("/paymentobjects/all")
+                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(0)))
+        ;
     }
 
 }

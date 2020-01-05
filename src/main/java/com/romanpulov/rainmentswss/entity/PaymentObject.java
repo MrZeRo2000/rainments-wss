@@ -45,7 +45,7 @@ public class PaymentObject extends PaymentDictionarySuperclass{
         this.name = name;
     }
 
-    @OneToMany(mappedBy = "paymentObject")
+    @OneToMany(mappedBy = "paymentObject", fetch = FetchType.LAZY)
     private Set<Payment> payments = new HashSet<>();
 
     @PreRemove
