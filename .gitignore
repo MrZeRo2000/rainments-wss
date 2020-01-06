@@ -17,3 +17,6 @@ rainments-test.db
 
 ### Initial data
 db/initial
+
+### Log files
+logs/*.log

@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class RepositoryProductTests {
 
     private static final Logger log = Logger.getLogger(RepositoryProductTests.class.getName());
