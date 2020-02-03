@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/paymentobjects", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/payment-objects", produces = MediaType.APPLICATION_JSON_VALUE)
 public class PaymentObjectController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -26,7 +26,7 @@ public class PaymentObjectController {
         this.paymentObjectDTOMapper = paymentObjectDTOMapper;
     }
 
-    @GetMapping("/all")
+    @GetMapping("")
     ResponseEntity<List<PaymentObjectDTO>> all() {
         List<PaymentObjectDTO> result = new ArrayList<>();
 
@@ -35,8 +35,15 @@ public class PaymentObjectController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/save")
-    ResponseEntity<PaymentObjectDTO> save(@RequestBody PaymentObjectDTO paymentObjectDTO) {
+    @PostMapping("")
+    ResponseEntity<PaymentObjectDTO> post(@RequestBody PaymentObjectDTO paymentObjectDTO) {
+        PaymentObject paymentObject = paymentObjectDTOMapper.dtoTOEntity(paymentObjectDTO);
+        PaymentObject newPaymentObject = paymentObjectRepository.save(paymentObject);
+        return ResponseEntity.ok(paymentObjectDTOMapper.entityToDTO(newPaymentObject));
+    }
+
+    @PutMapping("/{id}")
+    ResponseEntity<PaymentObjectDTO> put(@RequestBody PaymentObjectDTO paymentObjectDTO) {
         PaymentObject paymentObject = paymentObjectDTOMapper.dtoTOEntity(paymentObjectDTO);
         PaymentObject newPaymentObject = paymentObjectRepository.save(paymentObject);
         return ResponseEntity.ok(paymentObjectDTOMapper.entityToDTO(newPaymentObject));
