@@ -14,12 +14,6 @@ public class PaymentObject extends PaymentDictionarySuperclass{
         super();
     }
 
-    public PaymentObject(Long id, String name) {
-        super();
-        this.id = id;
-        this.name = name;
-    }
-
     @Id
     @Column(name = "payment_object_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

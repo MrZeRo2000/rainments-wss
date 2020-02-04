@@ -13,6 +13,10 @@ public class PaymentObjectDTOMapper implements EntityDTOMapper <PaymentObject, P
 
     @Override
     public PaymentObject dtoTOEntity(PaymentObjectDTO dto) {
-        return new PaymentObject(dto.getId(), dto.getName());
+        PaymentObject entity = new PaymentObject();
+        entity.setId(dto.getId());
+        entity.setName(dto.getName());
+        return entity;
     }
+
 }

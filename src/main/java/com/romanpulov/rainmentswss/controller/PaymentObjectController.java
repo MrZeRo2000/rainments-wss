@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/payment-objects", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -43,19 +44,27 @@ public class PaymentObjectController {
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<PaymentObjectDTO> put(@RequestBody PaymentObjectDTO paymentObjectDTO) {
-        PaymentObject paymentObject = paymentObjectDTOMapper.dtoTOEntity(paymentObjectDTO);
-        PaymentObject newPaymentObject = paymentObjectRepository.save(paymentObject);
-        return ResponseEntity.ok(paymentObjectDTOMapper.entityToDTO(newPaymentObject));
+    ResponseEntity<PaymentObjectDTO> put(@PathVariable Long id, @RequestBody PaymentObjectDTO paymentObjectDTO) {
+        Optional<PaymentObject> paymentObject = paymentObjectRepository.findById(id);
+        if (paymentObject.isPresent()) {
+            PaymentObject updatedPaymentObject = paymentObjectDTOMapper.dtoTOEntity(paymentObjectDTO);
+            updatedPaymentObject.setId(id);
+            PaymentObject newPaymentObject = paymentObjectRepository.save(updatedPaymentObject);
+            return ResponseEntity.ok(paymentObjectDTOMapper.entityToDTO(newPaymentObject));
+        } else {
+            logger.error("Entity with id=" + id + " does not exist");
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) {
-        if (!paymentObjectRepository.findById(id).isPresent()) {
+        if (paymentObjectRepository.findById(id).isPresent()) {
+            paymentObjectRepository.deleteById(id);
+            return ResponseEntity.ok().build();
+        } else {
             logger.error("Entity with id=" + id + " does not exist");
             return ResponseEntity.badRequest().build();
         }
-        paymentObjectRepository.deleteById(id);
-        return ResponseEntity.ok().build();
     }
 }

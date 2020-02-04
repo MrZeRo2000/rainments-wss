@@ -10,3 +10,12 @@ Run tests:
 
 Build and deploy to local Tomcat:
   gradlew clean war deploy
+
+Configure debug execution:
+  Run Tomcat Server
+  Artifact: Gradle : com.romanpulov : rainments-wss.bootWar, output directory: D:\prj\rainments-wss\build\libs
+  HTTP Port: 3000
+  Deployment -> Application context: /ide_rainments_wss_war
+  Open browser after launch: http://localhost:3000/ide_rainments_wss_war/payment-objects
+  CORS setup for TomCat:
+    web.xml.cors
