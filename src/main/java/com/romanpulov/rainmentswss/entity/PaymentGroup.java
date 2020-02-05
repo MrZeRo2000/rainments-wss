@@ -9,11 +9,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "payment_groups")
-public class PaymentGroup extends PaymentDictionarySuperclass{
-
-    public PaymentGroup() {
-        super();
-    }
+public class PaymentGroup extends PaymentDictionarySuperclass implements CommonEntity {
 
     @Id
     @Column(name = "payment_group_id")

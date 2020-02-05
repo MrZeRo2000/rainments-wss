@@ -6,11 +6,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "products")
-public class Product extends PaymentDictionarySuperclass {
-
-    public Product() {
-        super();
-    }
+public class Product extends PaymentDictionarySuperclass implements CommonEntity {
 
     @Id
     @Column(name = "product_id")

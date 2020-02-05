@@ -6,5 +6,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import java.util.List;
 
 public interface PaymentGroupRepository extends PagingAndSortingRepository<PaymentGroup, Long> {
-    public List<PaymentGroup> findAllByOrderByIdAsc();
+    List<PaymentGroup> findAllByOrderByIdAsc();
 }
