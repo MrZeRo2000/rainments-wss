@@ -39,7 +39,7 @@ public class BaseRestController<E extends CommonEntity, D> {
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<D> put(@PathVariable Long id, @RequestBody D dto) {
+    ResponseEntity<D> put(@PathVariable Long id, @RequestBody D dto) throws EntityNotFoundException {
         Optional<E> entity = repository.findById(id);
         if (entity.isPresent()) {
             E updatedEntity = mapper.dtoTOEntity(dto);
@@ -48,18 +48,18 @@ public class BaseRestController<E extends CommonEntity, D> {
             return ResponseEntity.ok(mapper.entityToDTO(newPaymentObject));
         } else {
             logger.error("Entity with id=" + id + " does not exist");
-            return ResponseEntity.badRequest().build();
+            throw new EntityNotFoundException(id);
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) throws EntityNotFoundException {
         if (repository.findById(id).isPresent()) {
             repository.deleteById(id);
             return ResponseEntity.ok().build();
         } else {
             logger.error("Entity with id=" + id + " does not exist");
-            return ResponseEntity.badRequest().build();
+            throw new EntityNotFoundException(id);
         }
     }
 

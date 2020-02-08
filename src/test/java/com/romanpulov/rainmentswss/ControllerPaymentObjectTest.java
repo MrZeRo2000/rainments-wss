@@ -51,7 +51,7 @@ public class ControllerPaymentObjectTest extends ControllerMockMvcTest {
 
         this.mvc.perform(MockMvcRequestBuilders.delete("/payment-objects/0")
                 .accept(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
 
         this.mvc.perform(MockMvcRequestBuilders.delete("/payment-objects/1")
                 .accept(MediaType.APPLICATION_JSON_VALUE))
