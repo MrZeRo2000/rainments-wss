@@ -14,6 +14,7 @@ import com.romanpulov.rainmentswss.repository.PaymentObjectRepository;
 import com.romanpulov.rainmentswss.repository.ProductRepository;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -61,7 +62,7 @@ public class PaymentController extends BaseRestController<Payment, PaymentDTO> {
     @GetMapping("/refs")
     ResponseEntity<PaymentRefsDTO> getRefsByPaymentObjectIdAndDate(
             @RequestParam("paymentObjectId") Long paymentObjectId,
-            @RequestParam("paymentPeriodDate") LocalDate paymentPeriodDate) {
+            @RequestParam("paymentPeriodDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate paymentPeriodDate) {
 
         List<PaymentObjectDTO> paymentObjectList = paymentObjectRepository.findAllByOrderByIdAsc().stream().map(paymentObject -> paymentObjectDTOMapper.entityToDTO(paymentObject)).collect(Collectors.toList());
 

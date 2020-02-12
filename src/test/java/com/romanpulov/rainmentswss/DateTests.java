@@ -25,4 +25,11 @@ public class DateTests {
 
         assertThat(longDate).isEqualTo(1577577600L);
     }
+
+    void jsDateTest() {
+        String dateString = "2020-02-12T15:54:42.170Z";
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE;
+
+        //LocalDate date =
+    }
 }
