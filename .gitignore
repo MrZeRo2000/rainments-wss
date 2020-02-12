@@ -20,3 +20,4 @@ db/initial
 
 ### Log files
 logs/*.log
+logs/*log*.gz

@@ -12,7 +12,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "payments")
-public class Payment {
+public class Payment implements CommonEntity {
 
     @Id
     @Column(name = "payment_id")
