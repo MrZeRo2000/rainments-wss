@@ -84,8 +84,8 @@ public class ControllerPaymentTest extends ControllerMockMvcTest {
 
         PaymentDTO paymentDTO = new PaymentDTO(
                 null,
-                LocalDate.now().format(DateTimeFormatter.ISO_DATE),
-                periodDate.format(DateTimeFormatter.ISO_DATE),
+                LocalDate.now(),
+                periodDate,
                 paymentObjectDTO,
                 paymentGroupDTO,
                 productDTO,

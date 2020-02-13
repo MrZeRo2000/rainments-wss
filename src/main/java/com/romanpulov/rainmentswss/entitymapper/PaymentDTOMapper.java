@@ -28,8 +28,8 @@ public class PaymentDTOMapper implements EntityDTOMapper<Payment, PaymentDTO> {
     public PaymentDTO entityToDTO(Payment entity) {
         return new PaymentDTO(
             entity.getId(),
-            entity.getPaymentDate().format(DateTimeFormatter.ISO_DATE),
-            entity.getPaymentPeriodDate().format(DateTimeFormatter.ISO_DATE),
+            entity.getPaymentDate(),
+            entity.getPaymentPeriodDate(),
             paymentObjectDTOMapper.entityToDTO(entity.getPaymentObject()),
             paymentGroupDTOMapper.entityToDTO(entity.getPaymentGroup()),
             productDTOMapper.entityToDTO(entity.getProduct()),
@@ -45,8 +45,8 @@ public class PaymentDTOMapper implements EntityDTOMapper<Payment, PaymentDTO> {
 
         entity.setId(dto.getId());
 
-        entity.setPaymentDate(LocalDate.parse(dto.getDate(), DateTimeFormatter.ISO_DATE));
-        entity.setPaymentPeriodDate(LocalDate.parse(dto.getPeriodDate(), DateTimeFormatter.ISO_DATE));
+        entity.setPaymentDate(dto.getDate());
+        entity.setPaymentPeriodDate(dto.getPeriodDate());
         entity.setPaymentObject(paymentObjectDTOMapper.dtoTOEntity(dto.getPaymentObject()));
         entity.setPaymentGroup(paymentGroupDTOMapper.dtoTOEntity(dto.getPaymentGroup()));
         entity.setProduct(productDTOMapper.dtoTOEntity(dto.getProduct()));

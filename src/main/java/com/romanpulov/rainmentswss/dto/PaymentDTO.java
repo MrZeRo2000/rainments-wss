@@ -3,6 +3,10 @@ package com.romanpulov.rainmentswss.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.romanpulov.rainmentswss.dto.serializer.LocalDateDeserializer;
+import com.romanpulov.rainmentswss.dto.serializer.LocalDateSerializer;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -12,9 +16,13 @@ public class PaymentDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long id;
 
-    private String date;
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    private LocalDate date;
 
-    private String periodDate;
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    private LocalDate periodDate;
 
     private PaymentObjectDTO paymentObject;
 
@@ -31,8 +39,8 @@ public class PaymentDTO {
     @JsonCreator
     public PaymentDTO(
             @JsonProperty("id") Long id,
-            @JsonProperty("date") String date,
-            @JsonProperty("periodDate") String periodDate,
+            @JsonProperty("date") LocalDate date,
+            @JsonProperty("periodDate") LocalDate periodDate,
             @JsonProperty("paymentObject") PaymentObjectDTO paymentObject,
             @JsonProperty("paymentGroup") PaymentGroupDTO paymentGroup,
             @JsonProperty("product") ProductDTO product,
@@ -59,19 +67,19 @@ public class PaymentDTO {
         this.id = id;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 
-    public String getPeriodDate() {
+    public LocalDate getPeriodDate() {
         return periodDate;
     }
 
-    public void setPeriodDate(String periodDate) {
+    public void setPeriodDate(LocalDate periodDate) {
         this.periodDate = periodDate;
     }
 
