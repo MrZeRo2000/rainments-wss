@@ -4,6 +4,7 @@ import com.romanpulov.rainmentswss.entity.Payment;
 import com.romanpulov.rainmentswss.entity.PaymentGroup;
 import com.romanpulov.rainmentswss.entity.PaymentObject;
 import com.romanpulov.rainmentswss.entity.Product;
+import com.romanpulov.rainmentswss.entity.converter.DateConverter;
 import com.romanpulov.rainmentswss.repository.PaymentGroupRepository;
 import com.romanpulov.rainmentswss.repository.PaymentObjectRepository;
 import com.romanpulov.rainmentswss.repository.PaymentRepository;
@@ -13,8 +14,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.orm.jpa.JpaSystemException;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Sort;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -25,6 +25,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class RepositoryPaymentTests {
+
+    @Autowired
+    private DateConverter dc;
 
     private static final Logger log = Logger.getLogger(RepositoryPaymentTests.class.getName());
 
@@ -123,6 +126,13 @@ public class RepositoryPaymentTests {
         newPayment2.setCommissionAmount(BigDecimal.ZERO);
 
         paymentRepository.save(newPayment2);
+
+        List<Payment> findByObjectDatePayments = paymentRepository.findByPaymentObjectIdAndPaymentPeriodDate(
+                newPaymentObject.getId(),
+                dc.convertToDatabaseColumn(LocalDate.now().minusMonths(1L).withDayOfMonth(1)),
+                Sort.by("paymentGroup").ascending()
+        );
+        assertThat(findByObjectDatePayments.size()).isGreaterThan(0);
 
         //delete parent entity custom handling
         Assertions.assertThrows(RuntimeException.class, ()->{

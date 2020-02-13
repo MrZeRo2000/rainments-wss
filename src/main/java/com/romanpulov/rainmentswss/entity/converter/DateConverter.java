@@ -1,10 +1,13 @@
 package com.romanpulov.rainmentswss.entity.converter;
 
+import org.springframework.stereotype.Component;
+
 import javax.persistence.AttributeConverter;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 
+@Component
 public class DateConverter implements AttributeConverter<LocalDate, Long> {
     @Override
     public Long convertToDatabaseColumn(LocalDate attribute) {

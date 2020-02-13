@@ -1,18 +1,19 @@
 package com.romanpulov.rainmentswss.controller;
 
-import com.romanpulov.rainmentswss.dto.PaymentDTO;
-import com.romanpulov.rainmentswss.dto.PaymentObjectDTO;
-import com.romanpulov.rainmentswss.dto.PaymentRefsDTO;
+import com.romanpulov.rainmentswss.dto.*;
 import com.romanpulov.rainmentswss.entity.Payment;
 import com.romanpulov.rainmentswss.entity.PaymentObject;
+import com.romanpulov.rainmentswss.entity.converter.DateConverter;
 import com.romanpulov.rainmentswss.entitymapper.EntityDTOMapper;
 import com.romanpulov.rainmentswss.entitymapper.PaymentGroupDTOMapper;
 import com.romanpulov.rainmentswss.entitymapper.PaymentObjectDTOMapper;
 import com.romanpulov.rainmentswss.entitymapper.ProductDTOMapper;
 import com.romanpulov.rainmentswss.repository.PaymentGroupRepository;
 import com.romanpulov.rainmentswss.repository.PaymentObjectRepository;
+import com.romanpulov.rainmentswss.repository.PaymentRepository;
 import com.romanpulov.rainmentswss.repository.ProductRepository;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
@@ -30,6 +31,8 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/payments", produces = MediaType.APPLICATION_JSON_VALUE)
 public class PaymentController extends BaseRestController<Payment, PaymentDTO> {
 
+    private PaymentRepository paymentRepository;
+
     private PaymentObjectRepository paymentObjectRepository;
 
     private PaymentGroupRepository paymentGroupRepository;
@@ -42,33 +45,75 @@ public class PaymentController extends BaseRestController<Payment, PaymentDTO> {
 
     private ProductDTOMapper productDTOMapper;
 
+    private DateConverter dateConverter;
+
     public PaymentController(
-            CrudRepository<Payment, Long> repository,
-            EntityDTOMapper<Payment,
-            PaymentDTO> mapper,
+            PaymentRepository repository,
+            EntityDTOMapper<Payment, PaymentDTO> mapper,
             PaymentObjectRepository paymentObjectRepository,
             PaymentGroupRepository paymentGroupRepository,
             ProductRepository productRepository,
             PaymentObjectDTOMapper paymentObjectDTOMapper,
             PaymentGroupDTOMapper paymentGroupDTOMapper,
-            ProductDTOMapper productDTOMapper
+            ProductDTOMapper productDTOMapper,
+            DateConverter dateConverter
             ) {
         super(repository, mapper, LoggerFactory.getLogger(PaymentController.class));
+        this.paymentRepository = repository;
         this.paymentObjectRepository = paymentObjectRepository;
         this.paymentGroupRepository = paymentGroupRepository;
         this.productRepository = productRepository;
+        this.paymentObjectDTOMapper = paymentObjectDTOMapper;
+        this.paymentGroupDTOMapper = paymentGroupDTOMapper;
+        this.productDTOMapper = productDTOMapper;
+        this.dateConverter = dateConverter;
     }
 
     @GetMapping("/refs")
     ResponseEntity<PaymentRefsDTO> getRefsByPaymentObjectIdAndDate(
-            @RequestParam("paymentObjectId") Long paymentObjectId,
-            @RequestParam("paymentPeriodDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate paymentPeriodDate) {
+            @RequestParam("paymentObjectId")
+            Long paymentObjectId,
+            @RequestParam("paymentPeriodDate")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+            LocalDate paymentPeriodDate
+    ) {
 
-        List<PaymentObjectDTO> paymentObjectList = paymentObjectRepository.findAllByOrderByIdAsc().stream().map(paymentObject -> paymentObjectDTOMapper.entityToDTO(paymentObject)).collect(Collectors.toList());
+        List<PaymentObjectDTO> paymentObjectList = paymentObjectRepository
+                .findAllByOrderByIdAsc()
+                .stream()
+                .map(paymentObjectDTOMapper::entityToDTO)
+                .collect(Collectors.toList());
 
 
-        //PaymentRefsDTO result = new PaymentRefsDTO()
+        List<PaymentGroupDTO> paymentGroupList = paymentGroupRepository
+                .findAllByOrderByIdAsc()
+                .stream()
+                .map(paymentGroupDTOMapper::entityToDTO)
+                .collect(Collectors.toList());
 
-        return ResponseEntity.ok(null);
+        List<ProductDTO> productList = productRepository
+                .findAllByOrderByIdAsc()
+                .stream()
+                .map(productDTOMapper::entityToDTO)
+                .collect(Collectors.toList());
+
+        List<PaymentDTO> paymentList = paymentRepository
+                .findByPaymentObjectIdAndPaymentPeriodDate(
+                paymentObjectId,
+                dateConverter.convertToDatabaseColumn(paymentPeriodDate),
+                Sort.by("paymentGroup"))
+                .stream()
+                .map(mapper::entityToDTO)
+                .collect(Collectors.toList());
+
+        PaymentRefsDTO result = new PaymentRefsDTO(
+                paymentList,
+                paymentObjectList,
+                paymentGroupList,
+                productList
+        );
+
+
+        return ResponseEntity.ok(result);
     }
 }
