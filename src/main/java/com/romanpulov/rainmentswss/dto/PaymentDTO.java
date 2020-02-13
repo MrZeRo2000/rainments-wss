@@ -12,9 +12,9 @@ public class PaymentDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long id;
 
-    private LocalDate date;
+    private String date;
 
-    private LocalDate periodDate;
+    private String periodDate;
 
     private PaymentObjectDTO paymentObject;
 
@@ -31,8 +31,8 @@ public class PaymentDTO {
     @JsonCreator
     public PaymentDTO(
             @JsonProperty("id") Long id,
-            @JsonProperty("date") LocalDate date,
-            @JsonProperty("periodDate") LocalDate periodDate,
+            @JsonProperty("date") String date,
+            @JsonProperty("periodDate") String periodDate,
             @JsonProperty("paymentObject") PaymentObjectDTO paymentObject,
             @JsonProperty("paymentGroup") PaymentGroupDTO paymentGroup,
             @JsonProperty("product") ProductDTO product,
@@ -59,19 +59,19 @@ public class PaymentDTO {
         this.id = id;
     }
 
-    public LocalDate getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
-    public LocalDate getPeriodDate() {
+    public String getPeriodDate() {
         return periodDate;
     }
 
-    public void setPeriodDate(LocalDate periodDate) {
+    public void setPeriodDate(String periodDate) {
         this.periodDate = periodDate;
     }
 

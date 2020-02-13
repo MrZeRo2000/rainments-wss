@@ -132,7 +132,7 @@ public class RepositoryPaymentTests {
                 dc.convertToDatabaseColumn(LocalDate.now().minusMonths(1L).withDayOfMonth(1)),
                 Sort.by("paymentGroup").ascending()
         );
-        assertThat(findByObjectDatePayments.size()).isGreaterThan(0);
+        assertThat(findByObjectDatePayments.size()).isEqualTo(2);
 
         //delete parent entity custom handling
         Assertions.assertThrows(RuntimeException.class, ()->{

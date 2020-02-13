@@ -4,6 +4,9 @@ import com.romanpulov.rainmentswss.dto.PaymentDTO;
 import com.romanpulov.rainmentswss.entity.Payment;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 @Component
 public class PaymentDTOMapper implements EntityDTOMapper<Payment, PaymentDTO> {
 
@@ -25,8 +28,8 @@ public class PaymentDTOMapper implements EntityDTOMapper<Payment, PaymentDTO> {
     public PaymentDTO entityToDTO(Payment entity) {
         return new PaymentDTO(
             entity.getId(),
-            entity.getPaymentDate(),
-            entity.getPaymentPeriodDate(),
+            entity.getPaymentDate().format(DateTimeFormatter.ISO_DATE),
+            entity.getPaymentPeriodDate().format(DateTimeFormatter.ISO_DATE),
             paymentObjectDTOMapper.entityToDTO(entity.getPaymentObject()),
             paymentGroupDTOMapper.entityToDTO(entity.getPaymentGroup()),
             productDTOMapper.entityToDTO(entity.getProduct()),
@@ -41,8 +44,9 @@ public class PaymentDTOMapper implements EntityDTOMapper<Payment, PaymentDTO> {
         Payment entity = new Payment();
 
         entity.setId(dto.getId());
-        entity.setPaymentDate(dto.getDate());
-        entity.setPaymentPeriodDate(dto.getPeriodDate());
+
+        entity.setPaymentDate(LocalDate.parse(dto.getDate(), DateTimeFormatter.ISO_DATE));
+        entity.setPaymentPeriodDate(LocalDate.parse(dto.getPeriodDate(), DateTimeFormatter.ISO_DATE));
         entity.setPaymentObject(paymentObjectDTOMapper.dtoTOEntity(dto.getPaymentObject()));
         entity.setPaymentGroup(paymentGroupDTOMapper.dtoTOEntity(dto.getPaymentGroup()));
         entity.setProduct(productDTOMapper.dtoTOEntity(dto.getProduct()));
