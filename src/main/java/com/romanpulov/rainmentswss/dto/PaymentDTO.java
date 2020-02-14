@@ -12,8 +12,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PaymentDTO {
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long id;
 
     @JsonSerialize(using = LocalDateSerializer.class)

@@ -6,8 +6,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PaymentGroupDTO {
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+
     private Long id;
 
     private String name;
