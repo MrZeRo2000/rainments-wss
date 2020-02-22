@@ -5,8 +5,13 @@ plugins {
 	id 'war'
 }
 
+ext {
+	file_name = 'rainments-wss.war'
+	file_name_int = 'rainments-int-wss.war'
+}
+
 bootWar {
-	archiveFileName = "rainments-wss.war"
+	archiveFileName = file_name
 }
 
 group = 'com.romanpulov'
@@ -37,7 +42,7 @@ test {
 }
 
 ext {
-	tomcat_home='D:/prj/apache-tomcat-9.0.14'
+	tomcat_home='D:/prj/apache-tomcat-9.0.26'
 	tomcat_webapps = tomcat_home + '/webapps'
 }
 
@@ -47,5 +52,15 @@ tasks.register("deploy") {
 		from "build/libs"
 		into tomcat_webapps
 		include "*.war"
+	}
+}
+
+tasks.register("deployInt") {
+	dependsOn 'war'
+	copy {
+		from "build/libs"
+		into tomcat_webapps
+		include file_name
+		rename file_name, file_name_int
 	}
 }

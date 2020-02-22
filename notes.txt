@@ -8,9 +8,6 @@ Build withour tests:
 Run tests:
   gradlew clean test --info
 
-Build and deploy to local Tomcat:
-  gradlew clean war deploy
-
 Configure debug execution:
   Run Tomcat Server
   Artifact: Gradle : com.romanpulov : rainments-wss.bootWar, output directory: D:\prj\rainments-wss\build\libs
@@ -19,3 +16,10 @@ Configure debug execution:
   Open browser after launch: http://localhost:3000/ide_rainments_wss_war/payment-objects
   CORS setup for TomCat:
     web.xml.cors
+
+Build and deploy to local Tomcat:
+  gradlew clean build deploy
+
+Build and deploy Int version:
+  gradlew build deployInt
+  copy rainments-int-wss.xml

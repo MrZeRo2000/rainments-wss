@@ -12,8 +12,9 @@ out/
 ### Strange file
 memory
 
-### Test DB file
+### Test DB files
 rainments-test.db
+rainments-int.db 
 
 ### Initial data
 db/initial
