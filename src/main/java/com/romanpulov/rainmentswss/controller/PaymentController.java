@@ -101,7 +101,7 @@ public class PaymentController extends BaseRestController<Payment, PaymentDTO> {
                 .findByPaymentObjectIdAndPaymentPeriodDate(
                 paymentObjectId,
                 dateConverter.convertToDatabaseColumn(paymentPeriodDate),
-                Sort.by("paymentGroup"))
+                Sort.by("paymentGroup", "product"))
                 .stream()
                 .map(mapper::entityToDTO)
                 .collect(Collectors.toList());
