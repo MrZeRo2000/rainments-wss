@@ -42,7 +42,7 @@ test {
 }
 
 ext {
-	tomcat_home='D:/prj/apache-tomcat-9.0.26'
+	tomcat_home='D:/prj/apache-tomcat-9.0.24'
 	tomcat_webapps = tomcat_home + '/webapps'
 }
 
