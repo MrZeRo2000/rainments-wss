@@ -8,6 +8,8 @@ import java.util.List;
 public class PaymentRefsDTO {
     private final List<PaymentDTO> paymentList;
 
+    private final List<PaymentDTO> prevPeriodPaymentList;
+
     private final List<PaymentObjectDTO> paymentObjectList;
 
     private final List<PaymentGroupDTO> paymentGroupList;
@@ -16,11 +18,13 @@ public class PaymentRefsDTO {
 
     public PaymentRefsDTO(
             List<PaymentDTO> paymentList,
+            List<PaymentDTO> prevPeriodPaymentList,
             List<PaymentObjectDTO> paymentObjectList,
             List<PaymentGroupDTO> paymentGroupList,
             List<ProductDTO> productList
     ) {
         this.paymentList = paymentList;
+        this.prevPeriodPaymentList = prevPeriodPaymentList;
         this.paymentObjectList = paymentObjectList;
         this.paymentGroupList = paymentGroupList;
         this.productList = productList;
@@ -28,6 +32,10 @@ public class PaymentRefsDTO {
 
     public List<PaymentDTO> getPaymentList() {
         return paymentList;
+    }
+
+    public List<PaymentDTO> getPrevPeriodPaymentList() {
+        return prevPeriodPaymentList;
     }
 
     public List<PaymentObjectDTO> getPaymentObjectList() {
