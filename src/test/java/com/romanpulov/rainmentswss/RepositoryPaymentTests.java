@@ -19,9 +19,10 @@ import org.springframework.data.domain.Sort;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Logger;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class RepositoryPaymentTests {
@@ -47,6 +48,9 @@ public class RepositoryPaymentTests {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private DateConverter dateConverter;
 
     @Test
     void mainTest() {
@@ -133,6 +137,20 @@ public class RepositoryPaymentTests {
                 Sort.by("paymentGroup").ascending()
         );
         assertThat(findByObjectDatePayments.size()).isEqualTo(2);
+
+        //updating product counter
+        Payment updatingPayment = findByObjectDatePayments.get(0);
+
+        int rows = paymentRepository.updateProductCounter(
+                updatingPayment.getId(),
+                7766L,
+                 LocalDate.now()
+        );
+        assertThat(rows).isEqualTo(1);
+
+        Optional<Payment> updatedPayment = paymentRepository.findById(updatingPayment.getId());
+        assertThat(updatedPayment.isPresent()).isTrue();
+        assertThat(updatedPayment.get().getProductCounter()).isEqualTo(7766L);
 
         //delete parent entity custom handling
         Assertions.assertThrows(RuntimeException.class, ()->{
