@@ -1,8 +1,7 @@
 package com.romanpulov.rainmentswss.repository;
 
 import com.romanpulov.rainmentswss.entity.Payment;
-import com.romanpulov.rainmentswss.entity.converter.DateConverter;
-import jdk.vm.ci.meta.Local;
+import com.romanpulov.rainmentswss.entity.PaymentObject;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -14,12 +13,12 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface PaymentRepository extends PagingAndSortingRepository<Payment, Long> {
-    @Query("SELECT p FROM Payment p WHERE payment_object_id = :payment_object_id AND payment_period_date = :payment_period_date")
+    @Query("SELECT p FROM Payment p WHERE p.paymentObject = :payment_object AND p.paymentPeriodDate = :payment_period_date")
     List<Payment> findByPaymentObjectIdAndPaymentPeriodDate(
-            @Param("payment_object_id")
-            Long paymentObjectId,
+            @Param("payment_object")
+            PaymentObject paymentObject,
             @Param("payment_period_date")
-            Long paymentPeriodDate,
+            LocalDate paymentPeriodDate,
             Sort sort);
 
     @Transactional

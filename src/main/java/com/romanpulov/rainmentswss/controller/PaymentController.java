@@ -97,19 +97,22 @@ public class PaymentController extends BaseRestController<Payment, PaymentDTO> {
                 .map(productDTOMapper::entityToDTO)
                 .collect(Collectors.toList());
 
+        PaymentObject paymentObject = new PaymentObject();
+        paymentObject.setId(paymentObjectId);
+
         List<PaymentDTO> paymentList = paymentRepository
                 .findByPaymentObjectIdAndPaymentPeriodDate(
-                paymentObjectId,
-                dateConverter.convertToDatabaseColumn(paymentPeriodDate),
-                Sort.by("paymentGroup", "product"))
+                    paymentObject,
+                    paymentPeriodDate,
+                    Sort.by("paymentGroup", "product"))
                 .stream()
                 .map(mapper::entityToDTO)
                 .collect(Collectors.toList());
 
         List<PaymentDTO> prevPeriodPaymentList = paymentRepository
                 .findByPaymentObjectIdAndPaymentPeriodDate(
-                        paymentObjectId,
-                        dateConverter.convertToDatabaseColumn(paymentPeriodDate.minusMonths(1L)),
+                        paymentObject,
+                        paymentPeriodDate.minusMonths(1L),
                         Sort.by("paymentGroup", "product"))
                 .stream()
                 .map(mapper::entityToDTO)

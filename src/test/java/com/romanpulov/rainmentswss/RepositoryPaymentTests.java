@@ -132,8 +132,8 @@ public class RepositoryPaymentTests {
         paymentRepository.save(newPayment2);
 
         List<Payment> findByObjectDatePayments = paymentRepository.findByPaymentObjectIdAndPaymentPeriodDate(
-                newPaymentObject.getId(),
-                dc.convertToDatabaseColumn(LocalDate.now().minusMonths(1L).withDayOfMonth(1)),
+                newPaymentObject,
+                LocalDate.now().minusMonths(1L).withDayOfMonth(1),
                 Sort.by("paymentGroup").ascending()
         );
         assertThat(findByObjectDatePayments.size()).isEqualTo(2);
