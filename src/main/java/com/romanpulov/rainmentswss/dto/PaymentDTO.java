@@ -30,7 +30,7 @@ public class PaymentDTO {
 
     private ProductDTO product;
 
-    private Long productCounter;
+    private BigDecimal productCounter;
 
     private BigDecimal paymentAmount;
 
@@ -44,7 +44,7 @@ public class PaymentDTO {
             @JsonProperty("paymentObject") PaymentObjectDTO paymentObject,
             @JsonProperty("paymentGroup") PaymentGroupDTO paymentGroup,
             @JsonProperty("product") ProductDTO product,
-            @JsonProperty("productCounter") Long productCounter,
+            @JsonProperty("productCounter") BigDecimal productCounter,
             @JsonProperty("paymentAmount") BigDecimal paymentAmount,
             @JsonProperty("commissionAmount") BigDecimal commissionAmount
     ) {
@@ -107,11 +107,11 @@ public class PaymentDTO {
         this.product = product;
     }
 
-    public Long getProductCounter() {
+    public BigDecimal getProductCounter() {
         return productCounter;
     }
 
-    public void setProductCounter(Long productCounter) {
+    public void setProductCounter(BigDecimal productCounter) {
         this.productCounter = productCounter;
     }
 

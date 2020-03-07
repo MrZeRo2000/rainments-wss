@@ -46,7 +46,8 @@ public class Payment implements CommonEntity {
 
     @Column(name = "product_counter")
     @PositiveOrZero
-    private Long productCounter;
+    @Convert(converter = AmountConverter.class)
+    private BigDecimal productCounter;
 
     @NotNull
     @PositiveOrZero
@@ -108,11 +109,11 @@ public class Payment implements CommonEntity {
         this.product = product;
     }
 
-    public Long getProductCounter() {
+    public BigDecimal getProductCounter() {
         return productCounter;
     }
 
-    public void setProductCounter(Long productCounter) {
+    public void setProductCounter(BigDecimal productCounter) {
         this.productCounter = productCounter;
     }
 

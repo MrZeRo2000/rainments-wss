@@ -17,6 +17,11 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(new ErrorResponseDTO(ex.getMessage(), request.getRequestURI()), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(BadPatchRequestOperationException.class)
+    public ResponseEntity<ErrorResponseDTO> handleBadPatchRequestOperation(BadPatchRequestOperationException ex, HttpServletRequest request) {
+        return new ResponseEntity<>(new ErrorResponseDTO(ex.getMessage(), request.getRequestURI()), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponseDTO> handleNotFound(RuntimeException ex, HttpServletRequest request) {
         return new ResponseEntity<>(new ErrorResponseDTO(ex.getMessage(), request.getRequestURI()), HttpStatus.INTERNAL_SERVER_ERROR);

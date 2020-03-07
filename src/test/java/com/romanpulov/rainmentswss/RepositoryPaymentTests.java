@@ -77,17 +77,18 @@ public class RepositoryPaymentTests {
         newProduct = productRepository.findAll().iterator().next();
         newPayment.setProduct(newProduct);
 
-        newPayment.setProductCounter(34L);
+        BigDecimal newProductCounter = BigDecimal.valueOf(23.4);
+        newPayment.setProductCounter(newProductCounter);
 
-        BigDecimal newPaymentAmount = new BigDecimal("12.56");
+        BigDecimal newPaymentAmount = BigDecimal.valueOf(12.56);
         newPayment.setPaymentAmount(newPaymentAmount);
 
-        newPayment.setCommissionAmount(new BigDecimal("0.23"));
+        newPayment.setCommissionAmount(BigDecimal.valueOf(0.23));
 
         log.info("Saving payment entity: " + newPayment);
         paymentRepository.save(newPayment);
         log.info("Setting commission amount");
-        newPayment.setCommissionAmount(new BigDecimal("0.7"));
+        newPayment.setCommissionAmount(BigDecimal.valueOf(0.7));
         paymentRepository.save(newPayment);
 
         log.info("Reading new payment");
@@ -97,6 +98,9 @@ public class RepositoryPaymentTests {
 
         log.info("Checking payment amount");
         assertThat(newPaymentAmount).isEqualTo(newPayment.getPaymentAmount());
+
+        log.info("Checking product counter");
+        assertThat(newProductCounter).isEqualTo(newPayment.getProductCounter());
 
         //update to another product
         String product2Name = "Product 2";
@@ -136,7 +140,7 @@ public class RepositoryPaymentTests {
         Optional<Payment> updatedPayment;
 
         //updating product counter
-        Long newProductCounterValue = 9532L;
+        BigDecimal newProductCounterValue = BigDecimal.valueOf(9532.77);
 
         rows = paymentRepository.updateProductCounter(
                 updatingPayment.getId(),
@@ -150,7 +154,7 @@ public class RepositoryPaymentTests {
         assertThat(updatedPayment.get().getProductCounter()).isEqualTo(newProductCounterValue);
 
         //updating payment amount
-        BigDecimal newPaymentAmountValue = new BigDecimal("634.32");
+        BigDecimal newPaymentAmountValue = BigDecimal.valueOf(634.32);
 
         rows = paymentRepository.updatePaymentAmount(
                 updatingPayment.getId(),

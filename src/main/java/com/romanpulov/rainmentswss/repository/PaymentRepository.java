@@ -29,7 +29,7 @@ public interface PaymentRepository extends PagingAndSortingRepository<Payment, L
             @Param("payment_id")
             Long paymentId,
             @Param("product_counter")
-            Long productCounter,
+            BigDecimal productCounter,
             @Param("payment_date")
             LocalDate paymentDate);
 

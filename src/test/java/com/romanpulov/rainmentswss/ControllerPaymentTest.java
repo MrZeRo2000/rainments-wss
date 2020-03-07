@@ -16,7 +16,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
@@ -135,7 +134,7 @@ public class ControllerPaymentTest extends ControllerMockMvcTest {
                 paymentObjectDTO,
                 paymentGroupDTO,
                 productDTO,
-                300L,
+                BigDecimal.valueOf(54.2),
                 BigDecimal.valueOf(53.22),
                 BigDecimal.valueOf(0.44)
                 );
