@@ -3,7 +3,6 @@ package com.romanpulov.rainmentswss.controller;
 import com.romanpulov.rainmentswss.dto.*;
 import com.romanpulov.rainmentswss.entity.Payment;
 import com.romanpulov.rainmentswss.entity.PaymentObject;
-import com.romanpulov.rainmentswss.entity.converter.DateConverter;
 import com.romanpulov.rainmentswss.entitymapper.EntityDTOMapper;
 import com.romanpulov.rainmentswss.entitymapper.PaymentGroupDTOMapper;
 import com.romanpulov.rainmentswss.entitymapper.PaymentObjectDTOMapper;
@@ -14,7 +13,6 @@ import com.romanpulov.rainmentswss.repository.PaymentRepository;
 import com.romanpulov.rainmentswss.repository.ProductRepository;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -45,8 +43,6 @@ public class PaymentController extends BaseRestController<Payment, PaymentDTO> {
 
     private ProductDTOMapper productDTOMapper;
 
-    private DateConverter dateConverter;
-
     public PaymentController(
             PaymentRepository repository,
             EntityDTOMapper<Payment, PaymentDTO> mapper,
@@ -55,8 +51,7 @@ public class PaymentController extends BaseRestController<Payment, PaymentDTO> {
             ProductRepository productRepository,
             PaymentObjectDTOMapper paymentObjectDTOMapper,
             PaymentGroupDTOMapper paymentGroupDTOMapper,
-            ProductDTOMapper productDTOMapper,
-            DateConverter dateConverter
+            ProductDTOMapper productDTOMapper
             ) {
         super(repository, mapper, LoggerFactory.getLogger(PaymentController.class));
         this.paymentRepository = repository;
@@ -66,7 +61,6 @@ public class PaymentController extends BaseRestController<Payment, PaymentDTO> {
         this.paymentObjectDTOMapper = paymentObjectDTOMapper;
         this.paymentGroupDTOMapper = paymentGroupDTOMapper;
         this.productDTOMapper = productDTOMapper;
-        this.dateConverter = dateConverter;
     }
 
     @GetMapping("/refs")
