@@ -18,8 +18,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @RestController
@@ -121,21 +124,38 @@ public class PaymentController extends BaseRestController<Payment, PaymentDTO> {
         return ResponseEntity.ok(result);
     }
 
-    /*
     @PatchMapping("/{id}")
-    ResponseEntity<Integer> partialUpdate (
+    ResponseEntity<PatchResponseDTO> partialUpdate (
             @PathVariable Long id,
-            @RequestBody PatchRequestDTO patchRequest) throws BadPatchRequestOperationException {
+            @RequestBody PatchRequestDTO patchRequest
+    ) throws BadPatchRequestException {
         if (!patchRequest.getOp().equals("replace")) {
-            throw new BadPatchRequestOperationException(patchRequest.getOp());
+            throw new BadPatchRequestException("operation", patchRequest.getOp());
         }
 
-
-
-        if (patchRequest.getPath().equals("/productCounter")) {
-            // return ResponseEntity.ok(paymentRepository.)
+        BigDecimal updateValue;
+        try {
+            updateValue = new BigDecimal(patchRequest.getValue());
+        } catch (NumberFormatException e) {
+            throw new BadPatchRequestException("value", patchRequest.getValue());
         }
+
+        int result;
+        switch (patchRequest.getPath()) {
+            case "/productCounter":
+                // return ResponseEntity.ok(paymentRepository.)
+                result = paymentRepository.updateProductCounter(id, updateValue, LocalDate.now());
+                break;
+            case "/paymentAmount":
+                result = paymentRepository.updatePaymentAmount(id, updateValue, LocalDate.now());
+                break;
+            case "/commissionAmount":
+                result = paymentRepository.updateCommissionAmount(id, updateValue, LocalDate.now());
+                break;
+            default:
+                throw new BadPatchRequestException("path", patchRequest.getPath());
+        }
+
+        return ResponseEntity.ok(new PatchResponseDTO(result));
     }
-
-     */
 }
