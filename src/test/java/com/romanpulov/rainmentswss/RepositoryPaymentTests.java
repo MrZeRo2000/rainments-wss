@@ -4,7 +4,6 @@ import com.romanpulov.rainmentswss.entity.Payment;
 import com.romanpulov.rainmentswss.entity.PaymentGroup;
 import com.romanpulov.rainmentswss.entity.PaymentObject;
 import com.romanpulov.rainmentswss.entity.Product;
-import com.romanpulov.rainmentswss.entity.converter.DateConverter;
 import com.romanpulov.rainmentswss.repository.PaymentGroupRepository;
 import com.romanpulov.rainmentswss.repository.PaymentObjectRepository;
 import com.romanpulov.rainmentswss.repository.PaymentRepository;
@@ -27,9 +26,6 @@ import static org.assertj.core.api.Assertions.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class RepositoryPaymentTests {
 
-    @Autowired
-    private DateConverter dc;
-
     private static final Logger log = Logger.getLogger(RepositoryPaymentTests.class.getName());
 
     @BeforeAll
@@ -48,9 +44,6 @@ public class RepositoryPaymentTests {
 
     @Autowired
     private ProductRepository productRepository;
-
-    @Autowired
-    private DateConverter dateConverter;
 
     @Test
     void mainTest() {
@@ -183,6 +176,15 @@ public class RepositoryPaymentTests {
         updatedPayment = paymentRepository.findById(updatingPayment.getId());
         assertThat(updatedPayment.isPresent()).isTrue();
         assertThat(updatedPayment.get().getCommissionAmount()).isEqualTo(newCommissionAmountValue);
+
+        //update payment amount to null
+        Assertions.assertThrows(Exception.class, ()-> {
+            paymentRepository.updatePaymentAmount(
+                    updatingPayment.getId(),
+                    null,
+                    LocalDate.now()
+            );
+        });
 
         //delete parent entity custom handling
         Assertions.assertThrows(RuntimeException.class, ()->{
