@@ -9,6 +9,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -31,4 +32,27 @@ public interface PaymentRepository extends PagingAndSortingRepository<Payment, L
             Long productCounter,
             @Param("payment_date")
             LocalDate paymentDate);
+
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE Payment p SET p.paymentAmount = :payment_amount, p.paymentDate = :payment_date WHERE p.id = :payment_id")
+    int updatePaymentAmount(
+            @Param("payment_id")
+            Long paymentId,
+            @Param("payment_amount")
+            BigDecimal paymentAmount,
+            @Param("payment_date")
+            LocalDate paymentDate);
+
+    @Transactional
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE Payment p SET p.commissionAmount = :commission_amount, p.paymentDate = :payment_date WHERE p.id = :payment_id")
+    int updateCommissionAmount(
+            @Param("payment_id")
+                    Long paymentId,
+            @Param("commission_amount")
+                    BigDecimal commissionAmount,
+            @Param("payment_date")
+                    LocalDate paymentDate);
+
 }

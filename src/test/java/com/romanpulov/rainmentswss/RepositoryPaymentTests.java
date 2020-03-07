@@ -138,19 +138,51 @@ public class RepositoryPaymentTests {
         );
         assertThat(findByObjectDatePayments.size()).isEqualTo(2);
 
-        //updating product counter
         Payment updatingPayment = findByObjectDatePayments.get(0);
+        int rows;
+        Optional<Payment> updatedPayment;
 
-        int rows = paymentRepository.updateProductCounter(
+        //updating product counter
+        Long newProductCounterValue = 9532L;
+
+        rows = paymentRepository.updateProductCounter(
                 updatingPayment.getId(),
-                7766L,
+                newProductCounterValue,
                  LocalDate.now()
         );
         assertThat(rows).isEqualTo(1);
 
-        Optional<Payment> updatedPayment = paymentRepository.findById(updatingPayment.getId());
+        updatedPayment = paymentRepository.findById(updatingPayment.getId());
         assertThat(updatedPayment.isPresent()).isTrue();
-        assertThat(updatedPayment.get().getProductCounter()).isEqualTo(7766L);
+        assertThat(updatedPayment.get().getProductCounter()).isEqualTo(newProductCounterValue);
+
+        //updating payment amount
+        BigDecimal newPaymentAmountValue = new BigDecimal("634.32");
+
+        rows = paymentRepository.updatePaymentAmount(
+                updatingPayment.getId(),
+                newPaymentAmountValue,
+                LocalDate.now()
+        );
+        assertThat(rows).isEqualTo(1);
+
+        updatedPayment = paymentRepository.findById(updatingPayment.getId());
+        assertThat(updatedPayment.isPresent()).isTrue();
+        assertThat(updatedPayment.get().getPaymentAmount()).isEqualTo(newPaymentAmountValue);
+
+        //updating commission amount
+        BigDecimal newCommissionAmountValue = new BigDecimal("1.23");
+
+        rows = paymentRepository.updateCommissionAmount(
+                updatingPayment.getId(),
+                newCommissionAmountValue,
+                LocalDate.now()
+        );
+        assertThat(rows).isEqualTo(1);
+
+        updatedPayment = paymentRepository.findById(updatingPayment.getId());
+        assertThat(updatedPayment.isPresent()).isTrue();
+        assertThat(updatedPayment.get().getCommissionAmount()).isEqualTo(newCommissionAmountValue);
 
         //delete parent entity custom handling
         Assertions.assertThrows(RuntimeException.class, ()->{
