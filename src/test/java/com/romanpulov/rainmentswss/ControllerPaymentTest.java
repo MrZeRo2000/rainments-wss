@@ -150,7 +150,7 @@ public class ControllerPaymentTest extends ControllerMockMvcTest {
             Number paymentId = JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.id");
             paymentDTO.setId(paymentId.longValue());
 
-            mvcResult = this.mvc.perform(MockMvcRequestBuilders.get("/payments/refs")
+            mvcResult = this.mvc.perform(MockMvcRequestBuilders.get("/payments:refs")
                     .param("paymentObjectId", String.valueOf(paymentObjectId))
                     .param("paymentPeriodDate", periodDate.atStartOfDay().format(DateTimeFormatter.ISO_DATE_TIME))
                     .characterEncoding(StandardCharsets.UTF_8.name())
