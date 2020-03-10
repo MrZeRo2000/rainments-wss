@@ -2,6 +2,7 @@ package com.romanpulov.rainmentswss.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
@@ -14,7 +15,10 @@ public class PatchRequestDTO {
     private String value;
 
     @JsonCreator
-    public PatchRequestDTO(String op, String path, String value) {
+    public PatchRequestDTO(
+            @JsonProperty("op") String op,
+            @JsonProperty("path") String path,
+            @JsonProperty("value") String value) {
         this.op = op;
         this.path = path;
         this.value = value;

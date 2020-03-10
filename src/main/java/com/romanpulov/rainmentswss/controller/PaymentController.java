@@ -133,11 +133,13 @@ public class PaymentController extends BaseRestController<Payment, PaymentDTO> {
             throw new BadPatchRequestException("operation", patchRequest.getOp());
         }
 
-        BigDecimal updateValue;
-        try {
-            updateValue = new BigDecimal(patchRequest.getValue());
-        } catch (NumberFormatException e) {
-            throw new BadPatchRequestException("value", patchRequest.getValue());
+        BigDecimal updateValue = null;
+        if (patchRequest.getValue() != null) {
+            try {
+                updateValue = new BigDecimal(patchRequest.getValue());
+            } catch (RuntimeException e) {
+                throw new BadPatchRequestException("value", patchRequest.getValue());
+            }
         }
 
         int result;
@@ -147,9 +149,15 @@ public class PaymentController extends BaseRestController<Payment, PaymentDTO> {
                 result = paymentRepository.updateProductCounter(id, updateValue, LocalDate.now());
                 break;
             case "/paymentAmount":
+                if (updateValue == null) {
+                    updateValue = BigDecimal.valueOf(0L);
+                }
                 result = paymentRepository.updatePaymentAmount(id, updateValue, LocalDate.now());
                 break;
             case "/commissionAmount":
+                if (updateValue == null) {
+                    updateValue = BigDecimal.valueOf(0L);
+                }
                 result = paymentRepository.updateCommissionAmount(id, updateValue, LocalDate.now());
                 break;
             default:
