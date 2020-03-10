@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS "payments" (
 	"product_id"	INTEGER,
 	"product_counter"	INTEGER,
 	"payment_amount"	INTEGER NOT NULL,
-	"commission_amount"	INTEGER DEFAULT 0,
+	"commission_amount"	INTEGER NOT NULL,
 	PRIMARY KEY("payment_id")
 );
 DROP TABLE IF EXISTS "test_table";

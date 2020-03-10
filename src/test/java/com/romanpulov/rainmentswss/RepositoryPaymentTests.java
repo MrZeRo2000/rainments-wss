@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Sort;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -135,6 +136,12 @@ public class RepositoryPaymentTests {
         );
         assertThat(findByObjectDatePayments.size()).isEqualTo(2);
 
+        //check setting null
+        Assertions.assertThrows(org.springframework.transaction.TransactionSystemException.class, ()-> {
+            newPayment2.setCommissionAmount(null);
+            paymentRepository.save(newPayment2);
+        });
+
         Payment updatingPayment = findByObjectDatePayments.get(0);
         int rows;
         Optional<Payment> updatedPayment;
@@ -184,6 +191,15 @@ public class RepositoryPaymentTests {
         //update payment amount to null
         Assertions.assertThrows(Exception.class, ()-> {
             paymentRepository.updatePaymentAmount(
+                    updatingPayment.getId(),
+                    null,
+                    LocalDate.now()
+            );
+        });
+
+        //update commission amount to null
+        Assertions.assertThrows(Exception.class, ()-> {
+            paymentRepository.updateCommissionAmount(
                     updatingPayment.getId(),
                     null,
                     LocalDate.now()
