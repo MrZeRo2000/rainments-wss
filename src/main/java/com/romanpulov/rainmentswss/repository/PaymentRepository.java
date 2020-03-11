@@ -24,7 +24,6 @@ public interface PaymentRepository extends PagingAndSortingRepository<Payment, L
             LocalDate paymentPeriodDate,
             Sort sort);
 
-    @Transactional
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Payment p SET p.productCounter = :product_counter, p.paymentDate = :payment_date WHERE p.id = :payment_id")
     int updateProductCounter(
@@ -35,7 +34,6 @@ public interface PaymentRepository extends PagingAndSortingRepository<Payment, L
             @Param("payment_date")
             LocalDate paymentDate);
 
-    @Transactional
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Payment p SET p.paymentAmount = :payment_amount, p.paymentDate = :payment_date WHERE p.id = :payment_id")
     int updatePaymentAmount(
@@ -46,7 +44,6 @@ public interface PaymentRepository extends PagingAndSortingRepository<Payment, L
             @Param("payment_date")
             LocalDate paymentDate);
 
-    @Transactional
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Payment p SET p.commissionAmount = :commission_amount, p.paymentDate = :payment_date WHERE p.id = :payment_id")
     int updateCommissionAmount(

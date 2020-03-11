@@ -8,6 +8,7 @@ import com.romanpulov.rainmentswss.repository.PaymentGroupRepository;
 import com.romanpulov.rainmentswss.repository.PaymentObjectRepository;
 import com.romanpulov.rainmentswss.repository.PaymentRepository;
 import com.romanpulov.rainmentswss.repository.ProductRepository;
+import com.romanpulov.rainmentswss.service.PaymentService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -45,6 +46,9 @@ public class RepositoryPaymentTests {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private PaymentService paymentService;
 
     @Test
     void mainTest() {
@@ -149,7 +153,7 @@ public class RepositoryPaymentTests {
         //updating product counter
         BigDecimal newProductCounterValue = BigDecimal.valueOf(9532.77);
 
-        rows = paymentRepository.updateProductCounter(
+        rows = paymentService.updateProductCounter(
                 updatingPayment.getId(),
                 newProductCounterValue,
                  LocalDate.now()
@@ -163,7 +167,7 @@ public class RepositoryPaymentTests {
         //updating payment amount
         BigDecimal newPaymentAmountValue = BigDecimal.valueOf(634.32);
 
-        rows = paymentRepository.updatePaymentAmount(
+        rows = paymentService.updatePaymentAmount(
                 updatingPayment.getId(),
                 newPaymentAmountValue,
                 LocalDate.now()
@@ -177,7 +181,7 @@ public class RepositoryPaymentTests {
         //updating commission amount
         BigDecimal newCommissionAmountValue = new BigDecimal("1.23");
 
-        rows = paymentRepository.updateCommissionAmount(
+        rows = paymentService.updateCommissionAmount(
                 updatingPayment.getId(),
                 newCommissionAmountValue,
                 LocalDate.now()
@@ -187,24 +191,6 @@ public class RepositoryPaymentTests {
         updatedPayment = paymentRepository.findById(updatingPayment.getId());
         assertThat(updatedPayment.isPresent()).isTrue();
         assertThat(updatedPayment.get().getCommissionAmount()).isEqualTo(newCommissionAmountValue);
-
-        //update payment amount to null
-        Assertions.assertThrows(Exception.class, ()-> {
-            paymentRepository.updatePaymentAmount(
-                    updatingPayment.getId(),
-                    null,
-                    LocalDate.now()
-            );
-        });
-
-        //update commission amount to null
-        Assertions.assertThrows(Exception.class, ()-> {
-            paymentRepository.updateCommissionAmount(
-                    updatingPayment.getId(),
-                    null,
-                    LocalDate.now()
-            );
-        });
 
         //delete parent entity custom handling
         Assertions.assertThrows(RuntimeException.class, ()->{

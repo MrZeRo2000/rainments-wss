@@ -6,7 +6,9 @@ import com.romanpulov.rainmentswss.dto.PaymentDTO;
 import com.romanpulov.rainmentswss.entity.Payment;
 import com.romanpulov.rainmentswss.entitymapper.EntityDTOMapper;
 import com.romanpulov.rainmentswss.repository.PaymentRepository;
+import com.romanpulov.rainmentswss.service.PaymentService;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,14 +20,15 @@ import java.time.LocalDate;
 @RequestMapping(value = "/payments", produces = MediaType.APPLICATION_JSON_VALUE)
 public class PaymentController extends BaseRestController<Payment, PaymentDTO> {
 
-    private PaymentRepository paymentRepository;
+    private final PaymentService paymentService;
 
     public PaymentController(
-            PaymentRepository repository,
+            CrudRepository<Payment, Long> repository,
+            PaymentService paymentService,
             EntityDTOMapper<Payment, PaymentDTO> mapper
             ) {
         super(repository, mapper, LoggerFactory.getLogger(PaymentController.class));
-        this.paymentRepository = repository;
+        this.paymentService = paymentService;
     }
 
     @PatchMapping("/{id}")
@@ -49,20 +52,13 @@ public class PaymentController extends BaseRestController<Payment, PaymentDTO> {
         int result;
         switch (patchRequest.getPath()) {
             case "/productCounter":
-                // return ResponseEntity.ok(paymentRepository.)
-                result = paymentRepository.updateProductCounter(id, updateValue, LocalDate.now());
+                result = paymentService.updateProductCounter(id, updateValue, LocalDate.now());
                 break;
             case "/paymentAmount":
-                if (updateValue == null) {
-                    updateValue = BigDecimal.valueOf(0L);
-                }
-                result = paymentRepository.updatePaymentAmount(id, updateValue, LocalDate.now());
+                result = paymentService.updatePaymentAmount(id, updateValue, LocalDate.now());
                 break;
             case "/commissionAmount":
-                if (updateValue == null) {
-                    updateValue = BigDecimal.valueOf(0L);
-                }
-                result = paymentRepository.updateCommissionAmount(id, updateValue, LocalDate.now());
+                result = paymentService.updateCommissionAmount(id, updateValue, LocalDate.now());
                 break;
             default:
                 throw new BadPatchRequestException("path", patchRequest.getPath());
