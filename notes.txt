@@ -23,3 +23,6 @@ Build and deploy to local Tomcat:
 Build and deploy Int version:
   gradlew build deployInt
   copy rainments-int-wss.xml
+
+Run one test only:
+  gradlew test --tests *DataGeneratorTest
