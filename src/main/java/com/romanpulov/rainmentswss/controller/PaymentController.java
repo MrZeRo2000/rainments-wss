@@ -1,11 +1,10 @@
 package com.romanpulov.rainmentswss.controller;
 
 import com.romanpulov.rainmentswss.dto.PatchRequestDTO;
-import com.romanpulov.rainmentswss.dto.PatchResponseDTO;
+import com.romanpulov.rainmentswss.dto.RowsAffectedDTO;
 import com.romanpulov.rainmentswss.dto.PaymentDTO;
 import com.romanpulov.rainmentswss.entity.Payment;
 import com.romanpulov.rainmentswss.entitymapper.EntityDTOMapper;
-import com.romanpulov.rainmentswss.repository.PaymentRepository;
 import com.romanpulov.rainmentswss.service.PaymentService;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.repository.CrudRepository;
@@ -32,7 +31,7 @@ public class PaymentController extends BaseRestController<Payment, PaymentDTO> {
     }
 
     @PatchMapping("/{id}")
-    ResponseEntity<PatchResponseDTO> partialUpdate (
+    ResponseEntity<RowsAffectedDTO> partialUpdate (
             @PathVariable Long id,
             @RequestBody PatchRequestDTO patchRequest
     ) throws BadPatchRequestException {
@@ -64,6 +63,6 @@ public class PaymentController extends BaseRestController<Payment, PaymentDTO> {
                 throw new BadPatchRequestException("path", patchRequest.getPath());
         }
 
-        return ResponseEntity.ok(new PatchResponseDTO(result));
+        return ResponseEntity.ok(new RowsAffectedDTO(result));
     }
 }

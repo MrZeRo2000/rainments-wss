@@ -11,11 +11,13 @@ import com.romanpulov.rainmentswss.repository.PaymentGroupRepository;
 import com.romanpulov.rainmentswss.repository.PaymentObjectRepository;
 import com.romanpulov.rainmentswss.repository.PaymentRepository;
 import com.romanpulov.rainmentswss.repository.ProductRepository;
+import com.romanpulov.rainmentswss.service.PaymentService;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,19 +28,21 @@ import java.util.stream.Collectors;
 @RestController
 public class PaymentCustomController extends BaseRestController<Payment, PaymentDTO> {
 
-    private PaymentRepository paymentRepository;
+    private final PaymentRepository paymentRepository;
 
-    private PaymentObjectRepository paymentObjectRepository;
+    private final PaymentObjectRepository paymentObjectRepository;
 
-    private PaymentGroupRepository paymentGroupRepository;
+    private final PaymentGroupRepository paymentGroupRepository;
 
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
-    private PaymentObjectDTOMapper paymentObjectDTOMapper;
+    private final PaymentObjectDTOMapper paymentObjectDTOMapper;
 
-    private PaymentGroupDTOMapper paymentGroupDTOMapper;
+    private final PaymentGroupDTOMapper paymentGroupDTOMapper;
 
-    private ProductDTOMapper productDTOMapper;
+    private final ProductDTOMapper productDTOMapper;
+
+    private final PaymentService paymentService;
 
     public PaymentCustomController(
             PaymentRepository repository,
@@ -48,7 +52,8 @@ public class PaymentCustomController extends BaseRestController<Payment, Payment
             ProductRepository productRepository,
             PaymentObjectDTOMapper paymentObjectDTOMapper,
             PaymentGroupDTOMapper paymentGroupDTOMapper,
-            ProductDTOMapper productDTOMapper
+            ProductDTOMapper productDTOMapper,
+            PaymentService paymentService
     ) {
         super(repository, mapper, LoggerFactory.getLogger(PaymentController.class));
         this.paymentRepository = repository;
@@ -58,6 +63,7 @@ public class PaymentCustomController extends BaseRestController<Payment, Payment
         this.paymentObjectDTOMapper = paymentObjectDTOMapper;
         this.paymentGroupDTOMapper = paymentGroupDTOMapper;
         this.productDTOMapper = productDTOMapper;
+        this.paymentService = paymentService;
     }
 
     @GetMapping("/payments:refs")
@@ -119,5 +125,21 @@ public class PaymentCustomController extends BaseRestController<Payment, Payment
 
 
         return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/payments:duplicate_previous_period")
+    ResponseEntity<RowsAffectedDTO> duplicatePreviousPeriod(
+            @RequestParam("paymentObjectId")
+                    Long paymentObjectId,
+            @RequestParam("paymentPeriodDate")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+                    LocalDate paymentPeriodDate
+    ) {
+        PaymentObject paymentObject = new PaymentObject();
+        paymentObject.setId(paymentObjectId);
+
+        int rowsAffected = this.paymentService.duplicatePreviousPeriod(paymentObject, paymentPeriodDate);
+
+        return ResponseEntity.ok(new RowsAffectedDTO(rowsAffected));
     }
 }

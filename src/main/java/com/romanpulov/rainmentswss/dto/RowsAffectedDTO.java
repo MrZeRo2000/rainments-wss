@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 
 import java.util.Objects;
 
-public class PatchResponseDTO {
+public class RowsAffectedDTO {
     private int rowsAffected;
 
     @JsonCreator
-    public PatchResponseDTO(int rowsAffected) {
+    public RowsAffectedDTO(int rowsAffected) {
         this.rowsAffected = rowsAffected;
     }
 
@@ -24,7 +24,7 @@ public class PatchResponseDTO {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PatchResponseDTO that = (PatchResponseDTO) o;
+        RowsAffectedDTO that = (RowsAffectedDTO) o;
         return rowsAffected == that.rowsAffected;
     }
 
