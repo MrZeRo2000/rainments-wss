@@ -1,5 +1,6 @@
 package com.romanpulov.rainmentswss.transform;
 
+import com.romanpulov.rainmentswss.dto.ExtPaymentDTO;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
@@ -7,6 +8,9 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,14 +56,29 @@ public class ExcelReader {
         }
     }
 
-    private List<BaseLine> baseLineList;
+    public static class DateColumnMapping {
+        public final LocalDate periodDate;
+        public final int paymentColumn;
+        public final int commissionColumn;
 
-    public List<BaseLine> getBaseLineList() {
-        return baseLineList;
+        public DateColumnMapping(LocalDate periodDate, int paymentColumn, int commissionColumn) {
+            this.periodDate = periodDate;
+            this.paymentColumn = paymentColumn;
+            this.commissionColumn = commissionColumn;
+        }
+
+        @Override
+        public String toString() {
+            return "DateColumn{" +
+                    "periodDate=" + periodDate +
+                    ", paymentColumn=" + paymentColumn +
+                    ", commissionColumn=" + commissionColumn +
+                    '}';
+        }
     }
 
-    public void readBaseLineList(Sheet sheet) {
-        baseLineList = new ArrayList<>();
+    public List<BaseLine> readBaseLineList(Sheet sheet) {
+        List<BaseLine> baseLineList = new ArrayList<>();
 
         boolean isFirstRow = true;
         Cell prevGroupNameCell = null;
@@ -89,5 +108,42 @@ public class ExcelReader {
                 }
             }
         }
+        return baseLineList;
+    }
+
+    public List<DateColumnMapping> readDateColumnMapping(Sheet sheet) {
+        List<DateColumnMapping> columnMappings = new ArrayList<>();
+
+        Row columnRow = sheet.getRow(0);
+
+        int paymentColumn = 0;
+        LocalDate periodDate = null;
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
+        for (int i = 0; i < columnRow.getLastCellNum(); i++) {
+            Cell cell = columnRow.getCell(i);
+            if ((cell != null) && (!formatter.formatCellValue(cell).isEmpty())) {
+                if ((cell.getCellType() == CellType.NUMERIC) && (DateUtil.isCellDateFormatted(cell))) {
+                    periodDate = cell.getLocalDateTimeCellValue().toLocalDate();
+                    paymentColumn = i;
+                } else if ((periodDate != null)
+                        && (i - paymentColumn == 1)
+                        && (formatter.formatCellValue(cell).contains(periodDate.format(dateTimeFormatter)))) {
+                    columnMappings.add(new DateColumnMapping(periodDate, paymentColumn, i));
+                    periodDate = null;
+                    paymentColumn = 0;
+                }
+            }
+        }
+
+        return columnMappings;
+    }
+
+    public List<ExtPaymentDTO> readContent(Sheet sheet) {
+        List<ExtPaymentDTO> content = new ArrayList<>();
+
+        List<BaseLine> baseLineList = readBaseLineList(sheet);
+
+        return content;
     }
 }

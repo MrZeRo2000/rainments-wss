@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -62,11 +63,41 @@ public class ExcelReadTest {
         try (InputStream in = new FileInputStream(TEST_FILE_NAME)) {
             excelReader.setInputStream(in);
             Sheet sheet = excelReader.readDataSheet();
-            excelReader.readBaseLineList(sheet);
-            List<ExcelReader.BaseLine> baseLineList = excelReader.getBaseLineList();
+            List<ExcelReader.BaseLine> baseLineList = excelReader.readBaseLineList(sheet);
             Assertions.assertEquals("Вывоз бытовых отходов", baseLineList.get(1).productName);
             Assertions.assertEquals(13, baseLineList.size());
             baseLineList.forEach(baseLine -> logger.info(baseLine.toString()));
+        }
+    }
+
+    @Test
+    void testDateColumnMapping() throws Exception {
+        //no beans
+        ExcelReader excelReader = new ExcelReader();
+
+        try (InputStream in = new FileInputStream(TEST_FILE_NAME)) {
+            excelReader.setInputStream(in);
+            Sheet sheet = excelReader.readDataSheet();
+            List<ExcelReader.DateColumnMapping> columnMappings = excelReader.readDateColumnMapping(sheet);
+
+            Assertions.assertEquals(LocalDate.of(2016, 10, 1), columnMappings.get(0).periodDate);
+            Assertions.assertEquals(LocalDate.of(2020, 2, 1), columnMappings.get(columnMappings.size() - 1).periodDate);
+            Assertions.assertEquals(0, columnMappings.size() % 2);
+        }
+
+    }
+
+
+    void testReaderContents() throws Exception {
+        //no beans
+        ExcelReader excelReader = new ExcelReader();
+
+        try (InputStream in = new FileInputStream(TEST_FILE_NAME)) {
+            excelReader.setInputStream(in);
+            Sheet sheet = excelReader.readDataSheet();
+            List<ExcelReader.BaseLine> baseLineList = excelReader.readBaseLineList(sheet);
+
+
         }
     }
 
