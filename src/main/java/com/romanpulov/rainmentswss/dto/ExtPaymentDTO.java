@@ -9,16 +9,20 @@ public class ExtPaymentDTO {
 
     private final String groupName;
 
-    private final LocalDate PaymentPeriodDate;
+    private final LocalDate paymentPeriodDate;
+
+    private final BigDecimal productCounter;
 
     private final BigDecimal paymentAmount;
 
     private final BigDecimal commissionAmount;
 
-    public ExtPaymentDTO(String productName, String groupName, LocalDate paymentPeriodDate, BigDecimal paymentAmount, BigDecimal commissionAmount) {
+    public ExtPaymentDTO(String productName, String groupName, LocalDate paymentPeriodDate,
+                         BigDecimal productCounter, BigDecimal paymentAmount, BigDecimal commissionAmount) {
         this.productName = productName;
         this.groupName = groupName;
-        PaymentPeriodDate = paymentPeriodDate;
+        this.paymentPeriodDate = paymentPeriodDate;
+        this.productCounter = productCounter;
         this.paymentAmount = paymentAmount;
         this.commissionAmount = commissionAmount;
     }
@@ -32,7 +36,11 @@ public class ExtPaymentDTO {
     }
 
     public LocalDate getPaymentPeriodDate() {
-        return PaymentPeriodDate;
+        return paymentPeriodDate;
+    }
+
+    public BigDecimal getProductCounter() {
+        return productCounter;
     }
 
     public BigDecimal getPaymentAmount() {
@@ -50,12 +58,12 @@ public class ExtPaymentDTO {
         ExtPaymentDTO that = (ExtPaymentDTO) o;
         return productName.equals(that.productName) &&
                 groupName.equals(that.groupName) &&
-                PaymentPeriodDate.equals(that.PaymentPeriodDate);
+                paymentPeriodDate.equals(that.paymentPeriodDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(productName, groupName, PaymentPeriodDate);
+        return Objects.hash(productName, groupName, paymentPeriodDate);
     }
 
     @Override
@@ -63,7 +71,8 @@ public class ExtPaymentDTO {
         return "ExtPaymentDTO{" +
                 "productName='" + productName + '\'' +
                 ", groupName='" + groupName + '\'' +
-                ", PaymentPeriodDate=" + PaymentPeriodDate +
+                ", PaymentPeriodDate=" + paymentPeriodDate +
+                ", productCounter=" + productCounter +
                 ", paymentAmount=" + paymentAmount +
                 ", commissionAmount=" + commissionAmount +
                 '}';

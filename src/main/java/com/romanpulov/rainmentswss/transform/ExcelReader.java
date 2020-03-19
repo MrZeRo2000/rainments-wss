@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -18,6 +19,8 @@ import java.util.List;
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class ExcelReader {
+    private static final String PRODUCT_COUNTER_POSTFIX = "счетчик";
+
     private InputStream inputStream;
 
     public void setInputStream(InputStream value) {
@@ -139,10 +142,69 @@ public class ExcelReader {
         return columnMappings;
     }
 
+    public BigDecimal readNumericCell(Cell cell) {
+        if ((cell != null) && (cell.getCellType() == CellType.NUMERIC)) {
+            return BigDecimal.valueOf(cell.getNumericCellValue());
+        } else {
+            return null;
+        }
+    }
+
     public List<ExtPaymentDTO> readContent(Sheet sheet) {
         List<ExtPaymentDTO> content = new ArrayList<>();
 
         List<BaseLine> baseLineList = readBaseLineList(sheet);
+        List<DateColumnMapping> dateColumnMappings = readDateColumnMapping(sheet);
+
+        for (DateColumnMapping dateColumnMapping: dateColumnMappings) {
+            int sheetRowNum = 0;
+            for (int bln = 0; bln < baseLineList.size(); bln++) {
+
+                //move to the next row
+                sheetRowNum ++;
+                Row row = sheet.getRow(sheetRowNum);
+                Row counterRow = null;
+
+                BaseLine currentBaseLine = baseLineList.get(bln);
+                BaseLine counterBaseLine = null;
+
+                //skip counters
+                if (currentBaseLine.productName.endsWith(PRODUCT_COUNTER_POSTFIX)) {
+                    continue;
+                }
+
+                //search for counter
+                BaseLine nextBaseLine;
+                if ((bln < baseLineList.size() - 2)
+                        && ((nextBaseLine = baseLineList.get(bln + 1)).productName.endsWith(PRODUCT_COUNTER_POSTFIX))) {
+                    counterBaseLine = nextBaseLine;
+                    counterRow = sheet.getRow(sheetRowNum + 1);
+                }
+
+                String productName = currentBaseLine.productName;
+                String groupName = currentBaseLine.groupName;
+
+                BigDecimal productCounter = null;
+                if (counterBaseLine != null) {
+                    productCounter = readNumericCell(counterRow.getCell(dateColumnMapping.paymentColumn));
+                    if (productCounter == null) {
+                        productCounter = readNumericCell(counterRow.getCell(dateColumnMapping.commissionColumn));
+                    }
+                }
+
+                BigDecimal paymentAmount = readNumericCell(row.getCell(dateColumnMapping.paymentColumn));
+                BigDecimal commissionAmount = readNumericCell(row.getCell(dateColumnMapping.commissionColumn));
+
+                content.add(new ExtPaymentDTO(
+                        productName,
+                        groupName,
+                        dateColumnMapping.periodDate,
+                        productCounter,
+                        paymentAmount,
+                        commissionAmount
+                ));
+            }
+        }
 
         return content;
     }

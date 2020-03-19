@@ -1,5 +1,6 @@
 package com.romanpulov.rainmentswss;
 
+import com.romanpulov.rainmentswss.dto.ExtPaymentDTO;
 import com.romanpulov.rainmentswss.transform.ExcelReadException;
 import com.romanpulov.rainmentswss.transform.ExcelReader;
 import org.apache.poi.ss.usermodel.*;
@@ -10,8 +11,12 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,7 +92,20 @@ public class ExcelReadTest {
 
     }
 
+    private ExtPaymentDTO getForDateAndProduct(List<ExtPaymentDTO> content, LocalDate date, String productName) {
+        Stream<ExtPaymentDTO> sp =
+                content.stream().filter(p ->
+                        p.getPaymentPeriodDate().equals(date) &&
+                                p.getProductName().equals(productName)
+                );
 
+        List<ExtPaymentDTO> lp = sp.collect(Collectors.toList());
+        Assertions.assertEquals(1, lp.size());
+
+        return lp.get(0);
+    }
+
+    @Test
     void testReaderContents() throws Exception {
         //no beans
         ExcelReader excelReader = new ExcelReader();
@@ -95,8 +113,46 @@ public class ExcelReadTest {
         try (InputStream in = new FileInputStream(TEST_FILE_NAME)) {
             excelReader.setInputStream(in);
             Sheet sheet = excelReader.readDataSheet();
-            List<ExcelReader.BaseLine> baseLineList = excelReader.readBaseLineList(sheet);
+            List<ExtPaymentDTO> content = excelReader.readContent(sheet);
 
+            Assertions.assertEquals(LocalDate.of(2016, 10, 1), content.get(0).getPaymentPeriodDate());
+
+            ExtPaymentDTO ep;
+
+            ep = getForDateAndProduct(
+                    content,
+                    LocalDate.of(2016, 10, 1),
+                    "Содержание домов и придомовых территорий"
+            );
+            Assertions.assertEquals(BigDecimal.valueOf(203.74), ep.getPaymentAmount());
+
+            ep = getForDateAndProduct(
+                    content,
+                    LocalDate.of(2016, 10, 1),
+                    "Электроэнергия"
+            );
+            Assertions.assertEquals(BigDecimal.valueOf(52.68), ep.getPaymentAmount());
+
+            ep = getForDateAndProduct(
+                    content,
+                    LocalDate.of(2018, 4, 1),
+                    "Горячая вода"
+            );
+            Assertions.assertEquals(BigDecimal.valueOf(47d), ep.getProductCounter());
+
+            ep = getForDateAndProduct(
+                    content,
+                    LocalDate.of(2018, 4, 1),
+                    "Газ"
+            );
+            Assertions.assertEquals(BigDecimal.valueOf(0.18), ep.getCommissionAmount());
+
+            ep = getForDateAndProduct(
+                    content,
+                    LocalDate.of(2018, 12, 1),
+                    "Домофон"
+            );
+            Assertions.assertEquals(BigDecimal.valueOf(237.6), ep.getPaymentAmount());
 
         }
     }
