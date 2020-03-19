@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,24 +20,22 @@ import java.util.List;
 public class ExcelReader {
     private static final String PRODUCT_COUNTER_POSTFIX = "счетчик";
 
-    private InputStream inputStream;
-
-    public void setInputStream(InputStream value) {
-        this.inputStream = value;
-    }
-
     DataFormatter formatter = new DataFormatter();
 
-    public Sheet readDataSheet() throws ExcelReadException {
+    public Sheet readDataSheet(InputStream inputStream) throws ExcelReadException {
         try (Workbook wb = WorkbookFactory.create(inputStream)) {
             try {
                 return wb.getSheetAt(0);
             } catch (IllegalArgumentException e) {
-                throw new ExcelReadException("Erro reading sheet:" + e.getMessage());
+                throw new ExcelReadException("Error reading sheet:" + e.getMessage());
             }
         } catch (IOException e) {
             throw new ExcelReadException(e.getMessage());
         }
+    }
+
+    public List<ExtPaymentDTO> readDataContent(InputStream inputStream) throws ExcelReadException {
+        return readSheetContent(readDataSheet(inputStream));
     }
 
     public static class BaseLine {
@@ -80,7 +77,7 @@ public class ExcelReader {
         }
     }
 
-    public List<BaseLine> readBaseLineList(Sheet sheet) {
+    public List<BaseLine> readSheetBaseLineList(Sheet sheet) {
         List<BaseLine> baseLineList = new ArrayList<>();
 
         boolean isFirstRow = true;
@@ -114,7 +111,7 @@ public class ExcelReader {
         return baseLineList;
     }
 
-    public List<DateColumnMapping> readDateColumnMapping(Sheet sheet) {
+    public List<DateColumnMapping> readSheetDateColumnMapping(Sheet sheet) {
         List<DateColumnMapping> columnMappings = new ArrayList<>();
 
         Row columnRow = sheet.getRow(0);
@@ -150,11 +147,11 @@ public class ExcelReader {
         }
     }
 
-    public List<ExtPaymentDTO> readContent(Sheet sheet) {
+    public List<ExtPaymentDTO> readSheetContent(Sheet sheet) {
         List<ExtPaymentDTO> content = new ArrayList<>();
 
-        List<BaseLine> baseLineList = readBaseLineList(sheet);
-        List<DateColumnMapping> dateColumnMappings = readDateColumnMapping(sheet);
+        List<BaseLine> baseLineList = readSheetBaseLineList(sheet);
+        List<DateColumnMapping> dateColumnMappings = readSheetDateColumnMapping(sheet);
 
         for (DateColumnMapping dateColumnMapping: dateColumnMappings) {
             int sheetRowNum = 0;

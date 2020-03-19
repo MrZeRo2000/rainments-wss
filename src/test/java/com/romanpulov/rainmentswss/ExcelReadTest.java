@@ -1,7 +1,6 @@
 package com.romanpulov.rainmentswss;
 
 import com.romanpulov.rainmentswss.dto.ExtPaymentDTO;
-import com.romanpulov.rainmentswss.transform.ExcelReadException;
 import com.romanpulov.rainmentswss.transform.ExcelReader;
 import org.apache.poi.ss.usermodel.*;
 import org.junit.jupiter.api.Assertions;
@@ -14,13 +13,10 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 public class ExcelReadTest {
     private static final String TEST_FILE_NAME = "data/Payments.xls";
@@ -66,9 +62,8 @@ public class ExcelReadTest {
         ExcelReader excelReader = new ExcelReader();
 
         try (InputStream in = new FileInputStream(TEST_FILE_NAME)) {
-            excelReader.setInputStream(in);
-            Sheet sheet = excelReader.readDataSheet();
-            List<ExcelReader.BaseLine> baseLineList = excelReader.readBaseLineList(sheet);
+            Sheet sheet = excelReader.readDataSheet(in);
+            List<ExcelReader.BaseLine> baseLineList = excelReader.readSheetBaseLineList(sheet);
             Assertions.assertEquals("Вывоз бытовых отходов", baseLineList.get(1).productName);
             Assertions.assertEquals(13, baseLineList.size());
             baseLineList.forEach(baseLine -> logger.info(baseLine.toString()));
@@ -81,9 +76,8 @@ public class ExcelReadTest {
         ExcelReader excelReader = new ExcelReader();
 
         try (InputStream in = new FileInputStream(TEST_FILE_NAME)) {
-            excelReader.setInputStream(in);
-            Sheet sheet = excelReader.readDataSheet();
-            List<ExcelReader.DateColumnMapping> columnMappings = excelReader.readDateColumnMapping(sheet);
+            Sheet sheet = excelReader.readDataSheet(in);
+            List<ExcelReader.DateColumnMapping> columnMappings = excelReader.readSheetDateColumnMapping(sheet);
 
             Assertions.assertEquals(LocalDate.of(2016, 10, 1), columnMappings.get(0).periodDate);
             Assertions.assertEquals(LocalDate.of(2020, 2, 1), columnMappings.get(columnMappings.size() - 1).periodDate);
@@ -111,9 +105,7 @@ public class ExcelReadTest {
         ExcelReader excelReader = new ExcelReader();
 
         try (InputStream in = new FileInputStream(TEST_FILE_NAME)) {
-            excelReader.setInputStream(in);
-            Sheet sheet = excelReader.readDataSheet();
-            List<ExtPaymentDTO> content = excelReader.readContent(sheet);
+            List<ExtPaymentDTO> content = excelReader.readDataContent(in);
 
             Assertions.assertEquals(LocalDate.of(2016, 10, 1), content.get(0).getPaymentPeriodDate());
 
