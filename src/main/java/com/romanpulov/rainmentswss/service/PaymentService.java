@@ -54,7 +54,6 @@ public class PaymentService {
         List<Payment> prevPeriodPayments =
                 this.paymentRepository.findByPaymentObjectIdAndPaymentPeriodDate(paymentObject, prevPeriodDate, Sort.unsorted());
 
-        int rowsAffected = 0;
         for (Payment prevPeriodPayment: prevPeriodPayments) {
             Payment newPayment = new Payment();
             newPayment.setPaymentDate(LocalDate.now());
@@ -67,11 +66,9 @@ public class PaymentService {
             newPayment.setCommissionAmount(BigDecimal.valueOf(0));
 
             this.paymentRepository.save(newPayment);
-
-            rowsAffected ++;
         }
 
-        return rowsAffected;
+        return prevPeriodPayments.size();
     }
 
 }
