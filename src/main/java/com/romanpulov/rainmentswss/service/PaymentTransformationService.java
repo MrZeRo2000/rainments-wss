@@ -8,11 +8,13 @@ import com.romanpulov.rainmentswss.entity.Product;
 import com.romanpulov.rainmentswss.repository.PaymentGroupRepository;
 import com.romanpulov.rainmentswss.repository.PaymentRepository;
 import com.romanpulov.rainmentswss.repository.ProductRepository;
+import com.romanpulov.rainmentswss.transform.ExcelReadException;
 import com.romanpulov.rainmentswss.transform.ExcelReader;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -40,18 +42,6 @@ public class PaymentTransformationService {
         this.productRepository = productRepository;
         this.paymentRepository = paymentRepository;
         this.excelReaderObjectProvider = excelReaderObjectProvider;
-    }
-
-    public Map<String, PaymentGroup> transformPaymentGroups(List<ExtPaymentDTO> data) {
-        Map<String, PaymentGroup> result = new HashMap<>();
-
-        return result;
-    }
-
-    public Map<String, Product> transformProducts(List<ExtPaymentDTO> data) {
-        Map<String, Product> result = new HashMap<>();
-
-        return result;
     }
 
     private PaymentGroup addPaymentGroup(String paymentGroupName) {
@@ -82,7 +72,6 @@ public class PaymentTransformationService {
         return result;
     }
 
-
     @Transactional
     public int transformExtData(PaymentObject paymentObject, List<ExtPaymentDTO> data) {
         int rowsAffected = 0;
@@ -110,6 +99,8 @@ public class PaymentTransformationService {
             newPayment.setPaymentDate(LocalDate.now());
             newPayment.setPaymentPeriodDate(p.getPaymentPeriodDate());
 
+            newPayment.setProductCounter(p.getProductCounter());
+
             newPayment.setPaymentAmount(p.getPaymentAmount() == null ? BigDecimal.ZERO : p.getPaymentAmount());
             newPayment.setCommissionAmount(p.getCommissionAmount() == null ? BigDecimal.ZERO : p.getCommissionAmount());
 
@@ -119,5 +110,11 @@ public class PaymentTransformationService {
         }
 
         return rowsAffected;
+    }
+
+    public int readAndTransformExcelStream(PaymentObject paymentObject, InputStream inputStream) throws ExcelReadException {
+        ExcelReader excelReader = excelReaderObjectProvider.getObject();
+        List<ExtPaymentDTO> excelContent = excelReader.readDataContent(inputStream);
+        return transformExtData(paymentObject, excelContent);
     }
 }
