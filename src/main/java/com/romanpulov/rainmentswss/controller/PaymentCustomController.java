@@ -12,6 +12,8 @@ import com.romanpulov.rainmentswss.repository.PaymentObjectRepository;
 import com.romanpulov.rainmentswss.repository.PaymentRepository;
 import com.romanpulov.rainmentswss.repository.ProductRepository;
 import com.romanpulov.rainmentswss.service.PaymentService;
+import com.romanpulov.rainmentswss.service.PaymentTransformationService;
+import com.romanpulov.rainmentswss.transform.ExcelReadException;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -20,7 +22,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,6 +48,8 @@ public class PaymentCustomController extends BaseRestController<Payment, Payment
 
     private final PaymentService paymentService;
 
+    private final PaymentTransformationService paymentTransformationService;
+
     public PaymentCustomController(
             PaymentRepository repository,
             EntityDTOMapper<Payment, PaymentDTO> mapper,
@@ -53,7 +59,8 @@ public class PaymentCustomController extends BaseRestController<Payment, Payment
             PaymentObjectDTOMapper paymentObjectDTOMapper,
             PaymentGroupDTOMapper paymentGroupDTOMapper,
             ProductDTOMapper productDTOMapper,
-            PaymentService paymentService
+            PaymentService paymentService,
+            PaymentTransformationService paymentTransformationService
     ) {
         super(repository, mapper, LoggerFactory.getLogger(PaymentController.class));
         this.paymentRepository = repository;
@@ -64,6 +71,7 @@ public class PaymentCustomController extends BaseRestController<Payment, Payment
         this.paymentGroupDTOMapper = paymentGroupDTOMapper;
         this.productDTOMapper = productDTOMapper;
         this.paymentService = paymentService;
+        this.paymentTransformationService = paymentTransformationService;
     }
 
     @GetMapping("/payments:refs")
@@ -141,5 +149,22 @@ public class PaymentCustomController extends BaseRestController<Payment, Payment
         int rowsAffected = this.paymentService.duplicatePreviousPeriod(paymentObject, paymentPeriodDate);
 
         return ResponseEntity.ok(new RowsAffectedDTO(rowsAffected));
+    }
+
+    @PostMapping("/payments:import_excel")
+    ResponseEntity<RowsAffectedDTO> importExcelFile(
+            @RequestParam("payment_object") PaymentObjectDTO paymentObjectDTO,
+            @RequestParam("file") MultipartFile file
+    )  throws ExcelReadException {
+        PaymentObject paymentObject = paymentObjectDTOMapper.dtoTOEntity(paymentObjectDTO);
+        try {
+            int rowsAffected = paymentTransformationService.readAndTransformExcelStream(
+                    paymentObject,
+                    file.getInputStream()
+            );
+            return ResponseEntity.ok(new RowsAffectedDTO(rowsAffected));
+        } catch (IOException e) {
+            throw new ExcelReadException("Error reading file: " + e.getMessage());
+        }
     }
 }
