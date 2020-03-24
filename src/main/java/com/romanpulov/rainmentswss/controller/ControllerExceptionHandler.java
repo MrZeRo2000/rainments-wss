@@ -25,7 +25,7 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler(ExcelReadException.class)
-    public ResponseEntity<ErrorResponseDTO> handleExcelRead(BadPatchRequestException ex, HttpServletRequest request) {
+    public ResponseEntity<ErrorResponseDTO> handleExcelRead(ExcelReadException ex, HttpServletRequest request) {
         return new ResponseEntity<>(new ErrorResponseDTO(ex.getMessage(), request.getRequestURI()), HttpStatus.BAD_REQUEST);
     }
 

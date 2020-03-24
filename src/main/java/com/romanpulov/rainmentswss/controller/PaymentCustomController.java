@@ -17,11 +17,9 @@ import com.romanpulov.rainmentswss.transform.ExcelReadException;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -151,10 +149,10 @@ public class PaymentCustomController extends BaseRestController<Payment, Payment
         return ResponseEntity.ok(new RowsAffectedDTO(rowsAffected));
     }
 
-    @PostMapping("/payments:import_excel")
+    @PostMapping(value="/payments:import_excel")
     ResponseEntity<RowsAffectedDTO> importExcelFile(
-            @RequestParam("payment_object") PaymentObjectDTO paymentObjectDTO,
-            @RequestParam("file") MultipartFile file
+            @RequestPart("payment_object") PaymentObjectDTO paymentObjectDTO,
+            @RequestPart("file") MultipartFile file
     )  throws ExcelReadException {
         PaymentObject paymentObject = paymentObjectDTOMapper.dtoTOEntity(paymentObjectDTO);
         try {
