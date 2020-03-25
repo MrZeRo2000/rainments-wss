@@ -20,7 +20,7 @@ sourceCompatibility = '1.8'
 
 repositories {
 	jcenter()
-	//mavenCentral()
+	mavenLocal()
 }
 
 dependencies {
@@ -28,6 +28,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.xerial:sqlite-jdbc:3.7.2'
 	implementation 'org.apache.poi:poi:4.1.2'
+	implementation 'com.romanpulov:jutils-core:0.2'
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
