@@ -19,6 +19,10 @@ rainments-int.db
 ### Initial data
 db/initial
 
+### Backups
+db/database/backup
+
+
 ### Log files
 logs/*.log
 logs/*log*.gz
