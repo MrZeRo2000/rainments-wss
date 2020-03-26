@@ -23,6 +23,15 @@ public class DBConfig {
     }
 
     @Bean
+    public DBFileInfo dbFileInfo() {
+        String dbUrl = context.getInitParameter("db-url");
+        String dbFileName = dbUrl.split(":")[2];
+        String dbBackupPath =  context.getInitParameter("db-backup-path");
+
+        return new DBFileInfo(dbFileName, dbBackupPath);
+    }
+
+    @Bean
     public DataSource dataSource() {
         final DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName(Objects.requireNonNull(env.getProperty("driverClassName")));
