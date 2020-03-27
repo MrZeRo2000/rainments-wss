@@ -20,7 +20,9 @@ sourceCompatibility = '1.8'
 
 repositories {
 	jcenter()
-	mavenLocal()
+	maven {
+		url "https://dl.bintray.com/mrzero2000/maven"
+	}
 }
 
 dependencies {
