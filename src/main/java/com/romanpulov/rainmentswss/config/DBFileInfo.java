@@ -3,10 +3,12 @@ package com.romanpulov.rainmentswss.config;
 public class DBFileInfo {
     private final String dbFileName;
     private final String dbBackupPath;
+    private final String backupFileName;
 
-    public DBFileInfo(String dbFileName, String dbBackupPath) {
+    public DBFileInfo(String dbFileName, String dbBackupPath, String backupFileName) {
         this.dbFileName = dbFileName;
         this.dbBackupPath = dbBackupPath;
+        this.backupFileName = backupFileName;
     }
 
     public String getDBFileName() {
@@ -16,4 +18,9 @@ public class DBFileInfo {
     public String getDBBackupPath() {
         return dbBackupPath;
     }
+
+    public String getBackupFileName() {
+        return backupFileName;
+    }
 }
+

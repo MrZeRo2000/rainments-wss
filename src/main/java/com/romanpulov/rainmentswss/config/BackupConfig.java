@@ -19,6 +19,6 @@ public class BackupConfig {
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public BackupUtils backupUtils() {
-        return new BackupUtils(dbFileInfo.getDBFileName(), dbFileInfo.getDBBackupPath(), "rainments-db-backup");
+        return new BackupUtils(dbFileInfo.getDBFileName(), dbFileInfo.getDBBackupPath(), dbFileInfo.getBackupFileName());
     }
 }

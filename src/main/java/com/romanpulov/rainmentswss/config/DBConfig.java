@@ -12,32 +12,41 @@ import javax.sql.DataSource;
 import java.util.Objects;
 
 @Configuration
-@PropertySource("classpath:db.properties")
 public class DBConfig {
-    private final Environment env;
-    private final ServletContext context;
 
-    public DBConfig(@Autowired Environment env, @Autowired ServletContext context) {
-        this.env = env;
+    private final ServletContext context;
+    private final DBProperties dbProperties;
+
+    @Autowired
+    public DBConfig(ServletContext context, DBProperties dbProperties) {
         this.context = context;
+        this.dbProperties = dbProperties;
+    }
+
+    private String getUrl() {
+        return context.getInitParameter("db-url");
+    }
+
+    private String getBackupPath() {
+        return context.getInitParameter("db-backup-path");
     }
 
     @Bean
     public DBFileInfo dbFileInfo() {
-        String dbUrl = context.getInitParameter("db-url");
+        String dbUrl = getUrl();
         String dbFileName = dbUrl.split(":")[2];
-        String dbBackupPath =  context.getInitParameter("db-backup-path");
+        String dbBackupPath =  getBackupPath();
 
-        return new DBFileInfo(dbFileName, dbBackupPath);
+        return new DBFileInfo(dbFileName, dbBackupPath, dbProperties.getBackupFileName());
     }
 
     @Bean
     public DataSource dataSource() {
         final DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(Objects.requireNonNull(env.getProperty("driverClassName")));
-        dataSource.setUrl(context.getInitParameter("db-url"));
-        dataSource.setUsername(env.getProperty("username"));
-        dataSource.setPassword(env.getProperty("password"));
+        dataSource.setDriverClassName(Objects.requireNonNull(dbProperties.getDriverClassName()));
+        dataSource.setUrl(getUrl());
+        dataSource.setUsername(dbProperties.getUserName());
+        dataSource.setPassword(dbProperties.getPassword());
         return dataSource;
     }
 }
