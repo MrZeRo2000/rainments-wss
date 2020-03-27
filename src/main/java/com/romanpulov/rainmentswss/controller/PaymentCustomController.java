@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-public class PaymentCustomController extends BaseRestController<Payment, PaymentDTO> {
+public class PaymentCustomController {
 
     private final PaymentRepository paymentRepository;
 
@@ -48,6 +48,8 @@ public class PaymentCustomController extends BaseRestController<Payment, Payment
 
     private final PaymentTransformationService paymentTransformationService;
 
+    protected final EntityDTOMapper<Payment, PaymentDTO> mapper;
+
     public PaymentCustomController(
             PaymentRepository repository,
             EntityDTOMapper<Payment, PaymentDTO> mapper,
@@ -60,8 +62,8 @@ public class PaymentCustomController extends BaseRestController<Payment, Payment
             PaymentService paymentService,
             PaymentTransformationService paymentTransformationService
     ) {
-        super(repository, mapper, LoggerFactory.getLogger(PaymentController.class));
         this.paymentRepository = repository;
+        this.mapper = mapper;
         this.paymentObjectRepository = paymentObjectRepository;
         this.paymentGroupRepository = paymentGroupRepository;
         this.productRepository = productRepository;
