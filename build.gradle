@@ -48,7 +48,7 @@ ext {
 }
 
 tasks.register("deploy") {
-	dependsOn 'war'
+	dependsOn 'bootWar'
 	copy {
 		from "build/libs"
 		into tomcat_webapps
@@ -57,7 +57,7 @@ tasks.register("deploy") {
 }
 
 tasks.register("deployInt") {
-	dependsOn 'war'
+	dependsOn 'bootWar'
 	copy {
 		from "build/libs"
 		into tomcat_webapps
