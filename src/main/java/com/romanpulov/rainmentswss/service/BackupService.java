@@ -1,6 +1,7 @@
 package com.romanpulov.rainmentswss.service;
 
 import com.romanpulov.jutilscore.storage.BackupUtils;
+import com.romanpulov.rainmentswss.dto.BackupDatabaseInfoDTO;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,22 +28,22 @@ public class BackupService {
         return backupUtils.createRollingLocalBackup();
     }
 
-    public LocalDateTime getLastModifiedBackupFileDateTime() {
+    public BackupDatabaseInfoDTO getBackupDatabaseInfo() {
         BackupUtils backupUtils = backupUtilsObjectProvider.getObject();
+        int backupFileCount = 0;
+        LocalDateTime lastBackupDateTime = null;
 
         File[] backupFiles = backupUtils.getBackupFiles();
-        if (backupFiles != null) {
+        if ((backupFiles != null) && ((backupFileCount = backupFiles.length) > 0)) {
             List<File> fileList = Arrays.asList(backupUtils.getBackupFiles());
             Optional<Long> lastModified = fileList.stream().map(File::lastModified).max(Long::compareTo);
 
             if (lastModified.isPresent()) {
                 Date lastModifiedDate = new Date(lastModified.get());
-                return lastModifiedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-            } else {
-                return null;
+                lastBackupDateTime = lastModifiedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
             }
-        } else {
-            return null;
         }
+
+        return new BackupDatabaseInfoDTO(lastBackupDateTime, backupFileCount);
     }
 }
