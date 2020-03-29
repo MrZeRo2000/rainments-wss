@@ -9,6 +9,7 @@ import org.springframework.core.env.Environment;
 
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
+import java.util.Arrays;
 import java.util.Objects;
 
 @Configuration
@@ -34,7 +35,9 @@ public class DBConfig {
     @Bean
     public DBFileInfo dbFileInfo() {
         String dbUrl = getUrl();
-        String dbFileName = dbUrl.split(":")[2];
+        String[] splitDBUrl = dbUrl.split(":");
+        String[] dbFileNameArray = Arrays.copyOfRange(splitDBUrl, 2, splitDBUrl.length);
+        String dbFileName = String.join(":", dbFileNameArray);
         String dbBackupPath =  getBackupPath();
 
         return new DBFileInfo(dbFileName, dbBackupPath, dbProperties.getBackupFileName());
