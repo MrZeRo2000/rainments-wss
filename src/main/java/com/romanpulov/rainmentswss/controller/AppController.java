@@ -21,7 +21,7 @@ public class AppController {
     }
 
     @GetMapping("/app:backup_database_info")
-    ResponseEntity<BackupDatabaseInfoDTO> getLastBackupDateTime() throws NotFoundException {
+    ResponseEntity<BackupDatabaseInfoDTO> getBackupDatabaseInfo() throws NotFoundException {
         return ResponseEntity.ok(backupService.getBackupDatabaseInfo());
     }
 
