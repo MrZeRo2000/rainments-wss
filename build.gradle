@@ -15,7 +15,7 @@ bootWar {
 }
 
 group = 'com.romanpulov'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.2'
 sourceCompatibility = '1.8'
 
 repositories {
@@ -63,5 +63,14 @@ tasks.register("deployInt") {
 		into tomcat_webapps
 		include file_name
 		rename file_name, file_name_int
+	}
+}
+
+tasks.register("deployProd") {
+	dependsOn 'bootWar'
+	copy {
+		from "build/libs"
+		into tomcat_webapps
+		include file_name
 	}
 }
