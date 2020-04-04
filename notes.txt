@@ -17,12 +17,19 @@ Configure debug execution:
   CORS setup for TomCat:
     web.xml.cors
 
+Run one test only:
+  gradlew test --tests *DataGeneratorTest
+
 Build and deploy to local Tomcat:
   gradlew clean build deploy
 
 Build and deploy Int version:
-  gradlew build deployInt
+  gradlew build
+  gradlew deployInt
   copy rainments-int-wss.xml
 
-Run one test only:
-  gradlew test --tests *DataGeneratorTest
+Build and deploy Prod version:
+  gradlew build 
+  gradlew deployProd
+  copy rainments-wss.xml
+
