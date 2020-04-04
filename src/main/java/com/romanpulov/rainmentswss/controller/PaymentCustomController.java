@@ -153,10 +153,13 @@ public class PaymentCustomController {
 
     @PostMapping(value="/payments:import_excel")
     ResponseEntity<RowsAffectedDTO> importExcelFile(
-            @RequestPart("payment_object") PaymentObjectDTO paymentObjectDTO,
+            @RequestPart("paymentObjectId")
+                    Long paymentObjectId,
             @RequestPart("file") MultipartFile file
     )  throws ExcelReadException {
-        PaymentObject paymentObject = paymentObjectDTOMapper.dtoTOEntity(paymentObjectDTO);
+        PaymentObject paymentObject = new PaymentObject();
+        paymentObject.setId(paymentObjectId);
+
         try {
             int rowsAffected = paymentTransformationService.readAndTransformExcelStream(
                     paymentObject,
