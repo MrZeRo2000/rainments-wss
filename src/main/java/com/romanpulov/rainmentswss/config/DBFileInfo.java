@@ -1,6 +1,7 @@
 package com.romanpulov.rainmentswss.config;
 
 public class DBFileInfo {
+
     private final String dbFileName;
     private final String dbBackupPath;
     private final String backupFileName;
@@ -21,6 +22,15 @@ public class DBFileInfo {
 
     public String getBackupFileName() {
         return backupFileName;
+    }
+
+    @Override
+    public String toString() {
+        return "DBFileInfo{" +
+                "dbFileName='" + dbFileName + '\'' +
+                ", dbBackupPath='" + dbBackupPath + '\'' +
+                ", backupFileName='" + backupFileName + '\'' +
+                '}';
     }
 }
 

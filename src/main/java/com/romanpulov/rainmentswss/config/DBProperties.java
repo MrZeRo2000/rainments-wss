@@ -44,4 +44,14 @@ public class DBProperties {
     public void setBackupFileName(String backupFileName) {
         this.backupFileName = backupFileName;
     }
+
+    @Override
+    public String toString() {
+        return "DBProperties{" +
+                "driverClassName='" + driverClassName + '\'' +
+                ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
+                ", backupFileName='" + backupFileName + '\'' +
+                '}';
+    }
 }
