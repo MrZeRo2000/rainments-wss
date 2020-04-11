@@ -19,9 +19,12 @@ import org.springframework.data.domain.Sort;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -216,5 +219,33 @@ public class RepositoryPaymentTests {
 
         //deleting orphaned object should work
         paymentObjectRepository.delete(orphanedPaymentObject);
+
+        //testing payment group change
+        List<Payment> paymentList = new ArrayList<>();
+        paymentRepository.findAll().forEach(paymentList::add);
+
+        Assertions.assertTrue(paymentList.size() > 0);
+        PaymentGroup fromPaymentGroup = paymentList.get(0).getPaymentGroup();
+        PaymentObject fromPaymentObject = paymentList.get(0).getPaymentObject();
+
+        List<Payment> paymentListOldPaymentGroup =
+        paymentList.stream().filter(payment -> payment.getPaymentGroup().equals(fromPaymentGroup) && payment.getPaymentObject().equals(fromPaymentObject)).collect(Collectors.toList());
+        Assertions.assertTrue(paymentListOldPaymentGroup.size() > 0);
+
+        PaymentGroup toPaymentGroup = new PaymentGroup();
+        toPaymentGroup.setName("To payment group");
+        toPaymentGroup = paymentGroupRepository.save(toPaymentGroup);
+        Assertions.assertNotNull(toPaymentGroup.getId());
+
+        rows = paymentService.updatePaymentGroup(fromPaymentObject, fromPaymentGroup, toPaymentGroup);
+        Assertions.assertEquals(rows, paymentListOldPaymentGroup.size());
+
+        final PaymentGroup testToPaymentGroup = toPaymentGroup;
+        List<Payment> updatedPaymentList = new ArrayList<>();
+        paymentRepository.findAll().forEach(updatedPaymentList::add);
+
+        List<Payment> paymentListNewPaymentGroup =
+                updatedPaymentList.stream().filter(payment -> payment.getPaymentGroup().equals(testToPaymentGroup) && payment.getPaymentObject().equals(fromPaymentObject)).collect(Collectors.toList());
+        Assertions.assertEquals(paymentListNewPaymentGroup.size(), paymentListOldPaymentGroup.size());
     }
 }

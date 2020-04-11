@@ -1,6 +1,7 @@
 package com.romanpulov.rainmentswss.repository;
 
 import com.romanpulov.rainmentswss.entity.Payment;
+import com.romanpulov.rainmentswss.entity.PaymentGroup;
 import com.romanpulov.rainmentswss.entity.PaymentObject;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Modifying;
@@ -54,4 +55,17 @@ public interface PaymentRepository extends PagingAndSortingRepository<Payment, L
             @Param("payment_date")
                     LocalDate paymentDate);
 
+    @Modifying(clearAutomatically = true)
+    @Query("UPDATE Payment p SET p.paymentGroup = :paymentGroupTo WHERE p.paymentObject = :paymentObject AND p.paymentGroup = :paymentGroupFrom")
+    int updatePaymentGroup(
+            @NonNull
+            @Param("paymentObject")
+            PaymentObject paymentObject,
+            @NonNull
+            @Param("paymentGroupFrom")
+            PaymentGroup paymentGroupFrom,
+            @NonNull
+            @Param("paymentGroupTo")
+            PaymentGroup paymentGroupTo
+    );
 }

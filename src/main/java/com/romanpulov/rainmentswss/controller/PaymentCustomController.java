@@ -2,6 +2,7 @@ package com.romanpulov.rainmentswss.controller;
 
 import com.romanpulov.rainmentswss.dto.*;
 import com.romanpulov.rainmentswss.entity.Payment;
+import com.romanpulov.rainmentswss.entity.PaymentGroup;
 import com.romanpulov.rainmentswss.entity.PaymentObject;
 import com.romanpulov.rainmentswss.entitymapper.EntityDTOMapper;
 import com.romanpulov.rainmentswss.entitymapper.PaymentGroupDTOMapper;
@@ -168,5 +169,45 @@ public class PaymentCustomController {
         } catch (IOException e) {
             throw new ExcelReadException("Error reading file: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/payments:payment_object_group_refs")
+    ResponseEntity<PaymentObjectGroupRefsDTO> getPaymentObjectGroupRefs() {
+
+        List<PaymentObjectDTO> paymentObjectList = paymentObjectRepository
+                .findAllByOrderByIdAsc()
+                .stream()
+                .map(paymentObjectDTOMapper::entityToDTO)
+                .collect(Collectors.toList());
+
+        List<PaymentGroupDTO> paymentGroupList = paymentGroupRepository
+                .findAllByOrderByIdAsc()
+                .stream()
+                .map(paymentGroupDTOMapper::entityToDTO)
+                .collect(Collectors.toList());
+
+        PaymentObjectGroupRefsDTO result = new PaymentObjectGroupRefsDTO(
+                paymentObjectList,
+                paymentGroupList
+        );
+
+        return ResponseEntity.ok(result);
+    }
+
+    @PostMapping(value="/payments:update_payment_group")
+    ResponseEntity<RowsAffectedDTO> updatePaymentGroup (
+            @RequestParam("paymentObject")
+            PaymentObjectDTO paymentObjectDTO,
+            @RequestParam("paymentGroupFrom")
+            PaymentGroupDTO paymentGroupFromDTO,
+            @RequestParam("paymentGroupTo")
+            PaymentGroupDTO paymentGroupToDTO
+    ) {
+        PaymentObject paymentObject = paymentObjectDTOMapper.dtoTOEntity(paymentObjectDTO);
+        PaymentGroup paymentGroupFrom = paymentGroupDTOMapper.dtoTOEntity(paymentGroupFromDTO);
+        PaymentGroup paymentGroupTo = paymentGroupDTOMapper.dtoTOEntity(paymentGroupToDTO);
+
+        int rowsAffected = paymentService.updatePaymentGroup(paymentObject, paymentGroupFrom, paymentGroupTo);
+        return ResponseEntity.ok(new RowsAffectedDTO(rowsAffected));
     }
 }

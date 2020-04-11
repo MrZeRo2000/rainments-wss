@@ -1,6 +1,7 @@
 package com.romanpulov.rainmentswss.service;
 
 import com.romanpulov.rainmentswss.entity.Payment;
+import com.romanpulov.rainmentswss.entity.PaymentGroup;
 import com.romanpulov.rainmentswss.entity.PaymentObject;
 import com.romanpulov.rainmentswss.repository.PaymentRepository;
 import org.springframework.data.domain.Sort;
@@ -39,6 +40,11 @@ public class PaymentService {
             commissionAmount = BigDecimal.valueOf(0L);
         }
         return this.paymentRepository.updateCommissionAmount(paymentId, commissionAmount, paymentDate);
+    }
+
+    @Transactional
+    public int updatePaymentGroup(PaymentObject paymentObject, PaymentGroup paymentGroupFrom, PaymentGroup paymentGroupTo) {
+        return this.paymentRepository.updatePaymentGroup(paymentObject, paymentGroupFrom, paymentGroupTo);
     }
 
     public int duplicatePreviousPeriod(PaymentObject paymentObject, LocalDate paymentPeriodDate) {
