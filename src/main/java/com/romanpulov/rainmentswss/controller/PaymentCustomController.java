@@ -196,16 +196,22 @@ public class PaymentCustomController {
 
     @PostMapping(value="/payments:update_payment_group")
     ResponseEntity<RowsAffectedDTO> updatePaymentGroup (
-            @RequestParam("paymentObject")
-            PaymentObjectDTO paymentObjectDTO,
-            @RequestParam("paymentGroupFrom")
-            PaymentGroupDTO paymentGroupFromDTO,
-            @RequestParam("paymentGroupTo")
-            PaymentGroupDTO paymentGroupToDTO
+            @RequestParam("paymentObjectId")
+            Long paymentObjectId,
+            @RequestParam("paymentGroupFromId")
+            Long paymentGroupFromId,
+            @RequestParam("paymentGroupToId")
+            Long paymentGroupToId
     ) {
-        PaymentObject paymentObject = paymentObjectDTOMapper.dtoTOEntity(paymentObjectDTO);
-        PaymentGroup paymentGroupFrom = paymentGroupDTOMapper.dtoTOEntity(paymentGroupFromDTO);
-        PaymentGroup paymentGroupTo = paymentGroupDTOMapper.dtoTOEntity(paymentGroupToDTO);
+
+        PaymentObject paymentObject = new PaymentObject();
+        paymentObject.setId(paymentObjectId);
+
+        PaymentGroup paymentGroupFrom = new PaymentGroup();
+        paymentGroupFrom.setId(paymentGroupFromId);
+
+        PaymentGroup paymentGroupTo = new PaymentGroup();
+        paymentGroupTo.setId(paymentGroupToId);
 
         int rowsAffected = paymentService.updatePaymentGroup(paymentObject, paymentGroupFrom, paymentGroupTo);
         return ResponseEntity.ok(new RowsAffectedDTO(rowsAffected));
