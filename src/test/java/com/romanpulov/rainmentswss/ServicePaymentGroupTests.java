@@ -1,7 +1,7 @@
 package com.romanpulov.rainmentswss;
 
 import com.romanpulov.rainmentswss.entity.PaymentGroup;
-import com.romanpulov.rainmentswss.repository.PaymentGroupRepository;
+import com.romanpulov.rainmentswss.service.PaymentGroupService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +13,9 @@ import java.util.logging.Logger;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class RepositoryPaymentGroupTests {
+public class ServicePaymentGroupTests {
 
-    private static final Logger log = Logger.getLogger(RepositoryPaymentGroupTests.class.getName());
+    private static final Logger log = Logger.getLogger(ServicePaymentGroupTests.class.getName());
 
     @BeforeAll
     static void prepareTestDB() {
@@ -23,35 +23,35 @@ public class RepositoryPaymentGroupTests {
     }
 
     @Autowired
-    private PaymentGroupRepository paymentGroupRepository;
+    private PaymentGroupService paymentGroupService;
 
     @Test
     void mainTest() {
         Iterable<PaymentGroup> paymentGroups;
 
-        paymentGroups = paymentGroupRepository.findAllByOrderByOrderIdAscIdAsc();
+        paymentGroups = paymentGroupService.findAll();
         assertThat(paymentGroups).isNotNull();
 
         String newGroupName = "New group name";
         PaymentGroup newPaymentGroup = new PaymentGroup();
         newPaymentGroup.setName(newGroupName);
-        newPaymentGroup = paymentGroupRepository.save(newPaymentGroup);
+        newPaymentGroup = paymentGroupService.save(newPaymentGroup);
 
         assertThat(newPaymentGroup.getId()).isGreaterThan(0);
 
-        List<PaymentGroup> findByName = paymentGroupRepository.findByName(newGroupName);
+        List<PaymentGroup> findByName = paymentGroupService.findByName(newGroupName);
         assertThat(findByName.size()).isEqualTo(1);
 
-        List<PaymentGroup> findByName2 = paymentGroupRepository.findByName(newGroupName + "added");
+        List<PaymentGroup> findByName2 = paymentGroupService.findByName(newGroupName + "added");
         assertThat(findByName2.size()).isEqualTo(0);
 
         // check order
-        List<PaymentGroup> paymentGroupList = paymentGroupRepository.findAllByOrderByOrderIdAsc();
+        List<PaymentGroup> paymentGroupList = paymentGroupService.findAllByOrderByOrderIdAsc();
         PaymentGroup paymentGroupOrdered = paymentGroupList.get(0);
         paymentGroupOrdered.setOrderId(1L);
-        paymentGroupRepository.save(paymentGroupOrdered);
+        paymentGroupService.save(paymentGroupOrdered);
 
-        paymentGroupList = paymentGroupRepository.findAllByOrderByOrderIdAsc();
+        paymentGroupList = paymentGroupService.findAllByOrderByOrderIdAsc();
         assertThat(paymentGroupList.get(0).getOrderId()).isEqualTo(paymentGroupOrdered.getOrderId());
 
     }

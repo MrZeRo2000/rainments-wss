@@ -36,7 +36,7 @@ public class PaymentObject extends CommonEntitySuperclass implements CommonEntit
     }
 
     @OneToMany(mappedBy = "paymentObject", fetch = FetchType.LAZY)
-    private Set<Payment> payments = new HashSet<>();
+    private final Set<Payment> payments = new HashSet<>();
 
     @PreRemove
     private void preRemove() {

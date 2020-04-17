@@ -1,6 +1,5 @@
 package com.romanpulov.rainmentswss;
 
-import com.romanpulov.rainmentswss.controller.EntityNotFoundException;
 import com.romanpulov.rainmentswss.entity.PaymentObject;
 import com.romanpulov.rainmentswss.repository.PaymentObjectRepository;
 import org.junit.jupiter.api.Assertions;

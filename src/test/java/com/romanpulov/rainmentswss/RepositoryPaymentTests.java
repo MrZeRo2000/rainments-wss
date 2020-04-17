@@ -16,14 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Sort;
 
-import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.*;
@@ -196,19 +194,13 @@ public class RepositoryPaymentTests {
         assertThat(updatedPayment.get().getCommissionAmount()).isEqualTo(newCommissionAmountValue);
 
         //delete parent entity custom handling
-        Assertions.assertThrows(RuntimeException.class, ()->{
-            paymentObjectRepository.deleteAll();
-        });
+        Assertions.assertThrows(RuntimeException.class, ()-> paymentObjectRepository.deleteAll());
 
         //delete parent entity custom handling
-        Assertions.assertThrows(RuntimeException.class, ()->{
-            paymentGroupRepository.deleteAll();
-        });
+        Assertions.assertThrows(RuntimeException.class, ()-> paymentGroupRepository.deleteAll());
 
         //delete parent entity custom handling
-        Assertions.assertThrows(RuntimeException.class, ()->{
-            productRepository.deleteAll();
-        });
+        Assertions.assertThrows(RuntimeException.class, ()-> productRepository.deleteAll());
 
         PaymentObject paymentObject = new PaymentObject();
         paymentObject.setName("Orphaned payment object");

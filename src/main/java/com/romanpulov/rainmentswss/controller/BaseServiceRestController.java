@@ -2,23 +2,23 @@ package com.romanpulov.rainmentswss.controller;
 
 import com.romanpulov.rainmentswss.entity.CommonEntity;
 import com.romanpulov.rainmentswss.entitymapper.EntityDTOMapper;
-import org.springframework.data.repository.CrudRepository;
+import com.romanpulov.rainmentswss.service.EntityService;
+import org.slf4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class BaseRestController<E extends CommonEntity, D> {
+public class BaseServiceRestController<E extends CommonEntity, D> {
+
+    protected final EntityService<E> entityService;
+    protected final EntityDTOMapper<E, D> mapper;
     protected final Logger logger;
 
-    protected final CrudRepository<E, Long> repository;
-    protected final EntityDTOMapper<E, D> mapper;
-
-    public BaseRestController(CrudRepository<E, Long> repository, EntityDTOMapper<E, D> mapper, Logger logger) {
-        this.repository = repository;
+    public BaseServiceRestController(EntityService<E> entityService, EntityDTOMapper<E, D> mapper, Logger logger) {
+        this.entityService = entityService;
         this.mapper = mapper;
         this.logger = logger;
     }
@@ -26,7 +26,7 @@ public class BaseRestController<E extends CommonEntity, D> {
     @GetMapping
     ResponseEntity<List<D>> all() {
         List<D> result = new ArrayList<>();
-        this.repository.findAll().forEach(paymentObject -> result.add(mapper.entityToDTO(paymentObject)));
+        this.entityService.findAll().forEach(paymentObject -> result.add(mapper.entityToDTO(paymentObject)));
 
         return ResponseEntity.ok(result);
     }
@@ -34,17 +34,17 @@ public class BaseRestController<E extends CommonEntity, D> {
     @PostMapping
     ResponseEntity<D> post(@RequestBody D dto) {
         E entity = mapper.dtoTOEntity(dto);
-        E newEntity = repository.save(entity);
+        E newEntity = entityService.save(entity);
         return ResponseEntity.ok(mapper.entityToDTO(newEntity));
     }
 
     @PutMapping("/{id}")
     ResponseEntity<D> put(@PathVariable Long id, @RequestBody D dto) throws EntityNotFoundException {
-        Optional<E> entity = repository.findById(id);
+        Optional<E> entity = entityService.findById(id);
         if (entity.isPresent()) {
             E updatedEntity = mapper.dtoTOEntity(dto);
             updatedEntity.setId(id);
-            E newPaymentObject = repository.save(updatedEntity);
+            E newPaymentObject = entityService.save(updatedEntity);
             return ResponseEntity.ok(mapper.entityToDTO(newPaymentObject));
         } else {
             logger.error("Entity with id=" + id + " does not exist");
@@ -54,13 +54,12 @@ public class BaseRestController<E extends CommonEntity, D> {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable Long id) throws EntityNotFoundException {
-        if (repository.findById(id).isPresent()) {
-            repository.deleteById(id);
+        if (entityService.findById(id).isPresent()) {
+            entityService.deleteById(id);
             return ResponseEntity.ok().build();
         } else {
             logger.error("Entity with id=" + id + " does not exist");
             throw new EntityNotFoundException(id);
         }
     }
-
 }

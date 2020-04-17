@@ -7,7 +7,6 @@ import com.romanpulov.rainmentswss.entity.Payment;
 import com.romanpulov.rainmentswss.entitymapper.EntityDTOMapper;
 import com.romanpulov.rainmentswss.service.PaymentService;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,16 +16,15 @@ import java.time.LocalDate;
 
 @RestController
 @RequestMapping(value = "/payments", produces = MediaType.APPLICATION_JSON_VALUE)
-public class PaymentController extends BaseRestController<Payment, PaymentDTO> {
+public class PaymentController extends BaseServiceRestController<Payment, PaymentDTO> {
 
     private final PaymentService paymentService;
 
     public PaymentController(
-            CrudRepository<Payment, Long> repository,
             PaymentService paymentService,
             EntityDTOMapper<Payment, PaymentDTO> mapper
             ) {
-        super(repository, mapper, LoggerFactory.getLogger(PaymentController.class));
+        super(paymentService, mapper, LoggerFactory.getLogger(PaymentController.class));
         this.paymentService = paymentService;
     }
 

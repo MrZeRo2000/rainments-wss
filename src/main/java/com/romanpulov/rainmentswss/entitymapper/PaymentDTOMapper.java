@@ -4,15 +4,12 @@ import com.romanpulov.rainmentswss.dto.PaymentDTO;
 import com.romanpulov.rainmentswss.entity.Payment;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
 @Component
 public class PaymentDTOMapper implements EntityDTOMapper<Payment, PaymentDTO> {
 
-    private PaymentObjectDTOMapper paymentObjectDTOMapper;
-    private PaymentGroupDTOMapper paymentGroupDTOMapper;
-    private ProductDTOMapper productDTOMapper;
+    private final PaymentObjectDTOMapper paymentObjectDTOMapper;
+    private final PaymentGroupDTOMapper paymentGroupDTOMapper;
+    private final ProductDTOMapper productDTOMapper;
 
     public PaymentDTOMapper(
             PaymentObjectDTOMapper paymentObjectDTOMapper,

@@ -13,17 +13,15 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Service
-public class PaymentService {
+public class PaymentService extends BaseEntityService<Payment, PaymentRepository> {
 
-    private final PaymentRepository paymentRepository;
-
-    public PaymentService(PaymentRepository paymentRepository) {
-        this.paymentRepository = paymentRepository;
+    public PaymentService(PaymentRepository repository) {
+        super(repository);
     }
 
     @Transactional
     public int updateProductCounter(Long paymentId, BigDecimal productCounter, LocalDate paymentDate) {
-        return this.paymentRepository.updateProductCounter(paymentId, productCounter, paymentDate);
+        return this.repository.updateProductCounter(paymentId, productCounter, paymentDate);
     }
 
     @Transactional
@@ -31,7 +29,7 @@ public class PaymentService {
         if (paymentAmount == null) {
             paymentAmount = BigDecimal.valueOf(0L);
         }
-        return this.paymentRepository.updatePaymentAmount(paymentId, paymentAmount, paymentDate);
+        return this.repository.updatePaymentAmount(paymentId, paymentAmount, paymentDate);
     }
 
     @Transactional
@@ -39,26 +37,26 @@ public class PaymentService {
         if (commissionAmount == null) {
             commissionAmount = BigDecimal.valueOf(0L);
         }
-        return this.paymentRepository.updateCommissionAmount(paymentId, commissionAmount, paymentDate);
+        return this.repository.updateCommissionAmount(paymentId, commissionAmount, paymentDate);
     }
 
     @Transactional
     public int updatePaymentGroup(PaymentObject paymentObject, PaymentGroup paymentGroupFrom, PaymentGroup paymentGroupTo) {
-        return this.paymentRepository.updatePaymentGroup(paymentObject, paymentGroupFrom, paymentGroupTo);
+        return this.repository.updatePaymentGroup(paymentObject, paymentGroupFrom, paymentGroupTo);
     }
 
     public int duplicatePreviousPeriod(PaymentObject paymentObject, LocalDate paymentPeriodDate) {
         paymentPeriodDate = paymentPeriodDate.withDayOfMonth(1);
 
         List<Payment> currentPeriodPayments =
-                this.paymentRepository.findByPaymentObjectIdAndPaymentPeriodDate(paymentObject, paymentPeriodDate, Sort.unsorted());
+                this.repository.findByPaymentObjectIdAndPaymentPeriodDate(paymentObject, paymentPeriodDate, Sort.unsorted());
         if (!currentPeriodPayments.isEmpty()) {
             throw new RuntimeException("Current period is not empty");
         }
 
         LocalDate prevPeriodDate = paymentPeriodDate.minusMonths(1);
         List<Payment> prevPeriodPayments =
-                this.paymentRepository.findByPaymentObjectIdAndPaymentPeriodDate(paymentObject, prevPeriodDate, Sort.unsorted());
+                this.repository.findByPaymentObjectIdAndPaymentPeriodDate(paymentObject, prevPeriodDate, Sort.unsorted());
 
         for (Payment prevPeriodPayment: prevPeriodPayments) {
             Payment newPayment = new Payment();
@@ -71,7 +69,7 @@ public class PaymentService {
             newPayment.setPaymentAmount(BigDecimal.valueOf(0));
             newPayment.setCommissionAmount(BigDecimal.valueOf(0));
 
-            this.paymentRepository.save(newPayment);
+            this.repository.save(newPayment);
         }
 
         return prevPeriodPayments.size();

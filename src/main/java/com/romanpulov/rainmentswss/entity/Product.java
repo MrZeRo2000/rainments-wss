@@ -45,7 +45,7 @@ public class Product extends CommonEntitySuperclass implements CommonEntity {
     }
 
     @OneToMany(mappedBy = "product")
-    private Set<Payment> payments = new HashSet<>();
+    private final Set<Payment> payments = new HashSet<>();
 
     @PreRemove
     private void preRemove() {
