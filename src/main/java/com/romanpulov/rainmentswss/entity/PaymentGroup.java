@@ -3,13 +3,12 @@ package com.romanpulov.rainmentswss.entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Table(name = "payment_groups")
-public class PaymentGroup extends PaymentDictionarySuperclass implements CommonEntity {
+public class PaymentGroup extends OrderedEntitySuperclass implements CommonEntity {
 
     @Id
     @Column(name = "payment_group_id")
@@ -48,7 +47,7 @@ public class PaymentGroup extends PaymentDictionarySuperclass implements CommonE
     }
 
     @OneToMany(mappedBy = "paymentGroup")
-    private Set<Payment> payments = new HashSet<>();
+    private final Set<Payment> payments = new HashSet<>();
 
     @PreRemove
     private void preRemove() {
@@ -61,6 +60,7 @@ public class PaymentGroup extends PaymentDictionarySuperclass implements CommonE
     public String toString() {
         return "PaymentGroup{" +
                 "id=" + id +
+                "order_id=" + getOrderId() +
                 ", name='" + name + '\'' +
                 ", url='" + url + '\'' +
                 '}';

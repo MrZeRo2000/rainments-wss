@@ -15,10 +15,8 @@ import com.romanpulov.rainmentswss.repository.ProductRepository;
 import com.romanpulov.rainmentswss.service.PaymentService;
 import com.romanpulov.rainmentswss.service.PaymentTransformationService;
 import com.romanpulov.rainmentswss.transform.ExcelReadException;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -92,7 +90,7 @@ public class PaymentCustomController {
 
 
         List<PaymentGroupDTO> paymentGroupList = paymentGroupRepository
-                .findAllByOrderByIdAsc()
+                .findAllByOrderByOrderIdAscIdAsc()
                 .stream()
                 .map(paymentGroupDTOMapper::entityToDTO)
                 .collect(Collectors.toList());
@@ -181,7 +179,7 @@ public class PaymentCustomController {
                 .collect(Collectors.toList());
 
         List<PaymentGroupDTO> paymentGroupList = paymentGroupRepository
-                .findAllByOrderByIdAsc()
+                .findAllByOrderByOrderIdAscIdAsc()
                 .stream()
                 .map(paymentGroupDTOMapper::entityToDTO)
                 .collect(Collectors.toList());

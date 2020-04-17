@@ -29,7 +29,7 @@ public class RepositoryPaymentGroupTests {
     void mainTest() {
         Iterable<PaymentGroup> paymentGroups;
 
-        paymentGroups = paymentGroupRepository.findAllByOrderByIdAsc();
+        paymentGroups = paymentGroupRepository.findAllByOrderByOrderIdAscIdAsc();
         assertThat(paymentGroups).isNotNull();
 
         String newGroupName = "New group name";
@@ -44,6 +44,15 @@ public class RepositoryPaymentGroupTests {
 
         List<PaymentGroup> findByName2 = paymentGroupRepository.findByName(newGroupName + "added");
         assertThat(findByName2.size()).isEqualTo(0);
+
+        // check order
+        List<PaymentGroup> paymentGroupList = paymentGroupRepository.findAllByOrderByOrderIdAsc();
+        PaymentGroup paymentGroupOrdered = paymentGroupList.get(0);
+        paymentGroupOrdered.setOrderId(1L);
+        paymentGroupRepository.save(paymentGroupOrdered);
+
+        paymentGroupList = paymentGroupRepository.findAllByOrderByOrderIdAsc();
+        assertThat(paymentGroupList.get(0).getOrderId()).isEqualTo(paymentGroupOrdered.getOrderId());
 
     }
 }

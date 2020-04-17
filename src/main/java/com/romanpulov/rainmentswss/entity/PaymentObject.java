@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "payment_objects")
-public class PaymentObject extends PaymentDictionarySuperclass implements CommonEntity {
+public class PaymentObject extends CommonEntitySuperclass implements CommonEntity {
 
     @Id
     @Column(name = "payment_object_id")

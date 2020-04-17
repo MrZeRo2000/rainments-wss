@@ -5,6 +5,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 @MappedSuperclass
-public class PaymentDictionarySuperclass {
+public class CommonEntitySuperclass {
 
 }
