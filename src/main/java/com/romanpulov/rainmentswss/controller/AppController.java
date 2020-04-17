@@ -2,6 +2,7 @@ package com.romanpulov.rainmentswss.controller;
 
 import com.romanpulov.rainmentswss.dto.BackupDatabaseInfoDTO;
 import com.romanpulov.rainmentswss.dto.MessageDTO;
+import com.romanpulov.rainmentswss.exception.NotFoundException;
 import com.romanpulov.rainmentswss.service.BackupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

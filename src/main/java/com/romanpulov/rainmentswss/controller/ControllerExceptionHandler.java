@@ -1,6 +1,7 @@
 package com.romanpulov.rainmentswss.controller;
 
 import com.romanpulov.rainmentswss.dto.ErrorResponseDTO;
+import com.romanpulov.rainmentswss.exception.NotFoundException;
 import com.romanpulov.rainmentswss.transform.ExcelReadException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

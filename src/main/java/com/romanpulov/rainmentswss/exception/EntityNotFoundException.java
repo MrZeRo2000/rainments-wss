@@ -1,4 +1,6 @@
-package com.romanpulov.rainmentswss.controller;
+package com.romanpulov.rainmentswss.exception;
+
+import com.romanpulov.rainmentswss.exception.NotFoundException;
 
 public class EntityNotFoundException extends NotFoundException {
     public EntityNotFoundException(Long id) {

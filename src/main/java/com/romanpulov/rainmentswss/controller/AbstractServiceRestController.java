@@ -2,6 +2,7 @@ package com.romanpulov.rainmentswss.controller;
 
 import com.romanpulov.rainmentswss.entity.CommonEntity;
 import com.romanpulov.rainmentswss.entitymapper.EntityDTOMapper;
+import com.romanpulov.rainmentswss.exception.EntityNotFoundException;
 import com.romanpulov.rainmentswss.service.EntityService;
 import org.slf4j.Logger;
 import org.springframework.http.ResponseEntity;
