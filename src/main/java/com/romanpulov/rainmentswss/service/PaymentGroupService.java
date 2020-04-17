@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class PaymentGroupService extends BaseEntityService<PaymentGroup, PaymentGroupRepository> {
+public class PaymentGroupService extends AbstractEntityService<PaymentGroup, PaymentGroupRepository> {
     public PaymentGroupService(PaymentGroupRepository repository) {
         super(repository);
     }

@@ -5,11 +5,11 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
 
-public class BaseEntityService<E extends CommonEntity, R extends CrudRepository<E, Long>> implements EntityService<E> {
+public abstract class AbstractEntityService<E extends CommonEntity, R extends CrudRepository<E, Long>> implements EntityService<E> {
 
     protected final R repository;
 
-    public BaseEntityService(R repository) {
+    public AbstractEntityService(R repository) {
         this.repository = repository;
     }
 

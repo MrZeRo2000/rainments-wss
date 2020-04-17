@@ -11,13 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class BaseServiceRestController<E extends CommonEntity, D> {
+public abstract class AbstractServiceRestController<E extends CommonEntity, D, S extends EntityService<E>> {
 
-    protected final EntityService<E> entityService;
+    protected final S entityService;
     protected final EntityDTOMapper<E, D> mapper;
     protected final Logger logger;
 
-    public BaseServiceRestController(EntityService<E> entityService, EntityDTOMapper<E, D> mapper, Logger logger) {
+    public AbstractServiceRestController(S entityService, EntityDTOMapper<E, D> mapper, Logger logger) {
         this.entityService = entityService;
         this.mapper = mapper;
         this.logger = logger;

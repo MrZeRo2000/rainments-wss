@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(value = "/payment-objects", produces = MediaType.APPLICATION_JSON_VALUE)
-public class PaymentObjectController extends BaseServiceRestController<PaymentObject, PaymentObjectDTO> {
+public class PaymentObjectController extends AbstractServiceRestController<PaymentObject, PaymentObjectDTO, PaymentObjectService> {
 
     public PaymentObjectController(
             PaymentObjectService paymentObjectService,

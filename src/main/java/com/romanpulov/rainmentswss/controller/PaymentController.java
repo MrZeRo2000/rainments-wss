@@ -16,16 +16,13 @@ import java.time.LocalDate;
 
 @RestController
 @RequestMapping(value = "/payments", produces = MediaType.APPLICATION_JSON_VALUE)
-public class PaymentController extends BaseServiceRestController<Payment, PaymentDTO> {
-
-    private final PaymentService paymentService;
+public class PaymentController extends AbstractServiceRestController<Payment, PaymentDTO, PaymentService> {
 
     public PaymentController(
             PaymentService paymentService,
             EntityDTOMapper<Payment, PaymentDTO> mapper
             ) {
         super(paymentService, mapper, LoggerFactory.getLogger(PaymentController.class));
-        this.paymentService = paymentService;
     }
 
     @PatchMapping("/{id}")
@@ -49,13 +46,13 @@ public class PaymentController extends BaseServiceRestController<Payment, Paymen
         int result;
         switch (patchRequest.getPath()) {
             case "/productCounter":
-                result = paymentService.updateProductCounter(id, updateValue, LocalDate.now());
+                result = entityService.updateProductCounter(id, updateValue, LocalDate.now());
                 break;
             case "/paymentAmount":
-                result = paymentService.updatePaymentAmount(id, updateValue, LocalDate.now());
+                result = entityService.updatePaymentAmount(id, updateValue, LocalDate.now());
                 break;
             case "/commissionAmount":
-                result = paymentService.updateCommissionAmount(id, updateValue, LocalDate.now());
+                result = entityService.updateCommissionAmount(id, updateValue, LocalDate.now());
                 break;
             default:
                 throw new BadPatchRequestException("path", patchRequest.getPath());

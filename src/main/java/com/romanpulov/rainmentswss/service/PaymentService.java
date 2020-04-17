@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Service
-public class PaymentService extends BaseEntityService<Payment, PaymentRepository> {
+public class PaymentService extends AbstractEntityService<Payment, PaymentRepository> {
 
     public PaymentService(PaymentRepository repository) {
         super(repository);
