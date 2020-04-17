@@ -45,6 +45,7 @@ public class PaymentService extends BaseEntityService<Payment, PaymentRepository
         return this.repository.updatePaymentGroup(paymentObject, paymentGroupFrom, paymentGroupTo);
     }
 
+    @Transactional
     public int duplicatePreviousPeriod(PaymentObject paymentObject, LocalDate paymentPeriodDate) {
         paymentPeriodDate = paymentPeriodDate.withDayOfMonth(1);
 
