@@ -12,7 +12,8 @@ import java.util.List;
 public class CustomQueryRepository {
     private static final String QUERY_GET_MAX_ORDER_ID = "SELECT MAX(o.orderId) AS order_id FROM %s o";
     private static final String QUERY_SET_DEFAULT_ORDER = "UPDATE %s o SET o.orderId = o.id";
-    private static final String QUERY_SHIFT_ORDER = "UPDATE %s o SET o.orderId = o.orderId + 1 WHERE o.orderId >= %d AND o.orderId <> %d";
+    private static final String QUERY_SHIFT_ORDER_DOWN = "UPDATE %s o SET o.orderId = o.orderId + 1 WHERE o.orderId >= %d";
+    private static final String QUERY_SHIFT_ORDER_UP = "UPDATE %s o SET o.orderId = o.orderId - 1 WHERE o.orderId <= %d";
     private static final String QUERY_SET_ORDER = "UPDATE %s o SET o.orderId = %d WHERE o.id = %d";
 
     @PersistenceContext
@@ -58,7 +59,13 @@ public class CustomQueryRepository {
 
     @Transactional
     public void moveOrder(String tableName, Long fromId, Long fromOrderId, Long toId, Long toOrderId) {
-        String shiftQueryString = String.format(QUERY_SHIFT_ORDER, tableName, toOrderId, fromOrderId);
+        String baseQueryString;
+        if (fromOrderId > toOrderId) {
+            baseQueryString = QUERY_SHIFT_ORDER_DOWN;
+        } else {
+            baseQueryString = QUERY_SHIFT_ORDER_UP;
+        }
+        String shiftQueryString = String.format(baseQueryString, tableName, toOrderId);
         String setOrderQueryString = String.format(QUERY_SET_ORDER, tableName, toOrderId, fromId);
 
         getSession().createQuery(shiftQueryString).executeUpdate();
