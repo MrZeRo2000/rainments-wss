@@ -4,7 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public class OrderedEntitySuperclass {
+public class OrderedEntitySuperclass implements OrderedEntity {
 
     @Column(name = "order_id")
     private Long orderId;

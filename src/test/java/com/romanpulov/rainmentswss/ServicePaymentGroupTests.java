@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -38,6 +39,7 @@ public class ServicePaymentGroupTests {
         newPaymentGroup = paymentGroupService.save(newPaymentGroup);
 
         assertThat(newPaymentGroup.getId()).isGreaterThan(0);
+        assertThat(newPaymentGroup.getOrderId()).isEqualTo(1L);
 
         List<PaymentGroup> findByName = paymentGroupService.findByName(newGroupName);
         assertThat(findByName.size()).isEqualTo(1);
@@ -51,7 +53,8 @@ public class ServicePaymentGroupTests {
         paymentGroupOrdered.setOrderId(1L);
         paymentGroupService.save(paymentGroupOrdered);
 
-        paymentGroupList = paymentGroupService.findAllByOrderByOrderIdAsc();
+        paymentGroupList = new ArrayList<>();
+        paymentGroupService.findAll().forEach(paymentGroupList::add);
         assertThat(paymentGroupList.get(0).getOrderId()).isEqualTo(paymentGroupOrdered.getOrderId());
 
     }

@@ -1,15 +1,16 @@
 package com.romanpulov.rainmentswss.service;
 
 import com.romanpulov.rainmentswss.entity.PaymentGroup;
+import com.romanpulov.rainmentswss.repository.CustomQueryRepository;
 import com.romanpulov.rainmentswss.repository.PaymentGroupRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class PaymentGroupService extends AbstractEntityService<PaymentGroup, PaymentGroupRepository> {
-    public PaymentGroupService(PaymentGroupRepository repository) {
-        super(repository);
+public class PaymentGroupService extends AbstractOrderedEntityService<PaymentGroup, PaymentGroupRepository> {
+    public PaymentGroupService(PaymentGroupRepository repository, CustomQueryRepository customQueryRepository) {
+        super(repository, customQueryRepository);
     }
 
     @Override
