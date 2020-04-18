@@ -2,7 +2,7 @@ package com.romanpulov.rainmentswss.controller;
 
 import com.romanpulov.rainmentswss.entity.CommonEntity;
 import com.romanpulov.rainmentswss.entitymapper.EntityDTOMapper;
-import com.romanpulov.rainmentswss.exception.EntityNotFoundException;
+import com.romanpulov.rainmentswss.exception.CommonEntityNotFoundException;
 import com.romanpulov.rainmentswss.service.EntityService;
 import org.slf4j.Logger;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public abstract class AbstractServiceRestController<E extends CommonEntity, D, S extends EntityService<E>> {
 
@@ -35,32 +34,28 @@ public abstract class AbstractServiceRestController<E extends CommonEntity, D, S
     @PostMapping
     ResponseEntity<D> post(@RequestBody D dto) {
         E entity = mapper.dtoTOEntity(dto);
-        E newEntity = entityService.save(entity);
-        return ResponseEntity.ok(mapper.entityToDTO(newEntity));
+        return ResponseEntity.ok(mapper.entityToDTO(entityService.save(entity)));
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<D> put(@PathVariable Long id, @RequestBody D dto) throws EntityNotFoundException {
-        Optional<E> entity = entityService.findById(id);
-        if (entity.isPresent()) {
+    ResponseEntity<D> put(@PathVariable Long id, @RequestBody D dto) throws CommonEntityNotFoundException {
+        try {
             E updatedEntity = mapper.dtoTOEntity(dto);
-            updatedEntity.setId(id);
-            E newPaymentObject = entityService.save(updatedEntity);
-            return ResponseEntity.ok(mapper.entityToDTO(newPaymentObject));
-        } else {
+            return ResponseEntity.ok(mapper.entityToDTO(entityService.update(id, updatedEntity)));
+        } catch (CommonEntityNotFoundException e) {
             logger.error("Entity with id=" + id + " does not exist");
-            throw new EntityNotFoundException(id);
+            throw e;
         }
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) throws EntityNotFoundException {
-        if (entityService.findById(id).isPresent()) {
+    public ResponseEntity<?> delete(@PathVariable Long id) throws CommonEntityNotFoundException {
+        try {
             entityService.deleteById(id);
             return ResponseEntity.ok().build();
-        } else {
+        } catch (CommonEntityNotFoundException e) {
             logger.error("Entity with id=" + id + " does not exist");
-            throw new EntityNotFoundException(id);
+            throw e;
         }
     }
 }

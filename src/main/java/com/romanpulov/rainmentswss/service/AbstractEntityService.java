@@ -1,9 +1,8 @@
 package com.romanpulov.rainmentswss.service;
 
 import com.romanpulov.rainmentswss.entity.CommonEntity;
+import com.romanpulov.rainmentswss.exception.CommonEntityNotFoundException;
 import org.springframework.data.repository.CrudRepository;
-
-import java.util.Optional;
 
 public abstract class AbstractEntityService<E extends CommonEntity, R extends CrudRepository<E, Long>> implements EntityService<E> {
 
@@ -24,12 +23,16 @@ public abstract class AbstractEntityService<E extends CommonEntity, R extends Cr
     }
 
     @Override
-    public Optional<E> findById(Long id) {
-        return repository.findById(id);
+    public <S extends E> S update(Long id, S entity) throws CommonEntityNotFoundException {
+        E storedEntity = repository.findById(id).orElseThrow(() -> new CommonEntityNotFoundException(id));
+        entity.setId(id);
+        return repository.save(entity);
     }
 
     @Override
-    public void deleteById(Long id) {
-        repository.deleteById(id);
+    public void deleteById(Long id) throws CommonEntityNotFoundException
+    {
+        E entity = repository.findById(id).orElseThrow(() -> new CommonEntityNotFoundException(id));
+        repository.delete(entity);
     }
 }
