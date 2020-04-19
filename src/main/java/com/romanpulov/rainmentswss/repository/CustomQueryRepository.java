@@ -58,7 +58,7 @@ public class CustomQueryRepository {
     }
 
     @Transactional
-    public void moveOrder(String tableName, Long fromId, Long fromOrderId, Long toId, Long toOrderId) {
+    public int moveOrder(String tableName, Long fromId, Long fromOrderId, Long toId, Long toOrderId) {
         String baseQueryString;
         if (fromOrderId > toOrderId) {
             baseQueryString = QUERY_SHIFT_ORDER_DOWN;
@@ -68,7 +68,11 @@ public class CustomQueryRepository {
         String shiftQueryString = String.format(baseQueryString, tableName, toOrderId);
         String setOrderQueryString = String.format(QUERY_SET_ORDER, tableName, toOrderId, fromId);
 
-        getSession().createQuery(shiftQueryString).executeUpdate();
-        getSession().createQuery(setOrderQueryString).executeUpdate();
+        int rowsAffected = 0;
+
+        rowsAffected += getSession().createQuery(shiftQueryString).executeUpdate();
+        rowsAffected += getSession().createQuery(setOrderQueryString).executeUpdate();
+
+        return rowsAffected;
     }
 }

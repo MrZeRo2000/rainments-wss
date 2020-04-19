@@ -92,6 +92,45 @@ public class ControllerPaymentGroupTest extends ControllerMockMvcTest {
 
             addResult(mvcResult);
 
+            //regular move
+            mvcResult = this.mvc.perform(MockMvcRequestBuilders.post("/payment-groups/operation:move_order")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(json)
+                    .queryParam("fromId", "3")
+                    .queryParam("toId", "1")
+                    .accept(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andReturn();
+
+            addResult(mvcResult);
+
+            mvcResult = this.mvc.perform(MockMvcRequestBuilders.get("/payment-groups")
+                    .accept(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
+                    .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(3)))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$[0].id", Matchers.is(3)))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$[1].id", Matchers.is(1)))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$[2].id", Matchers.is(2)))
+                    .andReturn()
+            ;
+
+            addResult(mvcResult);
+
+            // wrong item move
+            mvcResult = this.mvc.perform(MockMvcRequestBuilders.post("/payment-groups/operation:move_order")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(json)
+                    .queryParam("fromId", "7")
+                    .queryParam("toId", "1")
+                    .accept(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(MockMvcResultMatchers.status().isNotFound())
+                    .andReturn();
+
+            addResult(mvcResult);
+
+
+
         } finally {
             Path f = Paths.get("logs/ControllerPaymentGroupTest.log");
             Files.write(f, logResult, StandardCharsets.UTF_8);

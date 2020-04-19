@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/payment-groups", produces = MediaType.APPLICATION_JSON_VALUE)
-public class PaymentGroupController extends AbstractServiceRestController<PaymentGroup, PaymentGroupDTO, PaymentGroupService> {
+public class PaymentGroupController extends AbstractOrderedServiceRestController<PaymentGroup, PaymentGroupDTO, PaymentGroupService> {
 
     public PaymentGroupController(
             PaymentGroupService paymentGroupService,

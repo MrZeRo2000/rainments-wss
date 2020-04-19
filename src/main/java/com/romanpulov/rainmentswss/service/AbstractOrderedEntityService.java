@@ -10,6 +10,7 @@ public abstract class AbstractOrderedEntityService
         <E extends CommonEntity & OrderedEntity,
         R extends CrudRepository<E, Long>>
         extends AbstractEntityService<E, R>
+        implements OrderedEntityService<E>
 {
     private final CustomQueryRepository customQueryRepository;
 
@@ -42,7 +43,7 @@ public abstract class AbstractOrderedEntityService
         entity.setOrderId(savedEntity.getOrderId());
     }
 
-    public void moveOrder(Long fromId, Long toId) throws CommonEntityNotFoundException {
+    public int moveOrder(Long fromId, Long toId) throws CommonEntityNotFoundException {
         E fromEntity = getEntityById(fromId);
         E toEntity = getEntityById(toId);
 
@@ -50,7 +51,7 @@ public abstract class AbstractOrderedEntityService
             customQueryRepository.setDefaultOrder(getEntityTableName(fromEntity));
         }
 
-        customQueryRepository.moveOrder(
+        return customQueryRepository.moveOrder(
                 getEntityTableName(fromEntity),
                 fromEntity.getId(),
                 fromEntity.getOrderId(),
