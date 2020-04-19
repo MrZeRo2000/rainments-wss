@@ -4,7 +4,10 @@ import com.romanpulov.rainmentswss.entity.CommonEntity;
 import com.romanpulov.rainmentswss.entity.OrderedEntity;
 import com.romanpulov.rainmentswss.exception.CommonEntityNotFoundException;
 import com.romanpulov.rainmentswss.repository.CustomQueryRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 public abstract class AbstractOrderedEntityService
         <E extends CommonEntity & OrderedEntity,
@@ -12,6 +15,9 @@ public abstract class AbstractOrderedEntityService
         extends AbstractEntityService<E, R>
         implements OrderedEntityService<E>
 {
+
+    private final Logger logger = LoggerFactory.getLogger(AbstractOrderedEntityService.class.getName());
+
     private final CustomQueryRepository customQueryRepository;
 
     private String getEntityTableName(E entity) {
@@ -43,13 +49,22 @@ public abstract class AbstractOrderedEntityService
         entity.setOrderId(savedEntity.getOrderId());
     }
 
+    @Transactional
     public int moveOrder(Long fromId, Long toId) throws CommonEntityNotFoundException {
         E fromEntity = getEntityById(fromId);
         E toEntity = getEntityById(toId);
 
+        /*
         if ((fromEntity.getOrderId() == null) || (toEntity.getOrderId() == null)) {
+            logger.info("Null order id, setting default order");
             customQueryRepository.setDefaultOrder(getEntityTableName(fromEntity));
+            fromEntity = getEntityById(fromId);
+            toEntity = getEntityById(toId);
         }
+        
+         */
+
+        logger.info("FromEntity=" + fromEntity + ", ToEntity=" + toEntity);
 
         return customQueryRepository.moveOrder(
                 getEntityTableName(fromEntity),

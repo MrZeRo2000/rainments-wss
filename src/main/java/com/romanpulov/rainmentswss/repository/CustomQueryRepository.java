@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Repository
@@ -58,7 +59,12 @@ public class CustomQueryRepository {
     }
 
     @Transactional
-    public int moveOrder(String tableName, Long fromId, Long fromOrderId, Long toId, Long toOrderId) {
+    public int moveOrder(
+            String tableName,
+            @NotNull Long fromId,
+            @NotNull Long fromOrderId,
+            @NotNull Long toId,
+            @NotNull Long toOrderId) {
         String baseQueryString;
         if (fromOrderId > toOrderId) {
             baseQueryString = QUERY_SHIFT_ORDER_DOWN;

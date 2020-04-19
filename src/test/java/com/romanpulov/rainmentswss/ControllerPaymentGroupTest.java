@@ -129,8 +129,6 @@ public class ControllerPaymentGroupTest extends ControllerMockMvcTest {
 
             addResult(mvcResult);
 
-
-
         } finally {
             Path f = Paths.get("logs/ControllerPaymentGroupTest.log");
             Files.write(f, logResult, StandardCharsets.UTF_8);
