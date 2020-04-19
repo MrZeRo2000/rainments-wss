@@ -34,7 +34,7 @@ public abstract class AbstractServiceRestController<E extends CommonEntity, D, S
     @PostMapping
     ResponseEntity<D> post(@RequestBody D dto) {
         E entity = mapper.dtoTOEntity(dto);
-        return ResponseEntity.ok(mapper.entityToDTO(entityService.save(entity)));
+        return ResponseEntity.ok(mapper.entityToDTO(entityService.insert(entity)));
     }
 
     @PutMapping("/{id}")

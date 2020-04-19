@@ -27,27 +27,10 @@ import java.util.List;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ControllerPaymentTest extends ControllerMockMvcTest {
 
-    ObjectMapper mapper = new ObjectMapper();
-    String json;
-
-    List<String> logResult = new ArrayList<>();
 
     @BeforeAll
     static void prepareTestDB() {
         DBHelper.prepareTestDB();
-    }
-
-    private void addResult (MvcResult mvcResult) throws UnsupportedEncodingException  {
-        logResult.add(mvcResult.getRequest().getRequestURI());
-        logResult.add("Request:");
-        try {
-            logResult.add(mvcResult.getRequest().getContentAsString());
-        } catch (UnsupportedEncodingException e) {
-            logResult.add("Unable to log request");
-        }
-        logResult.add("Response:");
-        logResult.add(mvcResult.getResponse().getContentAsString());
-        logResult.add("==========================");
     }
 
     public ControllerPaymentTest(WebApplicationContext context) {

@@ -36,7 +36,7 @@ public class ServicePaymentGroupTests {
         String newGroupName = "New group name";
         PaymentGroup newPaymentGroup = new PaymentGroup();
         newPaymentGroup.setName(newGroupName);
-        newPaymentGroup = paymentGroupService.save(newPaymentGroup);
+        newPaymentGroup = paymentGroupService.insert(newPaymentGroup);
 
         assertThat(newPaymentGroup.getId()).isGreaterThan(0);
         assertThat(newPaymentGroup.getOrderId()).isEqualTo(1L);
@@ -48,10 +48,11 @@ public class ServicePaymentGroupTests {
         assertThat(findByName2.size()).isEqualTo(0);
 
         // check order
-        List<PaymentGroup> paymentGroupList = paymentGroupService.findAllByOrderByOrderIdAsc();
+        List<PaymentGroup> paymentGroupList = new ArrayList<>();
+        paymentGroupService.findAll().forEach(paymentGroupList::add);
         PaymentGroup paymentGroupOrdered = paymentGroupList.get(0);
         paymentGroupOrdered.setOrderId(1L);
-        paymentGroupService.save(paymentGroupOrdered);
+        paymentGroupService.insert(paymentGroupOrdered);
 
         paymentGroupList = new ArrayList<>();
         paymentGroupService.findAll().forEach(paymentGroupList::add);

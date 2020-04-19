@@ -21,13 +21,4 @@ public class PaymentGroupService extends AbstractOrderedEntityService<PaymentGro
     public List<PaymentGroup> findByName(String name) {
         return repository.findByName(name);
     }
-
-    public List<PaymentGroup> findAllByOrderByOrderIdAsc() {
-        return repository.findAllByOrderByOrderIdAsc();
-    }
-
-    public List<PaymentGroup> findAllByOrderByOrderIdAscIdAsc() {
-        return repository.findAllByOrderByOrderIdAscIdAsc();
-    }
-
 }

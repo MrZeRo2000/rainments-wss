@@ -9,9 +9,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -164,7 +162,7 @@ public class RepositoryCustomQueryTests {
 
     private void createGroups(int num) {
         IntStream.rangeClosed(0, num - 1).forEach(
-                v -> paymentGroupService.save(createNew("Group " + v))
+                v -> paymentGroupService.insert(createNew("Group " + v))
         );
     }
 

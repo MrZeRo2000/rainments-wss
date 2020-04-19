@@ -90,7 +90,7 @@ public class PaymentCustomController {
 
 
         List<PaymentGroupDTO> paymentGroupList = paymentGroupRepository
-                .findAllByOrderByOrderIdAscIdAsc()
+                .findAllByOrderByOrderIdAsc()
                 .stream()
                 .map(paymentGroupDTOMapper::entityToDTO)
                 .collect(Collectors.toList());
@@ -179,7 +179,7 @@ public class PaymentCustomController {
                 .collect(Collectors.toList());
 
         List<PaymentGroupDTO> paymentGroupList = paymentGroupRepository
-                .findAllByOrderByOrderIdAscIdAsc()
+                .findAllByOrderByOrderIdAsc()
                 .stream()
                 .map(paymentGroupDTOMapper::entityToDTO)
                 .collect(Collectors.toList());

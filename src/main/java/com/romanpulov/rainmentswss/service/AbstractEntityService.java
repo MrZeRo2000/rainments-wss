@@ -13,6 +13,10 @@ public abstract class AbstractEntityService<E extends CommonEntity, R extends Cr
         this.repository = repository;
     }
 
+    protected E getEntityById(Long id) throws CommonEntityNotFoundException {
+        return repository.findById(id).orElseThrow(() -> new CommonEntityNotFoundException(id));
+    }
+
     @Override
     public Iterable<E> findAll() {
         return repository.findAll();
@@ -26,17 +30,30 @@ public abstract class AbstractEntityService<E extends CommonEntity, R extends Cr
 
     @Override
     @Transactional
+    public <S extends E> S insert(S entity) {
+        beforeEntityInsert(entity);
+        return repository.save(entity);
+    }
+
+    protected void beforeEntityInsert(E entity) {
+
+    }
+
+    protected void beforeEntityUpdate(E entity, E savedEntity) {
+        entity.setId(savedEntity.getId());
+    }
+
+    @Override
+    @Transactional
     public <S extends E> S update(Long id, S entity) throws CommonEntityNotFoundException {
-        repository.findById(id).orElseThrow(() -> new CommonEntityNotFoundException(id));
-        entity.setId(id);
+        E savedEntity = getEntityById(id);
+        beforeEntityUpdate(entity, savedEntity);
         return repository.save(entity);
     }
 
     @Override
     @Transactional
-    public void deleteById(Long id) throws CommonEntityNotFoundException
-    {
-        E entity = repository.findById(id).orElseThrow(() -> new CommonEntityNotFoundException(id));
-        repository.delete(entity);
+    public void deleteById(Long id) throws CommonEntityNotFoundException {
+        repository.delete(getEntityById(id));
     }
 }
