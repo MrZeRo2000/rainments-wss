@@ -81,4 +81,8 @@ public class CustomQueryRepository {
 
         return rowsAffected;
     }
+
+    public void clearEntityManager() {
+        entityManager.clear();
+    }
 }

@@ -54,15 +54,20 @@ public abstract class AbstractOrderedEntityService
         E fromEntity = getEntityById(fromId);
         E toEntity = getEntityById(toId);
 
-        /*
         if ((fromEntity.getOrderId() == null) || (toEntity.getOrderId() == null)) {
             logger.info("Null order id, setting default order");
+
             customQueryRepository.setDefaultOrder(getEntityTableName(fromEntity));
+
+            customQueryRepository.clearEntityManager();
+
             fromEntity = getEntityById(fromId);
             toEntity = getEntityById(toId);
+            
+            if ((fromEntity.getOrderId() == null) || (toEntity.getOrderId() == null)) {
+                throw new RuntimeException("Error in setting default order");
+            }
         }
-        
-         */
 
         logger.info("FromEntity=" + fromEntity + ", ToEntity=" + toEntity);
 
