@@ -137,7 +137,7 @@ public class RepositoryPaymentTests {
         List<Payment> findByObjectDatePayments = paymentRepository.findByPaymentObjectIdAndPaymentPeriodDate(
                 newPaymentObject,
                 LocalDate.now().minusMonths(1L).withDayOfMonth(1),
-                Sort.by("paymentGroup").ascending()
+                Sort.by("paymentGroup.orderId").ascending()
         );
         assertThat(findByObjectDatePayments.size()).isEqualTo(2);
 

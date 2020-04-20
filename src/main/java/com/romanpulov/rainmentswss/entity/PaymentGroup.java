@@ -60,7 +60,7 @@ public class PaymentGroup extends OrderedEntitySuperclass implements CommonEntit
     public String toString() {
         return "PaymentGroup{" +
                 "id=" + id +
-                "order_id=" + getOrderId() +
+                ", order_id=" + getOrderId() +
                 ", name='" + name + '\'' +
                 ", url='" + url + '\'' +
                 '}';
