@@ -47,16 +47,7 @@ ext {
 	tomcat_webapps = tomcat_home + '/webapps'
 }
 
-tasks.register("deploy") {
-	dependsOn 'bootWar'
-	copy {
-		from "build/libs"
-		into tomcat_webapps
-		include "*.war"
-	}
-}
-
-tasks.register("deployInt") {
+task deployInt {
 	dependsOn 'bootWar'
 	copy {
 		from "build/libs"
@@ -66,7 +57,7 @@ tasks.register("deployInt") {
 	}
 }
 
-tasks.register("deployProd") {
+task deployProd {
 	dependsOn 'bootWar'
 	copy {
 		from "build/libs"
