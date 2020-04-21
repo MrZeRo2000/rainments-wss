@@ -47,7 +47,7 @@ ext {
 	tomcat_webapps = tomcat_home + '/webapps'
 }
 
-task deployInt {
+tasks.register("deployInt") {
 	copy {
 		from "build/libs"
 		into tomcat_webapps
@@ -56,7 +56,7 @@ task deployInt {
 	}
 }
 
-task deployProd {
+tasks.register("deployProd") {
 	copy {
 		from "build/libs"
 		into tomcat_webapps
