@@ -58,5 +58,8 @@ public class ServicePaymentGroupTests {
         paymentGroupService.findAll().forEach(paymentGroupList::add);
         assertThat(paymentGroupList.get(0).getOrderId()).isEqualTo(paymentGroupOrdered.getOrderId());
 
+        // default order
+        paymentGroupService.setDefaultOrder(PaymentGroup.class);
+
     }
 }

@@ -19,4 +19,8 @@ public class PaymentObjectDTOMapper implements EntityDTOMapper <PaymentObject, P
         return entity;
     }
 
+    @Override
+    public Class<?> getEntityClass() {
+        return PaymentObject.class;
+    }
 }

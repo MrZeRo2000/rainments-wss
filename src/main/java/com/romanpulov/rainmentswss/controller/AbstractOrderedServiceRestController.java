@@ -27,4 +27,9 @@ public abstract class AbstractOrderedServiceRestController<E extends CommonEntit
     )  throws CommonEntityNotFoundException {
         return ResponseEntity.ok(new RowsAffectedDTO(entityService.moveOrder(fromId, toId)));
     }
+
+    @PostMapping(value="operation:set_default_order")
+    ResponseEntity<RowsAffectedDTO> setDefaultOrder ()  {
+        return ResponseEntity.ok(new RowsAffectedDTO(entityService.setDefaultOrder(mapper.getEntityClass())));
+    }
 }

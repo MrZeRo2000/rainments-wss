@@ -20,4 +20,9 @@ public class ProductDTOMapper implements EntityDTOMapper<Product, ProductDTO> {
 
         return entity;
     }
+
+    @Override
+    public Class<?> getEntityClass() {
+        return Product.class;
+    }
 }

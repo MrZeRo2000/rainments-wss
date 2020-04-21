@@ -19,4 +19,9 @@ public class PaymentGroupDTOMapper implements EntityDTOMapper<PaymentGroup, Paym
         entity.setUrl(dto.getUrl());
         return entity;
     }
+
+    @Override
+    public Class<?> getEntityClass() {
+        return PaymentGroup.class;
+    }
 }

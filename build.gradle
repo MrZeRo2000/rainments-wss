@@ -48,7 +48,6 @@ ext {
 }
 
 task deployInt {
-	dependsOn 'bootWar'
 	copy {
 		from "build/libs"
 		into tomcat_webapps
@@ -58,7 +57,6 @@ task deployInt {
 }
 
 task deployProd {
-	dependsOn 'bootWar'
 	copy {
 		from "build/libs"
 		into tomcat_webapps

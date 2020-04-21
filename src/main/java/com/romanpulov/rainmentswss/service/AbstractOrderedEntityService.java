@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.NotNull;
+
 public abstract class AbstractOrderedEntityService
         <E extends CommonEntity & OrderedEntity,
         R extends CrudRepository<E, Long>>
@@ -20,8 +22,8 @@ public abstract class AbstractOrderedEntityService
 
     private final CustomQueryRepository customQueryRepository;
 
-    private String getEntityTableName(E entity) {
-        return entity.getClass().getSimpleName();
+    private String getEntityTableName(Class<?> entityClass) {
+        return entityClass.getSimpleName();
     }
 
     public AbstractOrderedEntityService(R repository, CustomQueryRepository customQueryRepository) {
@@ -31,7 +33,7 @@ public abstract class AbstractOrderedEntityService
 
     @Override
     protected void beforeEntityInsert(E entity) {
-        Long maxOrderId = customQueryRepository.getMaxOrderId(getEntityTableName(entity));
+        Long maxOrderId = customQueryRepository.getMaxOrderId(getEntityTableName(entity.getClass()));
         long orderId;
         if (maxOrderId == null) {
             orderId = 1L;
@@ -57,7 +59,7 @@ public abstract class AbstractOrderedEntityService
         if ((fromEntity.getOrderId() == null) || (toEntity.getOrderId() == null)) {
             logger.info("Null order id, setting default order");
 
-            customQueryRepository.setDefaultOrder(getEntityTableName(fromEntity));
+            customQueryRepository.setDefaultOrder(getEntityTableName(fromEntity.getClass()));
 
             customQueryRepository.clearEntityManager();
 
@@ -71,12 +73,22 @@ public abstract class AbstractOrderedEntityService
 
         logger.info("FromEntity=" + fromEntity + ", ToEntity=" + toEntity);
 
-        return customQueryRepository.moveOrder(
-                getEntityTableName(fromEntity),
-                fromEntity.getId(),
-                fromEntity.getOrderId(),
-                toEntity.getId(),
-                toEntity.getOrderId()
-        );
+        if (fromEntity.getOrderId().equals(toEntity.getOrderId())) {
+            logger.info("Order is the same, no action");
+            return 0;
+        } else {
+            return customQueryRepository.moveOrder(
+                    getEntityTableName(fromEntity.getClass()),
+                    fromEntity.getId(),
+                    fromEntity.getOrderId(),
+                    toEntity.getId(),
+                    toEntity.getOrderId()
+            );
+        }
+    }
+
+    @Override
+    public int setDefaultOrder(Class<?> entityClass) {
+        return customQueryRepository.setDefaultOrder(getEntityTableName(entityClass));
     }
 }
