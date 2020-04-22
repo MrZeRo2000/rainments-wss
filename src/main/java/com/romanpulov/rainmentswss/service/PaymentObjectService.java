@@ -10,4 +10,9 @@ public class PaymentObjectService extends AbstractOrderedEntityService<PaymentOb
     public PaymentObjectService(PaymentObjectRepository repository, CustomQueryRepository customQueryRepository) {
         super(repository, customQueryRepository);
     }
+
+    @Override
+    public Iterable<PaymentObject> findAll() {
+        return repository.findAllByOrderByOrderIdAsc();
+    }
 }

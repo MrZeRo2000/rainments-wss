@@ -28,7 +28,7 @@ public class RepositoryProductTests {
     void mainTest() {
         Iterable<Product> products;
 
-        products = productRepository.findAllByOrderByIdAsc();
+        products = productRepository.findAllByOrderByOrderIdAsc();
         assertThat(products).isNotNull();
     }
 }

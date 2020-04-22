@@ -37,7 +37,7 @@ public class RepositoryPaymentObjectTests {
         newPaymentObject.setName("New Name");
         paymentObjectRepository.save(newPaymentObject);
 
-        paymentObjects = paymentObjectRepository.findAllByOrderByIdAsc();
+        paymentObjects = paymentObjectRepository.findAllByOrderByOrderIdAsc();
         PaymentObject savedEntity = paymentObjects.iterator().next();
 
         log.info("Saved entity: " + savedEntity);

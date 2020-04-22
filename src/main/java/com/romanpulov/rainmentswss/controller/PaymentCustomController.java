@@ -83,7 +83,7 @@ public class PaymentCustomController {
     ) {
 
         List<PaymentObjectDTO> paymentObjectList = paymentObjectRepository
-                .findAllByOrderByIdAsc()
+                .findAllByOrderByOrderIdAsc()
                 .stream()
                 .map(paymentObjectDTOMapper::entityToDTO)
                 .collect(Collectors.toList());
@@ -96,7 +96,7 @@ public class PaymentCustomController {
                 .collect(Collectors.toList());
 
         List<ProductDTO> productList = productRepository
-                .findAllByOrderByIdAsc()
+                .findAllByOrderByOrderIdAsc()
                 .stream()
                 .map(productDTOMapper::entityToDTO)
                 .collect(Collectors.toList());
@@ -108,7 +108,7 @@ public class PaymentCustomController {
                 .findByPaymentObjectIdAndPaymentPeriodDate(
                         paymentObject,
                         paymentPeriodDate,
-                        Sort.by("paymentGroup", "product"))
+                        Sort.by("paymentGroup.orderId", "product.orderId"))
                 .stream()
                 .map(mapper::entityToDTO)
                 .collect(Collectors.toList());
@@ -117,7 +117,7 @@ public class PaymentCustomController {
                 .findByPaymentObjectIdAndPaymentPeriodDate(
                         paymentObject,
                         paymentPeriodDate.minusMonths(1L),
-                        Sort.by("paymentGroup", "product"))
+                        Sort.by("paymentGroup.orderId", "product.orderId"))
                 .stream()
                 .map(mapper::entityToDTO)
                 .collect(Collectors.toList());
@@ -173,7 +173,7 @@ public class PaymentCustomController {
     ResponseEntity<PaymentObjectGroupRefsDTO> getPaymentObjectGroupRefs() {
 
         List<PaymentObjectDTO> paymentObjectList = paymentObjectRepository
-                .findAllByOrderByIdAsc()
+                .findAllByOrderByOrderIdAsc()
                 .stream()
                 .map(paymentObjectDTOMapper::entityToDTO)
                 .collect(Collectors.toList());

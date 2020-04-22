@@ -113,7 +113,7 @@ public class RepositoryPaymentTests {
         Product product2 = new Product();
         product2.setName(product2Name);
         productRepository.save(product2);
-        product2 = productRepository.findAllByOrderByIdAsc().get(1);
+        product2 = productRepository.findAllByOrderByOrderIdAsc().get(1);
         assertThat(product2.getName()).isEqualTo(product2Name);
         newPayment.setProduct(product2);
 
@@ -206,7 +206,7 @@ public class RepositoryPaymentTests {
         paymentObject.setName("Orphaned payment object");
         paymentObjectRepository.save(paymentObject);
 
-        List<PaymentObject> paymentObjects = paymentObjectRepository.findAllByOrderByIdAsc();
+        List<PaymentObject> paymentObjects = paymentObjectRepository.findAllByOrderByOrderIdAsc();
         PaymentObject orphanedPaymentObject = paymentObjects.get(paymentObjects.size()-1);
 
         //deleting orphaned object should work

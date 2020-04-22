@@ -6,5 +6,5 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import java.util.List;
 
 public interface PaymentObjectRepository extends PagingAndSortingRepository<PaymentObject, Long> {
-    List<PaymentObject> findAllByOrderByIdAsc();
+    List<PaymentObject> findAllByOrderByOrderIdAsc();
 }

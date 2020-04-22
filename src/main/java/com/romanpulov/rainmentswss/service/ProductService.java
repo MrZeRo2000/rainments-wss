@@ -10,4 +10,9 @@ public class ProductService extends AbstractOrderedEntityService<Product, Produc
     public ProductService(ProductRepository repository, CustomQueryRepository customQueryRepository) {
         super(repository, customQueryRepository);
     }
+
+    @Override
+    public Iterable<Product> findAll() {
+        return repository.findAllByOrderByOrderIdAsc();
+    }
 }
