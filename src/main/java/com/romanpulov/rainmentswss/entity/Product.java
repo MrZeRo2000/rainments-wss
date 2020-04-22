@@ -6,7 +6,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "products")
-public class Product extends CommonEntitySuperclass implements CommonEntity {
+public class Product extends OrderedEntitySuperclass implements CommonEntity {
 
     @Id
     @Column(name = "product_id")

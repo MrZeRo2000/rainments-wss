@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/products", produces = MediaType.APPLICATION_JSON_VALUE)
-public class ProductController extends AbstractServiceRestController<Product, ProductDTO, ProductService> {
+public class ProductController extends AbstractOrderedServiceRestController<Product, ProductDTO, ProductService> {
     public ProductController(ProductService productService, EntityDTOMapper<Product, ProductDTO> mapper) {
         super(productService, mapper, LoggerFactory.getLogger(ProductController.class));
     }
