@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -58,9 +59,11 @@ public class RepositoryPaymentTests {
             paymentRepository.save(newPayment);
         });
 
+        LocalDate lastPaymentPeriodDate = LocalDate.now().minusMonths(1L).withDayOfMonth(1);
+
         Payment newPayment = new Payment();
         newPayment.setPaymentDate(LocalDate.now());
-        newPayment.setPaymentPeriodDate(LocalDate.now().minusMonths(1L).withDayOfMonth(1));
+        newPayment.setPaymentPeriodDate(lastPaymentPeriodDate);
 
         //payment object
         PaymentObject newPaymentObject = new PaymentObject();
@@ -125,7 +128,7 @@ public class RepositoryPaymentTests {
         //another payment
         Payment newPayment2 = new Payment();
         newPayment2.setPaymentDate(LocalDate.now());
-        newPayment2.setPaymentPeriodDate(LocalDate.now().minusMonths(1L).withDayOfMonth(1));
+        newPayment2.setPaymentPeriodDate(lastPaymentPeriodDate);
         newPayment2.setPaymentObject(newPaymentObject);
         newPayment2.setPaymentGroup(newPaymentGroup);
         newPayment2.setProduct(product2);
@@ -136,10 +139,44 @@ public class RepositoryPaymentTests {
 
         List<Payment> findByObjectDatePayments = paymentRepository.findByPaymentObjectIdAndPaymentPeriodDate(
                 newPaymentObject,
-                LocalDate.now().minusMonths(1L).withDayOfMonth(1),
+                lastPaymentPeriodDate,
                 Sort.by("paymentGroup.orderId").ascending()
         );
         assertThat(findByObjectDatePayments.size()).isEqualTo(2);
+
+        // inserting for other objects
+        PaymentObject paymentObject2 = new PaymentObject();
+        paymentObject2.setName("Payment Object 2");
+        paymentObject2 = paymentObjectRepository.save(paymentObject2);
+
+        Payment newPayment3 = new Payment();
+        newPayment3.setPaymentDate(LocalDate.now());
+        newPayment3.setPaymentPeriodDate(lastPaymentPeriodDate);
+        newPayment3.setPaymentObject(paymentObject2);
+        newPayment3.setPaymentGroup(newPaymentGroup);
+        newPayment3.setProduct(product2);
+        newPayment3.setPaymentAmount(new BigDecimal("56.54"));
+        newPayment3.setCommissionAmount(BigDecimal.ZERO);
+
+        paymentRepository.save(newPayment3);
+
+        List<Payment> findByPaymentPeriodDate = paymentRepository.findAllByPaymentPeriodDate(lastPaymentPeriodDate);
+        assertThat(findByPaymentPeriodDate.size()).isEqualTo(3);
+
+        Map<PaymentObject, BigDecimal> paymentObjectTotals =
+                findByPaymentPeriodDate
+                        .stream()
+                        .collect(Collectors.groupingBy(
+                                Payment::getPaymentObject,
+                                Collectors.reducing(
+                                        BigDecimal.ZERO,
+                                        Payment::getPaymentAmount,
+                                        BigDecimal::add
+                                )
+                        )
+                        );
+
+        
 
         //check setting null
         Assertions.assertThrows(org.springframework.transaction.TransactionSystemException.class, ()-> {

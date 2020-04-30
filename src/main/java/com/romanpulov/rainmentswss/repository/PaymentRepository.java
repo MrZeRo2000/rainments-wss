@@ -23,6 +23,8 @@ public interface PaymentRepository extends PagingAndSortingRepository<Payment, L
             LocalDate paymentPeriodDate,
             Sort sort);
 
+    List<Payment> findAllByPaymentPeriodDate(@Param("payment_period_date") LocalDate paymentPeriodDate);
+
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Payment p SET p.productCounter = :product_counter, p.paymentDate = :payment_date WHERE p.id = :payment_id")
     int updateProductCounter(
