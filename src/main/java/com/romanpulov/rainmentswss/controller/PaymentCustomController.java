@@ -12,6 +12,7 @@ import com.romanpulov.rainmentswss.repository.PaymentGroupRepository;
 import com.romanpulov.rainmentswss.repository.PaymentObjectRepository;
 import com.romanpulov.rainmentswss.repository.PaymentRepository;
 import com.romanpulov.rainmentswss.repository.ProductRepository;
+import com.romanpulov.rainmentswss.service.PaymentObjectPaymentService;
 import com.romanpulov.rainmentswss.service.PaymentService;
 import com.romanpulov.rainmentswss.service.PaymentTransformationService;
 import com.romanpulov.rainmentswss.transform.ExcelReadException;
@@ -22,8 +23,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -45,6 +49,8 @@ public class PaymentCustomController {
 
     private final PaymentService paymentService;
 
+    private final PaymentObjectPaymentService paymentObjectPaymentService;
+
     private final PaymentTransformationService paymentTransformationService;
 
     protected final EntityDTOMapper<Payment, PaymentDTO> mapper;
@@ -59,6 +65,7 @@ public class PaymentCustomController {
             PaymentGroupDTOMapper paymentGroupDTOMapper,
             ProductDTOMapper productDTOMapper,
             PaymentService paymentService,
+            PaymentObjectPaymentService paymentObjectPaymentService,
             PaymentTransformationService paymentTransformationService
     ) {
         this.paymentRepository = repository;
@@ -70,6 +77,7 @@ public class PaymentCustomController {
         this.paymentGroupDTOMapper = paymentGroupDTOMapper;
         this.productDTOMapper = productDTOMapper;
         this.paymentService = paymentService;
+        this.paymentObjectPaymentService = paymentObjectPaymentService;
         this.paymentTransformationService = paymentTransformationService;
     }
 
@@ -213,5 +221,27 @@ public class PaymentCustomController {
 
         int rowsAffected = paymentService.updatePaymentGroup(paymentObject, paymentGroupFrom, paymentGroupTo);
         return ResponseEntity.ok(new RowsAffectedDTO(rowsAffected));
+    }
+
+    @GetMapping("/payments:payment_object_totals_by_payment_period")
+    ResponseEntity<List<PaymentObjectTotalsDTO>> getPaymentObjectTotalsByPaymentPeriod(
+        @RequestParam("paymentPeriodDate")
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+        LocalDate paymentPeriodDate
+    ) {
+        List<PaymentObjectTotalsDTO> result = new ArrayList<>();
+
+        Map<PaymentObject, BigDecimal> totals = paymentObjectPaymentService.getPaymentObjectTotalsByPaymentPeriod(paymentPeriodDate);
+        totals.forEach((paymentObject, value) ->
+            result.add(
+                new PaymentObjectTotalsDTO(
+                    paymentPeriodDate,
+                    paymentObjectDTOMapper.entityToDTO(paymentObject),
+                    value
+                )
+            )
+        );
+
+        return ResponseEntity.ok(result);
     }
 }

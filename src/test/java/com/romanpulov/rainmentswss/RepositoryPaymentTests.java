@@ -176,7 +176,8 @@ public class RepositoryPaymentTests {
                         )
                         );
 
-        
+        assertThat(paymentObjectTotals.get(newPaymentObject)).isEqualTo(newPayment.getPaymentAmount().add(newPayment2.getPaymentAmount()));
+        assertThat(paymentObjectTotals.get(paymentObject2)).isEqualTo(newPayment3.getPaymentAmount());
 
         //check setting null
         Assertions.assertThrows(org.springframework.transaction.TransactionSystemException.class, ()-> {
