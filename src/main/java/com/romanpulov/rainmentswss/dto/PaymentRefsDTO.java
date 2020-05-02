@@ -10,7 +10,7 @@ public class PaymentRefsDTO {
 
     private final List<PaymentDTO> prevPeriodPaymentList;
 
-    private final List<PaymentObjectDTO> paymentObjectList;
+    private final PaymentObjectDTO paymentObject;
 
     private final List<PaymentGroupDTO> paymentGroupList;
 
@@ -19,13 +19,13 @@ public class PaymentRefsDTO {
     public PaymentRefsDTO(
             List<PaymentDTO> paymentList,
             List<PaymentDTO> prevPeriodPaymentList,
-            List<PaymentObjectDTO> paymentObjectList,
+            PaymentObjectDTO paymentObject,
             List<PaymentGroupDTO> paymentGroupList,
             List<ProductDTO> productList
     ) {
         this.paymentList = paymentList;
         this.prevPeriodPaymentList = prevPeriodPaymentList;
-        this.paymentObjectList = paymentObjectList;
+        this.paymentObject = paymentObject;
         this.paymentGroupList = paymentGroupList;
         this.productList = productList;
     }
@@ -38,8 +38,8 @@ public class PaymentRefsDTO {
         return prevPeriodPaymentList;
     }
 
-    public List<PaymentObjectDTO> getPaymentObjectList() {
-        return paymentObjectList;
+    public PaymentObjectDTO getPaymentObject() {
+        return paymentObject;
     }
 
     public List<PaymentGroupDTO> getPaymentGroupList() {

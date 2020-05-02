@@ -8,6 +8,7 @@ import com.romanpulov.rainmentswss.entitymapper.EntityDTOMapper;
 import com.romanpulov.rainmentswss.entitymapper.PaymentGroupDTOMapper;
 import com.romanpulov.rainmentswss.entitymapper.PaymentObjectDTOMapper;
 import com.romanpulov.rainmentswss.entitymapper.ProductDTOMapper;
+import com.romanpulov.rainmentswss.exception.CommonEntityNotFoundException;
 import com.romanpulov.rainmentswss.repository.PaymentGroupRepository;
 import com.romanpulov.rainmentswss.repository.PaymentObjectRepository;
 import com.romanpulov.rainmentswss.repository.PaymentRepository;
@@ -88,7 +89,7 @@ public class PaymentCustomController {
             @RequestParam("paymentPeriodDate")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
                     LocalDate paymentPeriodDate
-    ) {
+    ) throws CommonEntityNotFoundException {
 
         List<PaymentObjectDTO> paymentObjectList = paymentObjectRepository
                 .findAllByOrderByOrderIdAsc()
@@ -96,6 +97,12 @@ public class PaymentCustomController {
                 .map(paymentObjectDTOMapper::entityToDTO)
                 .collect(Collectors.toList());
 
+        PaymentObject paymentObject = paymentObjectRepository
+                .findById(paymentObjectId)
+                .orElseThrow(() -> new CommonEntityNotFoundException(paymentObjectId)
+        );
+
+        PaymentObjectDTO paymentObjectDTO = paymentObjectDTOMapper.entityToDTO(paymentObject);
 
         List<PaymentGroupDTO> paymentGroupList = paymentGroupRepository
                 .findAllByOrderByOrderIdAsc()
@@ -108,9 +115,6 @@ public class PaymentCustomController {
                 .stream()
                 .map(productDTOMapper::entityToDTO)
                 .collect(Collectors.toList());
-
-        PaymentObject paymentObject = new PaymentObject();
-        paymentObject.setId(paymentObjectId);
 
         List<PaymentDTO> paymentList = paymentRepository
                 .findByPaymentObjectIdAndPaymentPeriodDate(
@@ -133,11 +137,10 @@ public class PaymentCustomController {
         PaymentRefsDTO result = new PaymentRefsDTO(
                 paymentList,
                 prevPeriodPaymentList,
-                paymentObjectList,
+                paymentObjectDTO,
                 paymentGroupList,
                 productList
         );
-
 
         return ResponseEntity.ok(result);
     }
