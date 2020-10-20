@@ -41,7 +41,7 @@ public class ControllerPaymentTest extends ControllerMockMvcTest {
     void mainTest() throws Exception {
         try {
 
-            PaymentObjectDTO paymentObjectDTO = new PaymentObjectDTO(null, "New Payment Object");
+            PaymentObjectDTO paymentObjectDTO = new PaymentObjectDTO(null, "New Payment Object", null, null);
             json = mapper.writeValueAsString(paymentObjectDTO);
             MvcResult mvcResult = this.mvc.perform(MockMvcRequestBuilders.post("/payment-objects")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -49,6 +49,7 @@ public class ControllerPaymentTest extends ControllerMockMvcTest {
                     .content(json)
                     .accept(MediaType.APPLICATION_JSON_VALUE))
                     .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("New Payment Object"))
                     .andReturn();
 
             addResult(mvcResult);
@@ -73,7 +74,7 @@ public class ControllerPaymentTest extends ControllerMockMvcTest {
             Number paymentGroupId = JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.id");
             paymentGroupDTO.setId(paymentGroupId.longValue());
 
-            ProductDTO productDTO = new ProductDTO(null, "New Product", null);
+            ProductDTO productDTO = new ProductDTO(null, "New Product", null, null);
             json = mapper.writeValueAsString(productDTO);
             mvcResult = this.mvc.perform(MockMvcRequestBuilders.post("/products")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -81,6 +82,8 @@ public class ControllerPaymentTest extends ControllerMockMvcTest {
                     .content(json)
                     .accept(MediaType.APPLICATION_JSON_VALUE))
                     .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.unitName").doesNotExist())
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.counterPrecision").doesNotExist())
                     .andReturn()
             ;
 
@@ -89,7 +92,7 @@ public class ControllerPaymentTest extends ControllerMockMvcTest {
             Number productId = JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.id");
             productDTO.setId(productId.longValue());
 
-            ProductDTO product2DTO = new ProductDTO(null, "New Product 2", "kg");
+            ProductDTO product2DTO = new ProductDTO(null, "New Product 2", "kg", 0L);
             json = mapper.writeValueAsString(product2DTO);
             mvcResult = this.mvc.perform(MockMvcRequestBuilders.post("/products")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -97,6 +100,8 @@ public class ControllerPaymentTest extends ControllerMockMvcTest {
                     .content(json)
                     .accept(MediaType.APPLICATION_JSON_VALUE))
                     .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.unitName").value("kg"))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.counterPrecision").value("0"))
                     .andReturn()
             ;
 

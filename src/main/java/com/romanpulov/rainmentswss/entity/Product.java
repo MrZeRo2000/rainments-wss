@@ -44,6 +44,17 @@ public class Product extends OrderedEntitySuperclass implements CommonEntity {
         this.unitName = unitName;
     }
 
+    @Column(name = "product_counter_precision")
+    private Long counterPrecision;
+
+    public Long getCounterPrecision() {
+        return counterPrecision;
+    }
+
+    public void setCounterPrecision(Long counterPrecision) {
+        this.counterPrecision = counterPrecision;
+    }
+
     @OneToMany(mappedBy = "product")
     private final Set<Payment> payments = new HashSet<>();
 
@@ -60,6 +71,7 @@ public class Product extends OrderedEntitySuperclass implements CommonEntity {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", unitName='" + unitName + '\'' +
+                ", counterPrecision='" + counterPrecision + '\'' +
                 '}';
     }
 

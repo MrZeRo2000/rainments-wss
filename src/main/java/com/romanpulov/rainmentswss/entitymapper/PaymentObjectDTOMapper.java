@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class PaymentObjectDTOMapper implements EntityDTOMapper <PaymentObject, PaymentObjectDTO>{
     @Override
     public PaymentObjectDTO entityToDTO(PaymentObject entity) {
-        return new PaymentObjectDTO(entity.getId(), entity.getName());
+        return new PaymentObjectDTO(entity.getId(), entity.getName(), entity.getPeriod(), entity.getTerm());
     }
 
     @Override
@@ -16,6 +16,9 @@ public class PaymentObjectDTOMapper implements EntityDTOMapper <PaymentObject, P
         PaymentObject entity = new PaymentObject();
         entity.setId(dto.getId());
         entity.setName(dto.getName());
+        entity.setPeriod(dto.getPeriod());
+        entity.setTerm(dto.getTerm());
+
         return entity;
     }
 

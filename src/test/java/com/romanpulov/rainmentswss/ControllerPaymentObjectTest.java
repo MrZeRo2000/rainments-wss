@@ -32,9 +32,19 @@ public class ControllerPaymentObjectTest extends ControllerMockMvcTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(0)))
         ;
 
-        PaymentObjectDTO paymentObjectDTO = new PaymentObjectDTO(null, "New Payment Object");
+        PaymentObjectDTO paymentObjectDTO = new PaymentObjectDTO(null, "New Payment Object", null, null);
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(paymentObjectDTO);
+        this.mvc.perform(MockMvcRequestBuilders.post("/payment-objects")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json)
+                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+        ;
+
+        paymentObjectDTO = new PaymentObjectDTO(null, "Payment Object 2", "1M", "10D");
+        mapper = new ObjectMapper();
+        json = mapper.writeValueAsString(paymentObjectDTO);
         this.mvc.perform(MockMvcRequestBuilders.post("/payment-objects")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json)
@@ -46,7 +56,12 @@ public class ControllerPaymentObjectTest extends ControllerMockMvcTest {
                 .accept(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
-                .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(2)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("New Payment Object"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].period").doesNotExist())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value("Payment Object 2"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].period").value("1M"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].term").value("10D"))
         ;
 
         this.mvc.perform(MockMvcRequestBuilders.delete("/payment-objects/0")
@@ -57,7 +72,19 @@ public class ControllerPaymentObjectTest extends ControllerMockMvcTest {
 
         this.mvc.perform(MockMvcRequestBuilders.delete("/payment-objects/1")
                 .accept(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(MockMvcResultMatchers.status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk())
+        ;
+
+        this.mvc.perform(MockMvcRequestBuilders.get("/payment-objects")
+                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
+                .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(1)))
+        ;
+
+        this.mvc.perform(MockMvcRequestBuilders.delete("/payment-objects/2")
+                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())        ;
 
         this.mvc.perform(MockMvcRequestBuilders.get("/payment-objects")
                 .accept(MediaType.APPLICATION_JSON_VALUE))
@@ -65,6 +92,7 @@ public class ControllerPaymentObjectTest extends ControllerMockMvcTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
                 .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(0)))
         ;
+
     }
 
 }

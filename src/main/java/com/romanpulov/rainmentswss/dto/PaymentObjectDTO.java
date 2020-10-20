@@ -13,6 +13,10 @@ public class PaymentObjectDTO {
 
     private String name;
 
+    private String period;
+
+    private String term;
+
     public Long getId() {
         return id;
     }
@@ -29,13 +33,33 @@ public class PaymentObjectDTO {
         this.name = name;
     }
 
+    public String getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(String period) {
+        this.period = period;
+    }
+
+    public String getTerm() {
+        return term;
+    }
+
+    public void setTerm(String term) {
+        this.term = term;
+    }
+
     @JsonCreator
     public PaymentObjectDTO(
             @JsonProperty("id") Long id,
-            @JsonProperty("name") String name
+            @JsonProperty("name") String name,
+            @JsonProperty("period") String period,
+            @JsonProperty("term") String term
     ) {
         this.id = id;
         this.name = name;
+        this.period = period;
+        this.term = term;
     }
 
     @Override
@@ -56,6 +80,8 @@ public class PaymentObjectDTO {
         return "PaymentObjectDTO{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", period='" + period + '\'' +
+                ", term='" + term + '\'' +
                 '}';
     }
 }

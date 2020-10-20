@@ -35,6 +35,28 @@ public class PaymentObject extends OrderedEntitySuperclass implements CommonEnti
         this.name = name;
     }
 
+    @Column(name = "payment_object_period")
+    private String period;
+
+    public String getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(String period) {
+        this.period = period;
+    }
+
+    @Column(name = "payment_object_term")
+    private String term;
+
+    public String getTerm() {
+        return term;
+    }
+
+    public void setTerm(String term) {
+        this.term = term;
+    }
+
     @OneToMany(mappedBy = "paymentObject", fetch = FetchType.LAZY)
     private final Set<Payment> payments = new HashSet<>();
 
@@ -50,6 +72,8 @@ public class PaymentObject extends OrderedEntitySuperclass implements CommonEnti
         return "PaymentObject{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
+                ", period='" + period + '\'' +
+                ", term='" + term + '\'' +
                 '}';
     }
 

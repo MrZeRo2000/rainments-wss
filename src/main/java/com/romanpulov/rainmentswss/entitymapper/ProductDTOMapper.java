@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class ProductDTOMapper implements EntityDTOMapper<Product, ProductDTO> {
     @Override
     public ProductDTO entityToDTO(Product entity) {
-        return new ProductDTO(entity.getId(), entity.getName(), entity.getUnitName());
+        return new ProductDTO(entity.getId(), entity.getName(), entity.getUnitName(), entity.getCounterPrecision());
     }
 
     @Override
@@ -17,6 +17,7 @@ public class ProductDTOMapper implements EntityDTOMapper<Product, ProductDTO> {
         entity.setId(dto.getId());
         entity.setName(dto.getName());
         entity.setUnitName(dto.getUnitName());
+        entity.setCounterPrecision(dto.getCounterPrecision());
 
         return entity;
     }

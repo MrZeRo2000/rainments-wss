@@ -15,6 +15,8 @@ public class ProductDTO {
 
     private String unitName;
 
+    private Long counterPrecision;
+
     public Long getId() {
         return id;
     }
@@ -39,14 +41,24 @@ public class ProductDTO {
         this.unitName = unitName;
     }
 
+    public Long getCounterPrecision() {
+        return counterPrecision;
+    }
+
+    public void setCounterPrecision(Long counterPrecision) {
+        this.counterPrecision = counterPrecision;
+    }
+
     @JsonCreator
     public ProductDTO(
             @JsonProperty("id") Long id,
             @JsonProperty("name") String name,
-            @JsonProperty("unitName") String unitName) {
+            @JsonProperty("unitName") String unitName,
+            @JsonProperty("counterPrecision") Long counterPrecision){
         this.id = id;
         this.name = name;
         this.unitName = unitName;
+        this.counterPrecision = counterPrecision;
     }
 
     @Override
@@ -68,6 +80,7 @@ public class ProductDTO {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", unitName='" + unitName + '\'' +
+                ", counterPrecision='" + counterPrecision + '\'' +
                 '}';
     }
 }

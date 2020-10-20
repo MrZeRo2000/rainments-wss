@@ -44,7 +44,7 @@ public class ControllerPaymentCustomTest extends ControllerMockMvcTest {
 
         try {
 
-            PaymentObjectDTO paymentObjectDTO = new PaymentObjectDTO(null, "New Payment Object");
+            PaymentObjectDTO paymentObjectDTO = new PaymentObjectDTO(null, "New Payment Object", null, null);
             json = mapper.writeValueAsString(paymentObjectDTO);
             MvcResult mvcResult = this.mvc.perform(MockMvcRequestBuilders.post("/payment-objects")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -76,7 +76,7 @@ public class ControllerPaymentCustomTest extends ControllerMockMvcTest {
             Number paymentGroupId = JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.id");
             paymentGroupDTO.setId(paymentGroupId.longValue());
 
-            ProductDTO productDTO = new ProductDTO(null, "New Product", null);
+            ProductDTO productDTO = new ProductDTO(null, "New Product", "unit", 1L);
             json = mapper.writeValueAsString(productDTO);
             mvcResult = this.mvc.perform(MockMvcRequestBuilders.post("/products")
                     .contentType(MediaType.APPLICATION_JSON)
