@@ -41,7 +41,7 @@ public class ControllerPaymentTest extends ControllerMockMvcTest {
     void mainTest() throws Exception {
         try {
 
-            PaymentObjectDTO paymentObjectDTO = new PaymentObjectDTO(null, "New Payment Object", null, null);
+            PaymentObjectDTO paymentObjectDTO = new PaymentObjectDTO(null, "New Payment Object", null, null, 1L);
             json = mapper.writeValueAsString(paymentObjectDTO);
             MvcResult mvcResult = this.mvc.perform(MockMvcRequestBuilders.post("/payment-objects")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -50,6 +50,7 @@ public class ControllerPaymentTest extends ControllerMockMvcTest {
                     .accept(MediaType.APPLICATION_JSON_VALUE))
                     .andExpect(MockMvcResultMatchers.status().isOk())
                     .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("New Payment Object"))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.payDelay").value(1L))
                     .andReturn();
 
             addResult(mvcResult);

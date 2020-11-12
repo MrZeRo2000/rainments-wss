@@ -32,7 +32,7 @@ public class ControllerPaymentObjectTest extends ControllerMockMvcTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(0)))
         ;
 
-        PaymentObjectDTO paymentObjectDTO = new PaymentObjectDTO(null, "New Payment Object", null, null);
+        PaymentObjectDTO paymentObjectDTO = new PaymentObjectDTO(null, "New Payment Object", null, null, null);
         ObjectMapper mapper = new ObjectMapper();
         String json = mapper.writeValueAsString(paymentObjectDTO);
         this.mvc.perform(MockMvcRequestBuilders.post("/payment-objects")
@@ -42,7 +42,7 @@ public class ControllerPaymentObjectTest extends ControllerMockMvcTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
         ;
 
-        paymentObjectDTO = new PaymentObjectDTO(null, "Payment Object 2", "1M", "10D");
+        paymentObjectDTO = new PaymentObjectDTO(null, "Payment Object 2", "1M", "10D", 1L);
         mapper = new ObjectMapper();
         json = mapper.writeValueAsString(paymentObjectDTO);
         this.mvc.perform(MockMvcRequestBuilders.post("/payment-objects")
@@ -59,9 +59,11 @@ public class ControllerPaymentObjectTest extends ControllerMockMvcTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(2)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("New Payment Object"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].period").doesNotExist())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].payDelay").doesNotExist())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value("Payment Object 2"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].period").value("1M"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].term").value("10D"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].payDelay").value(1L))
         ;
 
         this.mvc.perform(MockMvcRequestBuilders.delete("/payment-objects/0")

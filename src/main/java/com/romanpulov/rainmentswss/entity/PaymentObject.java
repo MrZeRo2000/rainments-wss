@@ -2,6 +2,7 @@ package com.romanpulov.rainmentswss.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -57,6 +58,17 @@ public class PaymentObject extends OrderedEntitySuperclass implements CommonEnti
         this.term = term;
     }
 
+    @Column(name = "payment_object_pay_delay")
+    private Long payDelay;
+
+    public Long getPayDelay() {
+        return payDelay;
+    }
+
+    public void setPayDelay(Long payDelay) {
+        this.payDelay = payDelay;
+    }
+
     @OneToMany(mappedBy = "paymentObject", fetch = FetchType.LAZY)
     private final Set<Payment> payments = new HashSet<>();
 
@@ -74,6 +86,7 @@ public class PaymentObject extends OrderedEntitySuperclass implements CommonEnti
                 ", name='" + name + '\'' +
                 ", period='" + period + '\'' +
                 ", term='" + term + '\'' +
+                ", payDelay=" + payDelay +
                 '}';
     }
 

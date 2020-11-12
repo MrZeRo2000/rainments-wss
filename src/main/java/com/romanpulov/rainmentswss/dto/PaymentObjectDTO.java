@@ -17,6 +17,8 @@ public class PaymentObjectDTO {
 
     private String term;
 
+    private Long payDelay;
+
     public Long getId() {
         return id;
     }
@@ -49,17 +51,27 @@ public class PaymentObjectDTO {
         this.term = term;
     }
 
+    public Long getPayDelay() {
+        return payDelay;
+    }
+
+    public void setPayDelay(Long payDelay) {
+        this.payDelay = payDelay;
+    }
+
     @JsonCreator
     public PaymentObjectDTO(
             @JsonProperty("id") Long id,
             @JsonProperty("name") String name,
             @JsonProperty("period") String period,
-            @JsonProperty("term") String term
+            @JsonProperty("term") String term,
+            @JsonProperty("payDelay") Long payDelay
     ) {
         this.id = id;
         this.name = name;
         this.period = period;
         this.term = term;
+        this.payDelay = payDelay;
     }
 
     @Override
@@ -82,6 +94,7 @@ public class PaymentObjectDTO {
                 ", name='" + name + '\'' +
                 ", period='" + period + '\'' +
                 ", term='" + term + '\'' +
+                ", payDelay='" + payDelay + '\'' +
                 '}';
     }
 }

@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS `payment_objects` (
 	`payment_object_name`	TEXT NOT NULL,
 	`payment_object_period`	TEXT,
 	`payment_object_term`	TEXT,
+	`payment_object_pay_delay`	INT,
 	PRIMARY KEY(`payment_object_id`)
 );
 DROP TABLE IF EXISTS `payment_groups`;

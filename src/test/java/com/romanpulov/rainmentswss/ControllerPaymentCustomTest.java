@@ -44,7 +44,7 @@ public class ControllerPaymentCustomTest extends ControllerMockMvcTest {
 
         try {
 
-            PaymentObjectDTO paymentObjectDTO = new PaymentObjectDTO(null, "New Payment Object", null, null);
+            PaymentObjectDTO paymentObjectDTO = new PaymentObjectDTO(null, "New Payment Object", null, null, null);
             json = mapper.writeValueAsString(paymentObjectDTO);
             MvcResult mvcResult = this.mvc.perform(MockMvcRequestBuilders.post("/payment-objects")
                     .contentType(MediaType.APPLICATION_JSON)

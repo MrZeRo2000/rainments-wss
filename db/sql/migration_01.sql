@@ -10,5 +10,6 @@ WHERE product_unit_name IS NOT NULL;
 
 ALTER TABLE payment_objects ADD COLUMN payment_object_period TEXT;
 ALTER TABLE payment_objects ADD COLUMN payment_object_term TEXT;
+ALTER TABLE payment_objects ADD COLUMN payment_object_pay_delay INT;
 
 COMMIT;
