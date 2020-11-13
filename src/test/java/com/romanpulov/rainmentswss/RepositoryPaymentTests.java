@@ -4,6 +4,7 @@ import com.romanpulov.rainmentswss.entity.Payment;
 import com.romanpulov.rainmentswss.entity.PaymentGroup;
 import com.romanpulov.rainmentswss.entity.PaymentObject;
 import com.romanpulov.rainmentswss.entity.Product;
+import com.romanpulov.rainmentswss.entity.converter.AmountConverter;
 import com.romanpulov.rainmentswss.repository.PaymentGroupRepository;
 import com.romanpulov.rainmentswss.repository.PaymentObjectRepository;
 import com.romanpulov.rainmentswss.repository.PaymentRepository;
@@ -17,6 +18,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Sort;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -143,6 +146,16 @@ public class RepositoryPaymentTests {
                 Sort.by("paymentGroup.orderId").ascending()
         );
         assertThat(findByObjectDatePayments.size()).isEqualTo(2);
+
+        BigDecimal sumByPaymentObjectIdAndPaymentPeriodDate = paymentRepository.sumByPaymentObjectIdAndPaymentPeriodDate(
+                newPaymentObject,
+                lastPaymentPeriodDate
+        );
+
+        Assertions.assertEquals(
+                newPayment.getPaymentAmount().add(newPayment2.getPaymentAmount()),
+                sumByPaymentObjectIdAndPaymentPeriodDate.divide(AmountConverter.SCALE, MathContext.DECIMAL32)
+        );
 
         // inserting for other objects
         PaymentObject paymentObject2 = new PaymentObject();

@@ -2,8 +2,8 @@ package com.romanpulov.rainmentswss.service;
 
 import com.romanpulov.rainmentswss.entity.Payment;
 import com.romanpulov.rainmentswss.entity.PaymentObject;
-import com.romanpulov.rainmentswss.repository.PaymentObjectRepository;
 import com.romanpulov.rainmentswss.repository.PaymentRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -48,5 +48,15 @@ public class PaymentObjectPaymentService {
         });
 
         return result;
+    }
+
+    public BigDecimal getTotalByPaymentObjectAndPaymentPeriod(PaymentObject paymentObject, LocalDate paymentPeriodDate) {
+        List<Payment> paymentList = paymentRepository.findByPaymentObjectIdAndPaymentPeriodDate(
+                paymentObject,
+                paymentPeriodDate,
+                Sort.unsorted()
+        );
+
+        return paymentList.stream().map(Payment::getPaymentAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

@@ -3,6 +3,7 @@ package com.romanpulov.rainmentswss.repository;
 import com.romanpulov.rainmentswss.entity.Payment;
 import com.romanpulov.rainmentswss.entity.PaymentGroup;
 import com.romanpulov.rainmentswss.entity.PaymentObject;
+import com.romanpulov.rainmentswss.entity.converter.AmountConverter;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -10,6 +11,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.lang.NonNull;
 
+import javax.persistence.Convert;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -23,7 +25,20 @@ public interface PaymentRepository extends PagingAndSortingRepository<Payment, L
             LocalDate paymentPeriodDate,
             Sort sort);
 
+    @Query("SELECT SUM(p.paymentAmount) FROM Payment p WHERE p.paymentObject = :payment_object AND p.paymentPeriodDate = :payment_period_date")
+    BigDecimal sumByPaymentObjectIdAndPaymentPeriodDate(
+            @Param("payment_object")
+            PaymentObject paymentObject,
+            @Param("payment_period_date")
+            LocalDate paymentPeriodDate
+    );
+
     List<Payment> findAllByPaymentPeriodDate(@Param("payment_period_date") LocalDate paymentPeriodDate);
+
+    List<Payment> findAllByPaymentPeriodDateAndPaymentObject(
+            @Param("payment_period_date") LocalDate paymentPeriodDate,
+            @Param("payment_object") PaymentObject paymentObject
+    );
 
     @Modifying(clearAutomatically = true)
     @Query("UPDATE Payment p SET p.productCounter = :product_counter, p.paymentDate = :payment_date WHERE p.id = :payment_id")

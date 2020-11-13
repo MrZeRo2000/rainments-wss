@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 
 public class AmountConverter implements AttributeConverter<BigDecimal, Long> {
-    private static final BigDecimal SCALE =  BigDecimal.valueOf(100L);
+    public static final BigDecimal SCALE =  BigDecimal.valueOf(100L);
 
     @Override
     public Long convertToDatabaseColumn(BigDecimal attribute) {

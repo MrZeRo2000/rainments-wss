@@ -45,6 +45,7 @@ public class RepositoryPaymentObjectTests {
         assertThat(savedEntity.getName()).isEqualTo(newPaymentObject.getName());
 
         //find by id test
+        Assertions.assertTrue(paymentObjectRepository.findById(1L).isPresent());
         PaymentObject getByIdEntity = paymentObjectRepository.findById(1L).get();
         assertThat(getByIdEntity.getId()).isEqualTo(1L);
 
