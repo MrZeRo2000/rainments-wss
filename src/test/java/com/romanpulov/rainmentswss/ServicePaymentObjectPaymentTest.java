@@ -125,11 +125,26 @@ public class ServicePaymentObjectPaymentTest {
                 ));
 
         Assertions.assertEquals(
+                BigDecimal.valueOf(14.22),
+                paymentObjectPaymentService.getTotalAmountByPaymentObjectAndPaymentPeriod(
+                        monthDefaultPaymentObject,
+                        previousMonthDate
+                ));
+
+        Assertions.assertEquals(
                 BigDecimal.ZERO,
                 paymentObjectPaymentService.getTotalByPaymentObjectAndPaymentPeriod(
                         emptyPaymentObject,
                         previousMonthDate
                 ));
+
+        Assertions.assertEquals(
+                BigDecimal.ZERO,
+                paymentObjectPaymentService.getTotalAmountByPaymentObjectAndPaymentPeriod(
+                        emptyPaymentObject,
+                        previousMonthDate
+                ));
+
 
     }
 
