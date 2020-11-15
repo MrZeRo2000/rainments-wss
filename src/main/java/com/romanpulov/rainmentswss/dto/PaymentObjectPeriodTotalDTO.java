@@ -23,6 +23,22 @@ public class PaymentObjectPeriodTotalDTO {
 
     private final Boolean paymentOverdue;
 
+    public PaymentObjectDTO getPaymentObject() {
+        return paymentObject;
+    }
+
+    public LocalDate getPaymentDate() {
+        return paymentDate;
+    }
+
+    public BigDecimal getPaymentAmount() {
+        return paymentAmount;
+    }
+
+    public Boolean getPaymentOverdue() {
+        return paymentOverdue;
+    }
+
     public PaymentObjectPeriodTotalDTO(PaymentObjectDTO paymentObject, LocalDate paymentDate, BigDecimal paymentAmount, Boolean paymentOverdue) {
         this.paymentObject = paymentObject;
         this.paymentDate = paymentDate;

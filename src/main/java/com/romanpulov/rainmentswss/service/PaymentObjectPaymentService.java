@@ -103,9 +103,9 @@ public class PaymentObjectPaymentService {
                     if (paymentTerm != null && !paymentTerm.isEmpty()) {
                         Period paymentTermPeriod = Period.fromString(paymentTerm);
                         if (paymentTermPeriod != null) {
-                            LocalDate startDueDate = payDelay == 0 ? currentDateTruncated : paymentPeriod.addToDate(currentDateTruncated);
+                            LocalDate startDueDate = payDelay == 0 ? paymentPeriod.addToDate(currentDateTruncated) : currentDateTruncated;
                             LocalDate dueDate = paymentTermPeriod.addToDate(startDueDate);
-                            paymentOverdue = dueDate.isAfter(currentDate);
+                            paymentOverdue = currentDate.isAfter(dueDate);
                         }
                     }
 
