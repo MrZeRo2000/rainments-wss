@@ -247,4 +247,13 @@ public class PaymentCustomController {
 
         return ResponseEntity.ok(result);
     }
+
+    @GetMapping("/payments:payment_object_totals_by_date")
+    ResponseEntity<List<PaymentObjectPeriodTotalDTO>> getPaymentObjectPeriodTotal(
+            @RequestParam("currentDate")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+            LocalDate currentDate
+    ) {
+        return ResponseEntity.ok(paymentObjectPaymentService.getPaymentObjectPeriodTotal(currentDate));
+    }
 }

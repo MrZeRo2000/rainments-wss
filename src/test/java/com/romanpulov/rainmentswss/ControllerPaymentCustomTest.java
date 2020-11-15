@@ -42,11 +42,13 @@ public class ControllerPaymentCustomTest extends ControllerMockMvcTest {
     @Test
     void mainTest() throws Exception {
 
+        MvcResult mvcResult = null;
+
         try {
 
-            PaymentObjectDTO paymentObjectDTO = new PaymentObjectDTO(null, "New Payment Object", null, null, null);
+            PaymentObjectDTO paymentObjectDTO = new PaymentObjectDTO(null, "New Payment Object", "M", "10D", null);
             json = mapper.writeValueAsString(paymentObjectDTO);
-            MvcResult mvcResult = this.mvc.perform(MockMvcRequestBuilders.post("/payment-objects")
+            mvcResult = this.mvc.perform(MockMvcRequestBuilders.post("/payment-objects")
                     .contentType(MediaType.APPLICATION_JSON)
                     .characterEncoding(StandardCharsets.UTF_8.name())
                     .content(json)
@@ -92,7 +94,8 @@ public class ControllerPaymentCustomTest extends ControllerMockMvcTest {
             Number productId = JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.id");
             productDTO.setId(productId.longValue());
 
-            LocalDate periodDate = LocalDate.now().minusMonths(1L).withDayOfMonth(1);
+            LocalDate currentDate = LocalDate.now();
+            LocalDate periodDate = currentDate.minusMonths(1L).withDayOfMonth(1);
 
             PaymentDTO paymentDTO = new PaymentDTO(
                     null,
@@ -169,7 +172,36 @@ public class ControllerPaymentCustomTest extends ControllerMockMvcTest {
 
             addResult(mvcResult);
 
+            mvcResult = this.mvc.perform(MockMvcRequestBuilders.get("/payments:payment_object_totals_by_date")
+                    .param("currentDate", currentDate.atStartOfDay().withDayOfMonth(15).format(DateTimeFormatter.ISO_DATE_TIME))
+                    .characterEncoding(StandardCharsets.UTF_8.name())
+                    .accept(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.jsonPath("$[0].paymentAmount").value("53.22"))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$[0].paymentOverdue").value(true))
+                    .andReturn()
+            ;
+
+            addResult(mvcResult);
+
+            mvcResult = this.mvc.perform(MockMvcRequestBuilders.get("/payments:payment_object_totals_by_date")
+                    .param("currentDate", currentDate.atStartOfDay().withDayOfMonth(5).format(DateTimeFormatter.ISO_DATE_TIME))
+                    .characterEncoding(StandardCharsets.UTF_8.name())
+                    .accept(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.jsonPath("$[0].paymentAmount").value("53.22"))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$[0].paymentOverdue").value(false))
+                    .andReturn()
+            ;
+
+            addResult(mvcResult);
+
+            mvcResult = null;
+
         } finally {
+            if (mvcResult != null) {
+                addResult(mvcResult);
+            }
             Path f = Paths.get("logs/ControllerPaymentCustomTest.log");
             Files.write(f, logResult, StandardCharsets.UTF_8);
         }
