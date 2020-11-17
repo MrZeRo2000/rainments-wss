@@ -178,7 +178,7 @@ public class ControllerPaymentCustomTest extends ControllerMockMvcTest {
                     .accept(MediaType.APPLICATION_JSON_VALUE))
                     .andExpect(MockMvcResultMatchers.status().isOk())
                     .andExpect(MockMvcResultMatchers.jsonPath("$[0].paymentAmount").value("53.22"))
-                    .andExpect(MockMvcResultMatchers.jsonPath("$[0].paymentOverdue").value(true))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$[0].paymentOverdue").value(false))
                     .andReturn()
             ;
 
