@@ -202,6 +202,12 @@ public class ServicePaymentObjectPaymentTest {
         Assertions.assertFalse(total.get(1).getPaymentOverdue());
         Assertions.assertFalse(total.get(2).getPaymentOverdue());
         Assertions.assertFalse(total.get(3).getPaymentOverdue());
+        Assertions.assertFalse(total.get(4).getPaymentOverdue());
+
+        //next month
+        total = paymentObjectPaymentService.getPaymentObjectPeriodTotal(currentDate.plusMonths(1L));
+        Assertions.assertNotNull(total);
+
         Assertions.assertTrue(total.get(4).getPaymentOverdue());
 
         // for quarter
@@ -209,11 +215,16 @@ public class ServicePaymentObjectPaymentTest {
         Assertions.assertFalse(total.get(5).getPaymentOverdue());
 
         total = paymentObjectPaymentService.getPaymentObjectPeriodTotal(LocalDate.parse("25.04.2003", formatter));
-        Assertions.assertTrue(total.get(5).getPaymentOverdue());
+        Assertions.assertFalse(total.get(5).getPaymentOverdue());
 
         total = paymentObjectPaymentService.getPaymentObjectPeriodTotal(LocalDate.parse("02.05.2003", formatter));
-        Assertions.assertTrue(total.get(5).getPaymentOverdue());
+        Assertions.assertFalse(total.get(5).getPaymentOverdue());
 
+        total = paymentObjectPaymentService.getPaymentObjectPeriodTotal(LocalDate.parse("02.07.2003", formatter));
+        Assertions.assertFalse(total.get(5).getPaymentOverdue());
+
+        total = paymentObjectPaymentService.getPaymentObjectPeriodTotal(LocalDate.parse("25.07.2003", formatter));
+        Assertions.assertTrue(total.get(5).getPaymentOverdue());
     }
 
 }

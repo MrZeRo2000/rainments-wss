@@ -87,7 +87,7 @@ public class PaymentObjectPaymentService {
 
             // calc paymentDate and overdue
             LocalDate paymentDate = null;
-            boolean paymentOverdue = false;
+            LocalDate dueDate = null;
 
             if (paymentObject.getPeriod() != null) {
                 try {
@@ -104,8 +104,7 @@ public class PaymentObjectPaymentService {
                         Period paymentTermPeriod = Period.fromString(paymentTerm);
                         if (paymentTermPeriod != null) {
                             LocalDate startDueDate = payDelay == 0 ? paymentPeriod.addToDate(currentDateTruncated) : currentDateTruncated;
-                            LocalDate dueDate = paymentTermPeriod.addToDate(startDueDate);
-                            paymentOverdue = currentDate.isAfter(dueDate);
+                            dueDate = paymentTermPeriod.addToDate(startDueDate);
                         }
                     }
 
@@ -117,6 +116,10 @@ public class PaymentObjectPaymentService {
             // calc totalAmount
             BigDecimal totalAmount = (paymentDate == null) ? BigDecimal.ZERO :
                     getTotalAmountByPaymentObjectAndPaymentPeriod(paymentObject, paymentDate);
+
+            boolean paymentOverdue = dueDate != null
+                    && totalAmount.equals(BigDecimal.ZERO)
+                    && currentDate.isAfter(dueDate);
 
             result.add(new PaymentObjectPeriodTotalDTO(
                     paymentObjectDTOMapper.entityToDTO(paymentObject),
