@@ -2,7 +2,6 @@ package com.romanpulov.rainmentswss;
 
 import com.romanpulov.rainmentswss.vo.Period;
 import com.romanpulov.rainmentswss.vo.PeriodType;
-import jdk.vm.ci.meta.Local;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

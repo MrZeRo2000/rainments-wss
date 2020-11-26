@@ -5,6 +5,7 @@ import com.romanpulov.rainmentswss.entity.Payment;
 import com.romanpulov.rainmentswss.entity.PaymentGroup;
 import com.romanpulov.rainmentswss.entity.PaymentObject;
 import com.romanpulov.rainmentswss.entity.Product;
+import com.romanpulov.rainmentswss.exception.NotFoundException;
 import com.romanpulov.rainmentswss.repository.PaymentGroupRepository;
 import com.romanpulov.rainmentswss.repository.PaymentObjectRepository;
 import com.romanpulov.rainmentswss.repository.PaymentRepository;
@@ -48,40 +49,42 @@ public class ServicePaymentObjectPaymentTest {
     }
 
     private final LocalDate currentDate = LocalDate.now().withDayOfMonth(20);
-    LocalDate currentMonthDate = currentDate.withDayOfMonth(1);
-    LocalDate previousMonthDate = currentDate.minusMonths(1L).withDayOfMonth(1);
+    private LocalDate currentMonthDate = currentDate.withDayOfMonth(1);
+    private LocalDate previousMonthDate = currentDate.minusMonths(1L).withDayOfMonth(1);
+
+    private int[] monthQuarters = {0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3};
 
     public ServicePaymentObjectPaymentTest() {
         log.info("ServicePaymentObjectPaymentTest constructor");
     }
 
     private void prepareTestData() {
-        //empty payment object
+        //(1) empty payment object
         PaymentObject emptyPaymentObject = new PaymentObject();
         emptyPaymentObject.setName("Empty payment object");
         paymentObjectRepository.save(emptyPaymentObject);
 
-        //payment object
+        //(2) payment object
         PaymentObject defaultPaymentObject = new PaymentObject();
         defaultPaymentObject.setName("Month Default");
         defaultPaymentObject.setPeriod("M");
         paymentObjectRepository.save(defaultPaymentObject);
 
-        //payment object month next
+        //(3) payment object month next
         PaymentObject nextPaymentObject = new PaymentObject();
         nextPaymentObject.setName("Month Next");
         nextPaymentObject.setPeriod("M");
         nextPaymentObject.setPayDelay(1L);
         paymentObjectRepository.save(nextPaymentObject);
 
-        //payment object month current
+        //(4) payment object month current
         PaymentObject currentPaymentObject = new PaymentObject();
         currentPaymentObject.setName("Month Current");
         currentPaymentObject.setPeriod("M");
         currentPaymentObject.setPayDelay(0L);
         paymentObjectRepository.save(currentPaymentObject);
 
-        //payment object month next term 4 days
+        //(5) payment object month next term 4 days
         PaymentObject next4DaysPaymentObject = new PaymentObject();
         next4DaysPaymentObject.setName("Month Next term 4 days");
         next4DaysPaymentObject.setPeriod("M");
@@ -89,7 +92,7 @@ public class ServicePaymentObjectPaymentTest {
         next4DaysPaymentObject.setTerm("4D");
         paymentObjectRepository.save(next4DaysPaymentObject);
 
-        //payment object quarter current term 10 days
+        //(6) payment object quarter current term 10 days
         PaymentObject current10DaysQPaymentObject = new PaymentObject();
         current10DaysQPaymentObject.setName("Quarter Next term 10 days");
         current10DaysQPaymentObject.setPeriod("Q");
@@ -225,6 +228,30 @@ public class ServicePaymentObjectPaymentTest {
 
         total = paymentObjectPaymentService.getPaymentObjectPeriodTotal(LocalDate.parse("25.07.2003", formatter));
         Assertions.assertTrue(total.get(5).getPaymentOverdue());
-    }
 
+        //checks for getPaymentObjectPeriodById
+        PaymentObjectPeriodTotalDTO item;
+
+        Assertions.assertThrows(NotFoundException.class, () -> {
+            paymentObjectPaymentService.getPaymentObjectPeriodById(200L, currentDate);
+        });
+
+        item = paymentObjectPaymentService.getPaymentObjectPeriodById(1L, currentDate);
+        Assertions.assertEquals(previousMonthDate, item.getPaymentDate());
+
+        item = paymentObjectPaymentService.getPaymentObjectPeriodById(2L, currentDate);
+        Assertions.assertEquals(previousMonthDate, item.getPaymentDate());
+
+        item = paymentObjectPaymentService.getPaymentObjectPeriodById(3L, currentDate);
+        Assertions.assertEquals(previousMonthDate, item.getPaymentDate());
+
+        item = paymentObjectPaymentService.getPaymentObjectPeriodById(4L, currentDate);
+        Assertions.assertEquals(currentDate.withDayOfMonth(1), item.getPaymentDate());
+
+        int monthQuarter = monthQuarters[currentDate.getMonth().getValue() - 1];
+        LocalDate currentQuarterStartDate = currentDate.withMonth(monthQuarter * 3 + 1).withDayOfMonth(1);
+
+        item = paymentObjectPaymentService.getPaymentObjectPeriodById(6L, currentDate);
+        Assertions.assertEquals(currentQuarterStartDate, item.getPaymentDate());
+    }
 }

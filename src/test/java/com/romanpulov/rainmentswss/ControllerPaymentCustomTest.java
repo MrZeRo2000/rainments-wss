@@ -196,6 +196,23 @@ public class ControllerPaymentCustomTest extends ControllerMockMvcTest {
 
             addResult(mvcResult);
 
+            mvcResult = this.mvc.perform(MockMvcRequestBuilders.get("/payments:payment_object_period_by_id")
+                    .param("paymentObjectId", String.valueOf(1))
+                    .param("currentDate", currentDate.atStartOfDay().withDayOfMonth(5).format(DateTimeFormatter.ISO_DATE_TIME))
+                    .characterEncoding(StandardCharsets.UTF_8.name())
+                    .accept(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.paymentAmount").doesNotExist())
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.paymentOverdue").doesNotExist())
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.paymentObject.id").value(1))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.paymentObject.period").value("M"))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.paymentDate").value(currentDate.atStartOfDay().withDayOfMonth(1).minusMonths(1L).format(DateTimeFormatter.ISO_DATE_TIME)))
+                    .andReturn()
+            ;
+
+            addResult(mvcResult);
+
+
             mvcResult = null;
 
         } finally {

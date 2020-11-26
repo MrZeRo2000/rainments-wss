@@ -9,6 +9,7 @@ import com.romanpulov.rainmentswss.entitymapper.PaymentGroupDTOMapper;
 import com.romanpulov.rainmentswss.entitymapper.PaymentObjectDTOMapper;
 import com.romanpulov.rainmentswss.entitymapper.ProductDTOMapper;
 import com.romanpulov.rainmentswss.exception.CommonEntityNotFoundException;
+import com.romanpulov.rainmentswss.exception.NotFoundException;
 import com.romanpulov.rainmentswss.repository.PaymentGroupRepository;
 import com.romanpulov.rainmentswss.repository.PaymentObjectRepository;
 import com.romanpulov.rainmentswss.repository.PaymentRepository;
@@ -246,6 +247,17 @@ public class PaymentCustomController {
         );
 
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/payments:payment_object_period_by_id")
+    ResponseEntity<PaymentObjectPeriodTotalDTO> getPaymentObjectPeriodById (
+            @RequestParam("paymentObjectId")
+                    Long paymentObjectId,
+            @RequestParam("currentDate")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+                    LocalDate currentDate
+    )  throws NotFoundException {
+        return ResponseEntity.ok(paymentObjectPaymentService.getPaymentObjectPeriodById(paymentObjectId, currentDate));
     }
 
     @GetMapping("/payments:payment_object_totals_by_date")

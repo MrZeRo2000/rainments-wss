@@ -5,6 +5,7 @@ import com.romanpulov.rainmentswss.entity.Payment;
 import com.romanpulov.rainmentswss.entity.PaymentObject;
 import com.romanpulov.rainmentswss.entity.converter.AmountConverter;
 import com.romanpulov.rainmentswss.entitymapper.PaymentObjectDTOMapper;
+import com.romanpulov.rainmentswss.exception.NotFoundException;
 import com.romanpulov.rainmentswss.repository.PaymentRepository;
 import com.romanpulov.rainmentswss.vo.Period;
 import com.romanpulov.rainmentswss.vo.PeriodType;
@@ -75,42 +76,32 @@ public class PaymentObjectPaymentService {
         return repositoryResult == null ? BigDecimal.ZERO : repositoryResult.divide(AmountConverter.SCALE, MathContext.DECIMAL32);
     }
 
+    public PaymentObjectPeriodTotalDTO getPaymentObjectPeriodById(Long id, LocalDate currentDate) throws NotFoundException {
+        PaymentObject paymentObject = paymentObjectService.findById(id).orElseThrow(
+                () -> new NotFoundException(String.format("Payment object not found by id:{%d}", id))
+        );
+        LocalDate paymentDate = paymentObjectService.getPaymentObjectPaymentDate(paymentObject, currentDate);
+
+        return new PaymentObjectPeriodTotalDTO(
+                paymentObjectDTOMapper.entityToDTO(paymentObject),
+                paymentDate,
+                null,
+                null
+        );
+    }
+
     public List<PaymentObjectPeriodTotalDTO> getPaymentObjectPeriodTotal(LocalDate currentDate) {
         List<PaymentObjectPeriodTotalDTO> result = new ArrayList<>();
 
-        Pattern termPattern = Pattern.compile("(\\d+)?(\\w)");
-
         paymentObjectService.findAll().forEach(paymentObject -> {
-
-            // calc delay
-            long payDelay = paymentObject.getPayDelay() == null ? 1 : paymentObject.getPayDelay();
 
             // calc paymentDate and overdue
             LocalDate paymentDate = null;
             LocalDate dueDate = null;
 
             if (paymentObject.getPeriod() != null) {
-                try {
-                    PeriodType paymentPeriodType = PeriodType.valueOf(paymentObject.getPeriod());
-                    Period paymentPeriod = new Period(paymentPeriodType, -payDelay);
-
-                    LocalDate currentDateTruncated = Period.truncateToPeriodType(currentDate, paymentPeriodType);
-
-                    paymentDate = paymentPeriod.addToDate(currentDateTruncated);
-
-                    // calc overdue
-                    String paymentTerm = paymentObject.getTerm();
-                    if (paymentTerm != null && !paymentTerm.isEmpty()) {
-                        Period paymentTermPeriod = Period.fromString(paymentTerm);
-                        if (paymentTermPeriod != null) {
-                            LocalDate startDueDate = payDelay == 0 ? paymentPeriod.addToDate(currentDateTruncated) : currentDateTruncated;
-                            dueDate = paymentTermPeriod.addToDate(startDueDate);
-                        }
-                    }
-
-
-                } catch (IllegalArgumentException ignored) {
-                }
+                paymentDate = paymentObjectService.getPaymentObjectPaymentDate(paymentObject, currentDate);
+                dueDate = paymentObjectService.getPaymentObjectDueDate(paymentObject, currentDate);
             }
 
             // calc totalAmount
