@@ -25,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -159,8 +160,9 @@ public class PaymentCustomController {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
                     LocalDate paymentPeriodDate
     ) {
-        PaymentObject paymentObject = new PaymentObject();
-        paymentObject.setId(paymentObjectId);
+        PaymentObject paymentObject = paymentObjectRepository.findById(paymentObjectId).orElseThrow(
+                () -> new EntityNotFoundException("Payment object not found:" + paymentObjectId)
+        );
 
         int rowsAffected = this.paymentService.duplicatePreviousPeriod(paymentObject, paymentPeriodDate);
 
