@@ -4,6 +4,8 @@ import com.romanpulov.rainmentswss.entity.Payment;
 import com.romanpulov.rainmentswss.entity.PaymentGroup;
 import com.romanpulov.rainmentswss.entity.PaymentObject;
 import com.romanpulov.rainmentswss.repository.PaymentRepository;
+import com.romanpulov.rainmentswss.vo.Period;
+import com.romanpulov.rainmentswss.vo.PeriodType;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,8 +17,11 @@ import java.util.List;
 @Service
 public class PaymentService extends AbstractEntityService<Payment, PaymentRepository> {
 
-    public PaymentService(PaymentRepository repository) {
+    private final PaymentObjectService paymentObjectService;
+
+    public PaymentService(PaymentRepository repository, PaymentObjectService paymentObjectService) {
         super(repository);
+        this.paymentObjectService = paymentObjectService;
     }
 
     @Transactional
@@ -47,7 +52,9 @@ public class PaymentService extends AbstractEntityService<Payment, PaymentReposi
 
     @Transactional
     public int duplicatePreviousPeriod(PaymentObject paymentObject, LocalDate paymentPeriodDate) {
-        paymentPeriodDate = paymentPeriodDate.withDayOfMonth(1);
+        PeriodType paymentPeriodType = paymentObjectService.getPaymentObjectPeriodType(paymentObject);
+
+        paymentPeriodDate = Period.truncateToPeriodType(paymentPeriodDate, paymentPeriodType);
 
         List<Payment> currentPeriodPayments =
                 this.repository.findByPaymentObjectIdAndPaymentPeriodDate(paymentObject, paymentPeriodDate, Sort.unsorted());
@@ -55,7 +62,8 @@ public class PaymentService extends AbstractEntityService<Payment, PaymentReposi
             throw new RuntimeException("Current period is not empty");
         }
 
-        LocalDate prevPeriodDate = paymentPeriodDate.minusMonths(1);
+        LocalDate prevPeriodDate = paymentObjectService.getPaymentObjectPreviousPeriodPaymentDate(paymentObject, paymentPeriodDate);
+
         List<Payment> prevPeriodPayments =
                 this.repository.findByPaymentObjectIdAndPaymentPeriodDate(paymentObject, prevPeriodDate, Sort.unsorted());
 

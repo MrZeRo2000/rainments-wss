@@ -25,7 +25,7 @@ import java.util.logging.Logger;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ServicePaymentObjectPaymentTest {
-    private static final Logger log = Logger.getLogger(ServicePaymentGroupTests.class.getName());
+    private static final Logger log = Logger.getLogger(ServicePaymentObjectPaymentTest.class.getName());
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     @Autowired
@@ -253,5 +253,6 @@ public class ServicePaymentObjectPaymentTest {
 
         item = paymentObjectPaymentService.getPaymentObjectPeriodById(6L, currentDate);
         Assertions.assertEquals(currentQuarterStartDate, item.getPaymentDate());
+
     }
 }

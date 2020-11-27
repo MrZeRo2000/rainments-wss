@@ -54,6 +54,15 @@ public class PaymentObjectService extends AbstractOrderedEntityService<PaymentOb
         return paymentPeriod.addToDate(currentDateTruncated);
     }
 
+    public LocalDate getPaymentObjectPreviousPeriodPaymentDate(PaymentObject paymentObject, LocalDate paymentPeriodDate) {
+        PeriodType paymentPeriodType = getPaymentObjectPeriodType(paymentObject);
+        Period paymentPeriod = new Period(paymentPeriodType, -1);
+
+        paymentPeriodDate = Period.truncateToPeriodType(paymentPeriodDate, paymentPeriodType);
+
+        return paymentPeriod.addToDate(paymentPeriodDate);
+    }
+
     public LocalDate getPaymentObjectDueDate(PaymentObject paymentObject, LocalDate currentDate) {
         LocalDate dueDate = null;
 

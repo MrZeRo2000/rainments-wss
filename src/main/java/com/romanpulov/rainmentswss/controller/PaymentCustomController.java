@@ -15,6 +15,7 @@ import com.romanpulov.rainmentswss.repository.PaymentObjectRepository;
 import com.romanpulov.rainmentswss.repository.PaymentRepository;
 import com.romanpulov.rainmentswss.repository.ProductRepository;
 import com.romanpulov.rainmentswss.service.PaymentObjectPaymentService;
+import com.romanpulov.rainmentswss.service.PaymentObjectService;
 import com.romanpulov.rainmentswss.service.PaymentService;
 import com.romanpulov.rainmentswss.service.PaymentTransformationService;
 import com.romanpulov.rainmentswss.transform.ExcelReadException;
@@ -49,6 +50,8 @@ public class PaymentCustomController {
 
     private final ProductDTOMapper productDTOMapper;
 
+    private final PaymentObjectService paymentObjectService;
+
     private final PaymentService paymentService;
 
     private final PaymentObjectPaymentService paymentObjectPaymentService;
@@ -66,6 +69,7 @@ public class PaymentCustomController {
             PaymentObjectDTOMapper paymentObjectDTOMapper,
             PaymentGroupDTOMapper paymentGroupDTOMapper,
             ProductDTOMapper productDTOMapper,
+            PaymentObjectService paymentObjectService,
             PaymentService paymentService,
             PaymentObjectPaymentService paymentObjectPaymentService,
             PaymentTransformationService paymentTransformationService
@@ -78,6 +82,7 @@ public class PaymentCustomController {
         this.paymentObjectDTOMapper = paymentObjectDTOMapper;
         this.paymentGroupDTOMapper = paymentGroupDTOMapper;
         this.productDTOMapper = productDTOMapper;
+        this.paymentObjectService = paymentObjectService;
         this.paymentService = paymentService;
         this.paymentObjectPaymentService = paymentObjectPaymentService;
         this.paymentTransformationService = paymentTransformationService;
@@ -129,7 +134,7 @@ public class PaymentCustomController {
         List<PaymentDTO> prevPeriodPaymentList = paymentRepository
                 .findByPaymentObjectIdAndPaymentPeriodDate(
                         paymentObject,
-                        paymentPeriodDate.minusMonths(1L),
+                        paymentObjectService.getPaymentObjectPreviousPeriodPaymentDate(paymentObject, paymentPeriodDate),
                         Sort.by("paymentGroup.orderId", "product.orderId"))
                 .stream()
                 .map(mapper::entityToDTO)
