@@ -15,7 +15,7 @@ bootWar {
 }
 
 group = 'com.romanpulov'
-version = '0.0.5'
+version = '0.1.0'
 sourceCompatibility = '1.8'
 
 repositories {
