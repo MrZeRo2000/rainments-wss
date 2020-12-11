@@ -17,6 +17,17 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface PaymentRepository extends PagingAndSortingRepository<Payment, Long> {
+
+    List<Payment> findByPaymentObjectAndPaymentPeriodDateBetween(
+            @Param("payment_object")
+                    PaymentObject paymentObject,
+            @Param("PaymentPeriodDateStart")
+                LocalDate paymentPeriodDateStart,
+            @Param("PaymentPeriodDateEnd")
+                    LocalDate paymentPeriodDateEnd,
+            Sort sort
+    );
+
     @Query("SELECT p FROM Payment p WHERE p.paymentObject = :payment_object AND p.paymentPeriodDate = :payment_period_date")
     List<Payment> findByPaymentObjectIdAndPaymentPeriodDate(
             @Param("payment_object")

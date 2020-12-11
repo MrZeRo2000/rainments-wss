@@ -212,6 +212,36 @@ public class ControllerPaymentCustomTest extends ControllerMockMvcTest {
 
             addResult(mvcResult);
 
+            mvcResult = this.mvc.perform(MockMvcRequestBuilders.get("/payments:payments_by_payment_object_and_payment_period_date_range")
+                    .param("paymentObjectId", String.valueOf(1))
+                    .param("paymentPeriodDateStart", periodDate.atStartOfDay().format(DateTimeFormatter.ISO_DATE_TIME))
+                    .param("paymentPeriodDateEnd", periodDate.atStartOfDay().plusMonths(1L).format(DateTimeFormatter.ISO_DATE_TIME))
+                    .characterEncoding(StandardCharsets.UTF_8.name())
+                    .accept(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.jsonPath("$[0].paymentAmount").value("53.22"))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$[0].product.id").value(1))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$[1].paymentAmount").value(0))
+                    .andReturn()
+            ;
+
+            addResult(mvcResult);
+
+            mvcResult = this.mvc.perform(MockMvcRequestBuilders.get("/payments:payments_by_payment_object_and_payment_period_date_range")
+                    .param("paymentObjectId", String.valueOf(1))
+                    .param("paymentPeriodDateStart", periodDate.atStartOfDay().plusMonths(1L).format(DateTimeFormatter.ISO_DATE_TIME))
+                    .param("paymentPeriodDateEnd", periodDate.atStartOfDay().plusMonths(2L).format(DateTimeFormatter.ISO_DATE_TIME))
+                    .characterEncoding(StandardCharsets.UTF_8.name())
+                    .accept(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.jsonPath("$[0].paymentAmount").value(0))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$[0].product.id").value(1))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$[1].paymentAmount").doesNotExist())
+                    .andReturn()
+            ;
+
+            addResult(mvcResult);
+
 
             mvcResult = null;
 

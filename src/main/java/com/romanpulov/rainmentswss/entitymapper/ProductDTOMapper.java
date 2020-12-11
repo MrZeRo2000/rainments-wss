@@ -11,6 +11,10 @@ public class ProductDTOMapper implements EntityDTOMapper<Product, ProductDTO> {
         return new ProductDTO(entity.getId(), entity.getName(), entity.getUnitName(), entity.getCounterPrecision());
     }
 
+    public ProductDTO entityIdNameToDTO(Product entity) {
+        return new ProductDTO(entity.getId(), entity.getName(), null,  null);
+    }
+
     @Override
     public Product dtoTOEntity(ProductDTO dto) {
         Product entity = new Product();

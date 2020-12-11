@@ -4,10 +4,7 @@ import com.romanpulov.rainmentswss.dto.*;
 import com.romanpulov.rainmentswss.entity.Payment;
 import com.romanpulov.rainmentswss.entity.PaymentGroup;
 import com.romanpulov.rainmentswss.entity.PaymentObject;
-import com.romanpulov.rainmentswss.entitymapper.EntityDTOMapper;
-import com.romanpulov.rainmentswss.entitymapper.PaymentGroupDTOMapper;
-import com.romanpulov.rainmentswss.entitymapper.PaymentObjectDTOMapper;
-import com.romanpulov.rainmentswss.entitymapper.ProductDTOMapper;
+import com.romanpulov.rainmentswss.entitymapper.*;
 import com.romanpulov.rainmentswss.exception.CommonEntityNotFoundException;
 import com.romanpulov.rainmentswss.exception.NotFoundException;
 import com.romanpulov.rainmentswss.repository.PaymentGroupRepository;
@@ -51,6 +48,8 @@ public class PaymentCustomController {
 
     private final ProductDTOMapper productDTOMapper;
 
+    private final PaymentRepDTOMapper paymentRepDTOMapper;
+
     private final PaymentObjectService paymentObjectService;
 
     private final PaymentService paymentService;
@@ -70,6 +69,7 @@ public class PaymentCustomController {
             PaymentObjectDTOMapper paymentObjectDTOMapper,
             PaymentGroupDTOMapper paymentGroupDTOMapper,
             ProductDTOMapper productDTOMapper,
+            PaymentRepDTOMapper paymentRepDTOMapper,
             PaymentObjectService paymentObjectService,
             PaymentService paymentService,
             PaymentObjectPaymentService paymentObjectPaymentService,
@@ -83,6 +83,7 @@ public class PaymentCustomController {
         this.paymentObjectDTOMapper = paymentObjectDTOMapper;
         this.paymentGroupDTOMapper = paymentGroupDTOMapper;
         this.productDTOMapper = productDTOMapper;
+        this.paymentRepDTOMapper = paymentRepDTOMapper;
         this.paymentObjectService = paymentObjectService;
         this.paymentService = paymentService;
         this.paymentObjectPaymentService = paymentObjectPaymentService;
@@ -274,5 +275,33 @@ public class PaymentCustomController {
             LocalDate currentDate
     ) {
         return ResponseEntity.ok(paymentObjectPaymentService.getPaymentObjectPeriodTotal(currentDate));
+    }
+
+    @GetMapping("/payments:payments_by_payment_object_and_payment_period_date_range")
+    ResponseEntity<List<PaymentRepDTO>> getPaymentsByPaymentObjectAndPaymentDateRange(
+            @RequestParam("paymentObjectId")
+                    Long paymentObjectId,
+            @RequestParam("paymentPeriodDateStart")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+                    LocalDate paymentPeriodDateStart,
+            @RequestParam("paymentPeriodDateEnd")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+                    LocalDate paymentPeriodDateEnd
+    ) {
+        PaymentObject paymentObject = new PaymentObject();
+        paymentObject.setId(paymentObjectId);
+
+        List<PaymentRepDTO> result =
+            paymentRepository.findByPaymentObjectAndPaymentPeriodDateBetween(
+                    paymentObject,
+                    paymentPeriodDateStart,
+                    paymentPeriodDateEnd,
+                    Sort.by("paymentDate").ascending()
+            )
+            .stream()
+            .map(paymentRepDTOMapper::entityToDTO)
+            .collect(Collectors.toList());
+
+        return ResponseEntity.ok(result);
     }
 }
