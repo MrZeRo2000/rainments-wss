@@ -278,7 +278,7 @@ public class PaymentCustomController {
     }
 
     @GetMapping("/payments:payments_by_payment_object_and_payment_period_date_range")
-    ResponseEntity<List<PaymentRepDTO>> getPaymentsByPaymentObjectAndPaymentDateRange(
+    ResponseEntity<PaymentRepRefsDTO> getPaymentsByPaymentObjectAndPaymentDateRange(
             @RequestParam("paymentObjectId")
                     Long paymentObjectId,
             @RequestParam("paymentPeriodDateStart")
@@ -288,10 +288,11 @@ public class PaymentCustomController {
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
                     LocalDate paymentPeriodDateEnd
     ) {
-        PaymentObject paymentObject = new PaymentObject();
-        paymentObject.setId(paymentObjectId);
+        PaymentObject paymentObject = paymentObjectRepository.findById(paymentObjectId).orElseThrow(
+                () -> new EntityNotFoundException("Payment object not found:" + paymentObjectId)
+        );
 
-        List<PaymentRepDTO> result =
+        List<PaymentRepDTO> rows =
             paymentRepository.findByPaymentObjectAndPaymentPeriodDateBetween(
                     paymentObject,
                     paymentPeriodDateStart,
@@ -302,6 +303,6 @@ public class PaymentCustomController {
             .map(paymentRepDTOMapper::entityToDTO)
             .collect(Collectors.toList());
 
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(new PaymentRepRefsDTO(paymentObjectDTOMapper.entityToDTO(paymentObject), rows));
     }
 }

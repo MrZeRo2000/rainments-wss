@@ -219,9 +219,11 @@ public class ControllerPaymentCustomTest extends ControllerMockMvcTest {
                     .characterEncoding(StandardCharsets.UTF_8.name())
                     .accept(MediaType.APPLICATION_JSON_VALUE))
                     .andExpect(MockMvcResultMatchers.status().isOk())
-                    .andExpect(MockMvcResultMatchers.jsonPath("$[0].paymentAmount").value("53.22"))
-                    .andExpect(MockMvcResultMatchers.jsonPath("$[0].product.id").value(1))
-                    .andExpect(MockMvcResultMatchers.jsonPath("$[1].paymentAmount").value(0))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.paymentObject.id").value(1))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.paymentObject.name").value("New Payment Object"))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.paymentRepList[0].paymentAmount").value("53.22"))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.paymentRepList[0].product.id").value(1))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.paymentRepList[1].paymentAmount").value(0))
                     .andReturn()
             ;
 
@@ -234,9 +236,9 @@ public class ControllerPaymentCustomTest extends ControllerMockMvcTest {
                     .characterEncoding(StandardCharsets.UTF_8.name())
                     .accept(MediaType.APPLICATION_JSON_VALUE))
                     .andExpect(MockMvcResultMatchers.status().isOk())
-                    .andExpect(MockMvcResultMatchers.jsonPath("$[0].paymentAmount").value(0))
-                    .andExpect(MockMvcResultMatchers.jsonPath("$[0].product.id").value(1))
-                    .andExpect(MockMvcResultMatchers.jsonPath("$[1].paymentAmount").doesNotExist())
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.paymentRepList[0].paymentAmount").value(0))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.paymentRepList[0].product.id").value(1))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.paymentRepList[1].paymentAmount").doesNotExist())
                     .andReturn()
             ;
 
