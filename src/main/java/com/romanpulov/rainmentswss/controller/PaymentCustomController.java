@@ -297,7 +297,7 @@ public class PaymentCustomController {
                     paymentObject,
                     paymentPeriodDateStart,
                     paymentPeriodDateEnd,
-                    Sort.by("paymentDate").ascending()
+                    Sort.by("paymentPeriodDate").ascending()
             )
             .stream()
             .map(paymentRepDTOMapper::entityToDTO)
