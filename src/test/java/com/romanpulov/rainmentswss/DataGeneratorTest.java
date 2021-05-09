@@ -17,6 +17,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.*;
+import java.util.stream.IntStream;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class DataGeneratorTest {
@@ -112,6 +114,76 @@ public class DataGeneratorTest {
                 BigDecimal.valueOf(95),
                 BigDecimal.valueOf(8.66),
                 BigDecimal.valueOf(0.1));
+    }
+
+    private static <T> T getRandomItem(List<T> items) {
+        Random rand = new Random();
+        return items.get(rand.nextInt(items.size()));
+    }
+
+    private static BigDecimal getRandomAmount() {
+        return BigDecimal.valueOf((new Random()).nextInt(10000) / 100. + 0.5);
+    }
+
+    private static BigDecimal getRandomCommission() {
+        return BigDecimal.valueOf((new Random()).nextInt(1000) / 100. + 0.1);
+    }
+
+    private static int getRandomInt(int bound) {
+        return (new Random()).nextInt(bound);
+    }
+
+    private void generateDataSet(int numObjects, int numGroups, int numProducts, int numMonths) {
+        final List<PaymentObject> paymentObjects = new ArrayList<>(numObjects);
+        IntStream.range(1, numObjects + 1)
+                .forEach(value -> paymentObjects.add(createPaymentObject("Object " + value)));
+
+        final List<PaymentGroup> paymentGroups = new ArrayList<>(numGroups);
+        IntStream.range(1, numGroups + 1)
+                .forEach(value -> paymentGroups.add(createPaymentGroup("Group " + value)));
+
+        final List<Product> products = new ArrayList<>(numProducts);
+        IntStream.range(1, numProducts + 1)
+                .forEach(value -> products.add(createProduct(
+                        "Product " + value,
+                        value == 1 ? "m\u00B3" : value == 2 ? "kW" : null
+                )));
+
+        LocalDate initialDate = LocalDate.now().withDayOfMonth(1).minusMonths(1);
+        final List<LocalDate> dates = new ArrayList<>();
+        IntStream.range(0, numMonths)
+                .forEach(value -> dates.add(initialDate.minusMonths(value)));
+
+        Map<Product, PaymentGroup> productGroupsMap = new HashMap<>();
+        products.forEach(product -> productGroupsMap.put(product, getRandomItem(paymentGroups)));
+
+        dates.forEach(localDate ->
+                paymentObjects.forEach(paymentObject ->
+                        productGroupsMap.keySet().forEach(product -> {
+                            createPayment(
+                                    localDate,
+                                    paymentObject,
+                                    productGroupsMap.get(product),
+                                    product,
+                                    product.getName().endsWith("1") || product.getName().endsWith("2") ?
+                                            BigDecimal.valueOf(getRandomInt(1000) / 10) : null,
+                                    getRandomAmount(),
+                                    getRandomCommission()
+                            );
+                        }))
+                );
+    }
+
+    @Test
+    @Disabled
+    void generateDataBig() {
+        this.generateDataSet(3, 5, 9, 24);
+    }
+
+    @Test
+    @Disabled
+    void generateDataSmall() {
+        this.generateDataSet(1, 2, 3, 3);
     }
 
 }
