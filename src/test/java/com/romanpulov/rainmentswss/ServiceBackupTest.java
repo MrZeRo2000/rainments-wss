@@ -1,5 +1,6 @@
 package com.romanpulov.rainmentswss;
 
+import com.romanpulov.rainmentswss.dto.BackupDatabaseInfoDTO;
 import com.romanpulov.rainmentswss.service.BackupService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ServiceBackupTest {
@@ -25,5 +28,10 @@ public class ServiceBackupTest {
 
         Path backupFilePath = Paths.get(backupResult);
         Assertions.assertTrue(Files.exists(backupFilePath));
+
+        BackupDatabaseInfoDTO backupDatabaseInfoDTO = this.backupService.getBackupDatabaseInfo();
+        Assertions.assertNotNull(backupDatabaseInfoDTO);
+
+        Assertions.assertTrue(ChronoUnit.SECONDS.between(LocalDateTime.now(), backupDatabaseInfoDTO.getLastBackupDateTime()) < 2);
     }
 }

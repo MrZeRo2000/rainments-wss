@@ -1,8 +1,8 @@
 package com.romanpulov.rainmentswss.service;
 
 import com.romanpulov.jutilscore.storage.BackupUtils;
+import com.romanpulov.rainmentswss.config.DBFileInfo;
 import com.romanpulov.rainmentswss.dto.BackupDatabaseInfoDTO;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,26 +16,28 @@ import java.util.Optional;
 
 @Service
 public class BackupService {
-    private final ObjectProvider<BackupUtils> backupUtilsObjectProvider;
+    private final DBFileInfo dbFileInfo;
 
     @Autowired
-    public BackupService(ObjectProvider<BackupUtils> backupUtilsObjectProvider) {
-        this.backupUtilsObjectProvider = backupUtilsObjectProvider;
+    public BackupService(DBFileInfo dbFileInfo) {
+        this.dbFileInfo = dbFileInfo;
     }
 
     public String backupDatabase() {
-        BackupUtils backupUtils = backupUtilsObjectProvider.getObject();
-        return backupUtils.createRollingLocalBackup();
+        return this.dbFileInfo.getDBBackupPath() + "/" + BackupUtils.createRollingLocalBackup(
+                dbFileInfo.getDBFileName(),
+                dbFileInfo.getDBBackupPath(),
+                dbFileInfo.getBackupFileName()
+        ) + ".zip";
     }
 
     public BackupDatabaseInfoDTO getBackupDatabaseInfo() {
-        BackupUtils backupUtils = backupUtilsObjectProvider.getObject();
         int backupFileCount = 0;
         LocalDateTime lastBackupDateTime = null;
 
-        File[] backupFiles = backupUtils.getBackupFiles();
+        File[] backupFiles = BackupUtils.getBackupFiles(dbFileInfo.getDBBackupPath());
         if ((backupFiles != null) && ((backupFileCount = backupFiles.length) > 0)) {
-            List<File> fileList = Arrays.asList(backupUtils.getBackupFiles());
+            List<File> fileList = Arrays.asList(backupFiles);
             Optional<Long> lastModified = fileList.stream().map(File::lastModified).max(Long::compareTo);
 
             if (lastModified.isPresent()) {
