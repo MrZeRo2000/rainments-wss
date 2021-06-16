@@ -24,7 +24,7 @@ public class BackupService {
     }
 
     public String backupDatabase() {
-        return this.dbFileInfo.getDBBackupPath() + "/" + BackupUtils.createRollingLocalBackup(
+        return this.dbFileInfo.getDBBackupPath() + File.separator + BackupUtils.createRollingLocalBackup(
                 dbFileInfo.getDBFileName(),
                 dbFileInfo.getDBBackupPath(),
                 dbFileInfo.getBackupFileName()
