@@ -40,9 +40,9 @@ public class ControllerPaymentGroupTest extends ControllerMockMvcTest {
                     .andExpect(MockMvcResultMatchers.jsonPath("$").isArray())
                     .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(0)));
 
-            addPaymentGroup(new PaymentGroupDTO(null, "New Group", null));
+            addPaymentGroup(new PaymentGroupDTO(null, "New Group", null, null));
 
-            addPaymentGroup(new PaymentGroupDTO(null, "New Group 2", null));
+            addPaymentGroup(new PaymentGroupDTO(null, "New Group 2", null, null));
 
             mvcResult = this.mvc.perform(MockMvcRequestBuilders.get("/payment-groups")
                     .accept(MediaType.APPLICATION_JSON_VALUE))
@@ -54,7 +54,7 @@ public class ControllerPaymentGroupTest extends ControllerMockMvcTest {
 
             addResult(mvcResult);
 
-            json = mapper.writeValueAsString(new PaymentGroupDTO(null, "New Group 1", null));
+            json = mapper.writeValueAsString(new PaymentGroupDTO(null, "New Group 1", null, null));
 
             mvcResult = this.mvc.perform(MockMvcRequestBuilders.put("/payment-groups/1")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -77,7 +77,7 @@ public class ControllerPaymentGroupTest extends ControllerMockMvcTest {
 
             addResult(mvcResult);
 
-            addPaymentGroup(new PaymentGroupDTO(null, "Group 3", null));
+            addPaymentGroup(new PaymentGroupDTO(null, "Group 3", "url", "#FFFFFF"));
 
             mvcResult = this.mvc.perform(MockMvcRequestBuilders.get("/payment-groups")
                     .accept(MediaType.APPLICATION_JSON_VALUE))
@@ -87,6 +87,8 @@ public class ControllerPaymentGroupTest extends ControllerMockMvcTest {
                     .andExpect(MockMvcResultMatchers.jsonPath("$[0].id", Matchers.is(1)))
                     .andExpect(MockMvcResultMatchers.jsonPath("$[1].id", Matchers.is(2)))
                     .andExpect(MockMvcResultMatchers.jsonPath("$[2].id", Matchers.is(3)))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$[2].url", Matchers.is("url")))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$[2].color", Matchers.is("#FFFFFF")))
                     .andReturn()
             ;
 

@@ -2,7 +2,7 @@
 Build the application:
   gradlew build
 
-Build withour tests:
+Build without tests:
   gradlew build -x test
 
 Run tests:
@@ -33,3 +33,5 @@ Build and deploy Prod version:
   gradlew deployProd
   copy rainments-wss.xml
 
+Build with specified tomcat home directory:
+  gradlew clean build deployInt -Ptomcat_home=D:/prj/apache-tomcat-9.0.24

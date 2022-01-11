@@ -1,22 +1,29 @@
 plugins {
-	id 'org.springframework.boot' version '2.2.2.RELEASE'
-	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+	id 'org.springframework.boot' version '2.6.2'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
 	id 'war'
 }
 
 ext {
-	file_name = 'rainments-wss.war'
+	file_name_build = 'rainments-wss-build.war'
+	file_name_prod = 'rainments-wss.war'
 	file_name_int = 'rainments-int-wss.war'
 }
 
 bootWar {
-	archiveFileName = file_name
+	archiveFileName = file_name_build
+}
+
+processResources {
+	filesMatching('gr.properties') {
+		expand(project.properties)
+	}
 }
 
 group = 'com.romanpulov'
-version = '0.1.3'
-sourceCompatibility = '1.8'
+version = '0.2.0'
+sourceCompatibility = '11'
 
 repositories {
 	mavenCentral()
@@ -26,8 +33,9 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.xerial:sqlite-jdbc:3.7.2'
-	implementation 'org.apache.poi:poi:4.1.2'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.xerial:sqlite-jdbc:3.36.0.2'
+	implementation 'org.apache.poi:poi:5.0.0'
 	implementation 'com.romanpulov:jutils-core:0.3.11'
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
@@ -44,23 +52,31 @@ test {
 }
 
 ext {
-	tomcat_home='D:/prj/apache-tomcat-9.0.24'
-	tomcat_webapps = tomcat_home + '/webapps'
-}
-
-tasks.register("deployInt") {
-	copy {
-		from "build/libs"
-		into tomcat_webapps
-		include file_name
-		rename file_name, file_name_int
+	if (project.hasProperty("tomcat_home")) {
+		tomcat_webapps = tomcat_home + '/webapps'
+	} else {
+		tomcat_webapps = 'D:/prj/apache-tomcat-9.0.24/webapps'
 	}
 }
 
-tasks.register("deployProd") {
-	copy {
-		from "build/libs"
-		into tomcat_webapps
-		include file_name
+tasks.register('deployInt', Copy) {
+	dependsOn(bootWar)
+	from "build/libs"
+	into tomcat_webapps
+	include file_name_build
+	rename file_name_build, file_name_int
+}
+
+tasks.register('deployProd', Copy) {
+	dependsOn(bootWar)
+	from "build/libs"
+	into tomcat_webapps
+	include file_name_build
+	rename file_name_build, file_name_prod
+}
+
+tasks.register('printProps') {
+	doLast {
+		println tomcat_webapps
 	}
 }

@@ -15,6 +15,8 @@ public class PaymentGroupDTO {
 
     private String url;
 
+    private String color;
+
     public Long getId() {
         return id;
     }
@@ -39,15 +41,25 @@ public class PaymentGroupDTO {
         this.url = url;
     }
 
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
     @JsonCreator
     public PaymentGroupDTO(
             @JsonProperty("id") Long id,
             @JsonProperty("name") String name,
-            @JsonProperty("url") String url
+            @JsonProperty("url") String url,
+            @JsonProperty("color") String color
     ) {
         this.id = id;
         this.name = name;
         this.url = url;
+        this.color = color;
     }
 
     @Override
@@ -69,6 +81,7 @@ public class PaymentGroupDTO {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", url='" + url + '\'' +
+                ", color='" + color + '\'' +
                 '}';
     }
 }

@@ -46,6 +46,17 @@ public class PaymentGroup extends OrderedEntitySuperclass implements CommonEntit
         this.url = url;
     }
 
+    @Column(name = "payment_group_color")
+    private String color;
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
     @OneToMany(mappedBy = "paymentGroup")
     private final Set<Payment> payments = new HashSet<>();
 

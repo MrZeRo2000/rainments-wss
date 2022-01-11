@@ -62,7 +62,7 @@ public class ControllerPaymentCustomTest extends ControllerMockMvcTest {
             //assertEquals(1, paymentObjectId);
             paymentObjectDTO.setId(paymentObjectId.longValue());
 
-            PaymentGroupDTO paymentGroupDTO = new PaymentGroupDTO(null, "New Group", null);
+            PaymentGroupDTO paymentGroupDTO = new PaymentGroupDTO(null, "New Group", null, null);
             json = mapper.writeValueAsString(paymentGroupDTO);
             mvcResult = this.mvc.perform(MockMvcRequestBuilders.post("/payment-groups")
                     .contentType(MediaType.APPLICATION_JSON)
