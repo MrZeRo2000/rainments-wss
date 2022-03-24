@@ -22,7 +22,7 @@ public class PaymentRepDTOMapper implements EntityDTOMapper<Payment, PaymentRepD
     public PaymentRepDTO entityToDTO(Payment entity) {
         return new PaymentRepDTO(
                 entity.getPaymentPeriodDate(),
-                paymentGroupDTOMapper.entityIdNameToDTO(entity.getPaymentGroup()),
+                paymentGroupDTOMapper.entityIdNameColorToDTO(entity.getPaymentGroup()),
                 productDTOMapper.entityIdNameToDTO(entity.getProduct()),
                 entity.getPaymentAmount(),
                 entity.getCommissionAmount()

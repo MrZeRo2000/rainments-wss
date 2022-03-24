@@ -15,6 +15,10 @@ public class PaymentGroupDTOMapper implements EntityDTOMapper<PaymentGroup, Paym
         return new PaymentGroupDTO(entity.getId(), entity.getName(), null, null);
     }
 
+    public PaymentGroupDTO entityIdNameColorToDTO(PaymentGroup entity) {
+        return new PaymentGroupDTO(entity.getId(), entity.getName(), null, entity.getColor());
+    }
+
     @Override
     public PaymentGroup dtoTOEntity(PaymentGroupDTO dto) {
         PaymentGroup entity = new PaymentGroup();

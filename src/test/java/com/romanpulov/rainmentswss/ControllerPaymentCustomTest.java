@@ -62,7 +62,7 @@ public class ControllerPaymentCustomTest extends ControllerMockMvcTest {
             //assertEquals(1, paymentObjectId);
             paymentObjectDTO.setId(paymentObjectId.longValue());
 
-            PaymentGroupDTO paymentGroupDTO = new PaymentGroupDTO(null, "New Group", null, null);
+            PaymentGroupDTO paymentGroupDTO = new PaymentGroupDTO(null, "New Group", null, "FF0000");
             json = mapper.writeValueAsString(paymentGroupDTO);
             mvcResult = this.mvc.perform(MockMvcRequestBuilders.post("/payment-groups")
                     .contentType(MediaType.APPLICATION_JSON)
@@ -224,6 +224,7 @@ public class ControllerPaymentCustomTest extends ControllerMockMvcTest {
                     .andExpect(MockMvcResultMatchers.jsonPath("$.paymentRepList[0].paymentAmount").value("53.22"))
                     .andExpect(MockMvcResultMatchers.jsonPath("$.paymentRepList[0].product.id").value(1))
                     .andExpect(MockMvcResultMatchers.jsonPath("$.paymentRepList[1].paymentAmount").value(0))
+                    .andExpect(MockMvcResultMatchers.jsonPath("$.paymentRepList[0].paymentGroup.color").value("FF0000"))
                     .andReturn()
             ;
 
