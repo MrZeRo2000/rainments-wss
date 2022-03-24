@@ -46,9 +46,19 @@ public class DataGeneratorTest {
         return paymentObjectRepository.save(paymentObject);
     }
 
-    private PaymentGroup createPaymentGroup(String groupName) {
+    private PaymentGroup createPaymentGroup(String groupName, String color) {
         PaymentGroup paymentGroup = new PaymentGroup();
         paymentGroup.setName(groupName);
+        paymentGroup.setColor(color);
+        return paymentGroupRepository.save(paymentGroup);
+    }
+
+    private PaymentGroup createPaymentGroupWithRandomColor(String groupName) {
+        PaymentGroup paymentGroup = new PaymentGroup();
+        paymentGroup.setName(groupName);
+        Random random = new Random();
+        int nextInt = random.nextInt(0xffffff + 1);
+        paymentGroup.setColor(String.format("#%06x", nextInt));
         return paymentGroupRepository.save(paymentGroup);
     }
 
@@ -86,7 +96,7 @@ public class DataGeneratorTest {
         PaymentObject paymentObject = createPaymentObject("Object 1");
         Assertions.assertTrue(paymentObject.getId() > 0);
 
-        PaymentGroup paymentGroup = createPaymentGroup("Group 1");
+        PaymentGroup paymentGroup = createPaymentGroup("Group 1", "#ff8888");
         Assertions.assertTrue(paymentGroup.getId() > 0);
 
         Product product1 = createProduct("Product 1", "m\u00B3");
@@ -140,7 +150,7 @@ public class DataGeneratorTest {
 
         final List<PaymentGroup> paymentGroups = new ArrayList<>(numGroups);
         IntStream.range(1, numGroups + 1)
-                .forEach(value -> paymentGroups.add(createPaymentGroup("Group " + value)));
+                .forEach(value -> paymentGroups.add(createPaymentGroupWithRandomColor("Group " + value)));
 
         final List<Product> products = new ArrayList<>(numProducts);
         IntStream.range(1, numProducts + 1)
