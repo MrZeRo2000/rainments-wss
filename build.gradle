@@ -22,7 +22,7 @@ processResources {
 }
 
 group = 'com.romanpulov'
-version = '0.3.1'
+version = '0.3.2'
 sourceCompatibility = '11'
 
 repositories {
@@ -36,7 +36,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.xerial:sqlite-jdbc:3.36.0.2'
 	implementation 'org.apache.poi:poi:5.0.0'
-	implementation 'com.romanpulov:jutils-core:0.3.12'
+	implementation 'com.romanpulov:jutils-core:0.3.13'
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
