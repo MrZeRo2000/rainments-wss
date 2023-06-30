@@ -1,6 +1,6 @@
 package com.romanpulov.rainmentswss.entity;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @MappedSuperclass
 public class CommonEntitySuperclass {

@@ -13,7 +13,7 @@ import com.romanpulov.rainmentswss.transform.ExcelReader;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;

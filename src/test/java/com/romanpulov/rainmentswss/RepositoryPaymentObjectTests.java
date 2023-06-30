@@ -2,6 +2,7 @@ package com.romanpulov.rainmentswss;
 
 import com.romanpulov.rainmentswss.entity.PaymentObject;
 import com.romanpulov.rainmentswss.repository.PaymentObjectRepository;
+import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -58,7 +59,7 @@ public class RepositoryPaymentObjectTests {
 
     @Test
     void validationTest() {
-        Assertions.assertThrows(javax.validation.ConstraintViolationException.class,
+        Assertions.assertThrows(ConstraintViolationException.class,
                 ()-> {
                         PaymentObject newPaymentObject = new PaymentObject();
                         paymentObjectRepository.save(newPaymentObject);

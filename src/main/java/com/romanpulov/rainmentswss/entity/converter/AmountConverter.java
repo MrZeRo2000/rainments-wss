@@ -1,6 +1,6 @@
 package com.romanpulov.rainmentswss.entity.converter;
 
-import javax.persistence.AttributeConverter;
+import jakarta.persistence.AttributeConverter;
 import java.math.BigDecimal;
 import java.math.MathContext;
 

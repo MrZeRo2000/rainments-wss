@@ -3,9 +3,9 @@ package com.romanpulov.rainmentswss.entity;
 import com.romanpulov.rainmentswss.entity.converter.AmountConverter;
 import com.romanpulov.rainmentswss.entity.converter.DateConverter;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.PositiveOrZero;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;

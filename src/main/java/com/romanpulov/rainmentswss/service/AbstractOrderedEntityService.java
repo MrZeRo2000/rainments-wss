@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 public abstract class AbstractOrderedEntityService
         <E extends CommonEntity & OrderedEntity,

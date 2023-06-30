@@ -4,9 +4,9 @@ import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 @Repository
@@ -26,7 +26,7 @@ public class CustomQueryRepository {
 
     @Transactional
     public Object getScalarQueryResult(String queryString) {
-        List<?> resultList = getSession().createQuery(queryString).getResultList();
+        List<?> resultList = getSession().createQuery(queryString, Object.class).getResultList();
         if (resultList.size() > 0) {
             return resultList.get(0);
         } else {

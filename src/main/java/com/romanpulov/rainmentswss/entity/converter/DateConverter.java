@@ -2,7 +2,7 @@ package com.romanpulov.rainmentswss.entity.converter;
 
 import org.springframework.stereotype.Component;
 
-import javax.persistence.AttributeConverter;
+import jakarta.persistence.AttributeConverter;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;

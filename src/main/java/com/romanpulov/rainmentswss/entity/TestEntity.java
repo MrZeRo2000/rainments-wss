@@ -2,7 +2,7 @@ package com.romanpulov.rainmentswss.entity;
 
 import com.romanpulov.rainmentswss.entity.converter.DateConverter;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity

@@ -3,20 +3,18 @@ package com.romanpulov.rainmentswss.repository;
 import com.romanpulov.rainmentswss.entity.Payment;
 import com.romanpulov.rainmentswss.entity.PaymentGroup;
 import com.romanpulov.rainmentswss.entity.PaymentObject;
-import com.romanpulov.rainmentswss.entity.converter.AmountConverter;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.lang.NonNull;
 
-import javax.persistence.Convert;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface PaymentRepository extends PagingAndSortingRepository<Payment, Long> {
+public interface PaymentRepository extends CrudRepository<Payment, Long> {
 
     List<Payment> findByPaymentObjectAndPaymentPeriodDateBetween(
             @Param("payment_object")
