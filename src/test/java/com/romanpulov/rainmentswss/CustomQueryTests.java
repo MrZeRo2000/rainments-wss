@@ -37,10 +37,6 @@ public class CustomQueryTests {
     @Transactional
     void mainTest() {
 
-        class row {
-            Long id;
-        }
-
         PaymentGroup paymentGroup = new PaymentGroup();
         paymentGroup.setName("Group name");
         paymentGroupService.save(paymentGroup);
@@ -49,34 +45,34 @@ public class CustomQueryTests {
         Session session = entityManager.unwrap(Session.class);
         Assertions.assertThat(session).isNotNull();
 
-        Query<?> query = session.createQuery("SELECT p.id, p.name FROM PaymentGroup p WHERE p.orderId IS NULL");
+        Query<?> query = session.createQuery("SELECT p.id, p.name FROM PaymentGroup p WHERE p.orderId IS NULL", Object[].class);
         List<?> result = query.getResultList();
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(((Object[])result.get(0))[0]).isEqualTo(1L);
 
-        Query<?> rowQuery = session.createQuery("SELECT MAX(p.id) FROM PaymentGroup p WHERE p.orderId IS NULL");
+        Query<?> rowQuery = session.createQuery("SELECT MAX(p.id) FROM PaymentGroup p WHERE p.orderId IS NULL", Object.class);
         List<?> rowResult = rowQuery.getResultList();
         Assertions.assertThat(rowResult.get(0)).isEqualTo(1L);
         //List<row> typedResult = session.createQuery("SELECT MAX(p.id) FROM PaymentGroup p WHERE p.orderId IS NULL", row.class).getResultList();
 
-        rowQuery = session.createQuery("SELECT MAX(p.id) FROM PaymentGroup p WHERE p.orderId IS NOT NULL");
+        rowQuery = session.createQuery("SELECT MAX(p.id) FROM PaymentGroup p WHERE p.orderId IS NOT NULL", Object.class);
         rowResult = rowQuery.getResultList();
         Assertions.assertThat(rowResult.get(0)).isNull();
 
-        NativeQuery<?> nativeQuery = session.createNativeQuery("SELECT MAX(p.payment_group_id) FROM payment_groups p WHERE p.order_id IS NULL");
+        NativeQuery<?> nativeQuery = session.createNativeQuery("SELECT MAX(p.payment_group_id) FROM payment_groups p WHERE p.order_id IS NULL", Object.class);
         List<?> nativeResult = nativeQuery.getResultList();
         Assertions.assertThat(nativeResult.get(0)).isEqualTo(1);
 
-        int rows = session.createQuery("UPDATE PaymentGroup p SET p.orderId = p.id").executeUpdate();
+        int rows = session.createQuery("UPDATE PaymentGroup p SET p.orderId = p.id", null).executeUpdate();
         Assertions.assertThat(rows).isEqualTo(1);
 
-        Long updatedOrderId = (Long)session.createQuery("SELECT MAX(p.orderId) FROM PaymentGroup p").getResultList().get(0);
+        Long updatedOrderId = (Long)session.createQuery("SELECT MAX(p.orderId) FROM PaymentGroup p", Object.class).getResultList().get(0);
         Assertions.assertThat(updatedOrderId).isEqualTo(1L);
 
-        Long scalarValue = (Long)session.createQuery("SELECT p.id FROM PaymentGroup p").getSingleResult();
+        Long scalarValue = (Long)session.createQuery("SELECT p.id FROM PaymentGroup p", Object.class).getSingleResult();
         Assertions.assertThat(scalarValue).isEqualTo(1L);
 
-        Query<?> scalarQuery = session.createQuery("SELECT p.id FROM PaymentGroup p WHERE 1 = 5");
+        Query<?> scalarQuery = session.createQuery("SELECT p.id FROM PaymentGroup p WHERE 1 = 5", Object.class);
         Long scalarResult = (Long)scalarQuery.getResultStream().findFirst().orElse(null);
         Assertions.assertThat(scalarResult).isNull();
     }

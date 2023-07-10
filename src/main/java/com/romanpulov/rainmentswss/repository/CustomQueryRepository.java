@@ -55,7 +55,7 @@ public class CustomQueryRepository {
     @Transactional
     public int setDefaultOrder(String tableName) {
         String queryString = String.format(QUERY_SET_DEFAULT_ORDER, tableName);
-        return getSession().createQuery(queryString).executeUpdate();
+        return getSession().createQuery(queryString, null).executeUpdate();
     }
 
     @Transactional
@@ -76,8 +76,8 @@ public class CustomQueryRepository {
 
         int rowsAffected = 0;
 
-        rowsAffected += getSession().createQuery(shiftQueryString).executeUpdate();
-        rowsAffected += getSession().createQuery(setOrderQueryString).executeUpdate();
+        rowsAffected += getSession().createQuery(shiftQueryString, null).executeUpdate();
+        rowsAffected += getSession().createQuery(setOrderQueryString, null).executeUpdate();
 
         return rowsAffected;
     }
