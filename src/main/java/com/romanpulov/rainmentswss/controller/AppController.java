@@ -6,10 +6,12 @@ import com.romanpulov.rainmentswss.exception.NotFoundException;
 import com.romanpulov.rainmentswss.service.BackupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 public class AppController {
 
@@ -21,7 +23,7 @@ public class AppController {
     }
 
     @GetMapping("/app:backup_database_info")
-    ResponseEntity<BackupDatabaseInfoDTO> getBackupDatabaseInfo() throws NotFoundException {
+    ResponseEntity<BackupDatabaseInfoDTO> getBackupDatabaseInfo() {
         return ResponseEntity.ok(backupService.getBackupDatabaseInfo());
     }
 
