@@ -7,8 +7,6 @@ import com.romanpulov.rainmentswss.entity.converter.AmountConverter;
 import com.romanpulov.rainmentswss.entitymapper.PaymentObjectDTOMapper;
 import com.romanpulov.rainmentswss.exception.NotFoundException;
 import com.romanpulov.rainmentswss.repository.PaymentRepository;
-import com.romanpulov.rainmentswss.vo.Period;
-import com.romanpulov.rainmentswss.vo.PeriodType;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +14,6 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -108,9 +104,21 @@ public class PaymentObjectPaymentService {
             BigDecimal totalAmount = (paymentDate == null) ? BigDecimal.ZERO :
                     getTotalAmountByPaymentObjectAndPaymentPeriod(paymentObject, paymentDate);
 
-            boolean paymentOverdue = dueDate != null
+            // calc previous period totalAmount
+            BigDecimal previousPeriodTotalAmount;
+            if (totalAmount.equals(BigDecimal.ZERO) && (paymentDate != null)) {
+                LocalDate previousPeriodPaymentDate = paymentObjectService.getPaymentObjectPreviousPeriodPaymentDate(
+                        paymentObject,
+                        paymentDate);
+                previousPeriodTotalAmount = getTotalAmountByPaymentObjectAndPaymentPeriod(paymentObject, previousPeriodPaymentDate);
+            } else {
+                previousPeriodTotalAmount = BigDecimal.ZERO;
+            }
+
+            boolean paymentOverdue = (dueDate != null)
                     && totalAmount.equals(BigDecimal.ZERO)
-                    && currentDate.isAfter(dueDate);
+                    && (currentDate.isAfter(dueDate) || previousPeriodTotalAmount.equals(BigDecimal.ZERO)
+            );
 
             result.add(new PaymentObjectPeriodTotalDTO(
                     paymentObjectDTOMapper.entityToDTO(paymentObject),

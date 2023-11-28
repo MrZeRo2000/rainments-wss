@@ -1,6 +1,5 @@
 package com.romanpulov.rainmentswss;
 
-import com.romanpulov.rainmentswss.dto.PaymentObjectPeriodTotalDTO;
 import com.romanpulov.rainmentswss.entity.Payment;
 import com.romanpulov.rainmentswss.entity.PaymentGroup;
 import com.romanpulov.rainmentswss.entity.PaymentObject;
@@ -11,19 +10,19 @@ import com.romanpulov.rainmentswss.repository.PaymentObjectRepository;
 import com.romanpulov.rainmentswss.repository.PaymentRepository;
 import com.romanpulov.rainmentswss.repository.ProductRepository;
 import com.romanpulov.rainmentswss.service.PaymentObjectPaymentService;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.logging.Logger;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ServicePaymentObjectPaymentTest {
     private static final Logger log = Logger.getLogger(ServicePaymentObjectPaymentTest.class.getName());
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
@@ -43,16 +42,10 @@ public class ServicePaymentObjectPaymentTest {
     @Autowired
     private PaymentObjectPaymentService paymentObjectPaymentService;
 
-    @BeforeAll
-    static void prepareTestDB() {
-        DBHelper.prepareTestDB();
-    }
-
     private final LocalDate currentDate = LocalDate.now().withDayOfMonth(20);
-    private LocalDate currentMonthDate = currentDate.withDayOfMonth(1);
-    private LocalDate previousMonthDate = currentDate.minusMonths(1L).withDayOfMonth(1);
+    private final LocalDate previousMonthDate = currentDate.minusMonths(1L).withDayOfMonth(1);
 
-    private int[] monthQuarters = {0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3};
+    private final int[] monthQuarters = {0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3};
 
     public ServicePaymentObjectPaymentTest() {
         log.info("ServicePaymentObjectPaymentTest constructor");
@@ -145,17 +138,34 @@ public class ServicePaymentObjectPaymentTest {
 
     }
 
+    @Test
+    @Order(1)
+    void testPrepare() {
+        DBHelper.prepareTestDB();
+        prepareTestData();
+    }
 
     @Test
-    void mainTest() throws Exception {
-        prepareTestData();
-
+    @Order(2)
+    void testTotalByPaymentObjectAndPaymentPeriod() throws Exception {
         PaymentObject monthDefaultPaymentObject =  paymentObjectRepository.
                 findAllByOrderByOrderIdAsc().
                 stream().
                 filter(po -> po.getName().equals("Month Default")).
                 findFirst().
                 orElseThrow(() -> new Exception("Month Default not found"));
+
+        assertThat(
+                paymentObjectPaymentService.getTotalByPaymentObjectAndPaymentPeriod(
+                        monthDefaultPaymentObject,
+                        previousMonthDate
+                )).isEqualTo(BigDecimal.valueOf(14.22));
+
+        assertThat(
+                paymentObjectPaymentService.getTotalAmountByPaymentObjectAndPaymentPeriod(
+                        monthDefaultPaymentObject,
+                        previousMonthDate
+                )).isEqualTo(BigDecimal.valueOf(14.22));
 
         PaymentObject emptyPaymentObject =  paymentObjectRepository.
                 findAllByOrderByOrderIdAsc().
@@ -164,95 +174,109 @@ public class ServicePaymentObjectPaymentTest {
                 findFirst().
                 orElseThrow(() -> new Exception("Empty payment object not found"));
 
-        Assertions.assertEquals(
-                BigDecimal.valueOf(14.22),
-                paymentObjectPaymentService.getTotalByPaymentObjectAndPaymentPeriod(
-                        monthDefaultPaymentObject,
-                        previousMonthDate
-                ));
-
-        Assertions.assertEquals(
-                BigDecimal.valueOf(14.22),
-                paymentObjectPaymentService.getTotalAmountByPaymentObjectAndPaymentPeriod(
-                        monthDefaultPaymentObject,
-                        previousMonthDate
-                ));
-
-        Assertions.assertEquals(
-                BigDecimal.ZERO,
+        assertThat(
                 paymentObjectPaymentService.getTotalByPaymentObjectAndPaymentPeriod(
                         emptyPaymentObject,
                         previousMonthDate
-                ));
+                )).isEqualTo(BigDecimal.ZERO);
 
-        Assertions.assertEquals(
-                BigDecimal.ZERO,
+        assertThat(
                 paymentObjectPaymentService.getTotalAmountByPaymentObjectAndPaymentPeriod(
                         emptyPaymentObject,
                         previousMonthDate
-                ));
+                )).isEqualTo(BigDecimal.ZERO);
+    }
 
-        List<PaymentObjectPeriodTotalDTO> total = paymentObjectPaymentService.getPaymentObjectPeriodTotal(currentDate);
-        Assertions.assertNotNull(total);
+    @Test
+    @Order(2)
+    void testTotalCurrentDate() {
+        var total = paymentObjectPaymentService
+                .getPaymentObjectPeriodTotal(currentDate);
+        assertThat(total).isNotNull();
 
-        Assertions.assertEquals(BigDecimal.ZERO, total.get(0).getPaymentAmount());
-        Assertions.assertEquals(BigDecimal.valueOf(14.22), total.get(1).getPaymentAmount());
-        Assertions.assertEquals(BigDecimal.ZERO, total.get(2).getPaymentAmount());
-        Assertions.assertEquals(BigDecimal.ZERO, total.get(3).getPaymentAmount());
-        Assertions.assertEquals(BigDecimal.valueOf(78.32), total.get(4).getPaymentAmount());
+        assertThat(total.get(0).getPaymentAmount()).isEqualTo(BigDecimal.ZERO);
+        assertThat(total.get(1).getPaymentAmount()).isEqualTo(BigDecimal.valueOf(14.22));
+        assertThat(total.get(2).getPaymentAmount()).isEqualTo(BigDecimal.ZERO);
+        assertThat(total.get(3).getPaymentAmount()).isEqualTo(BigDecimal.ZERO);
+        assertThat(total.get(4).getPaymentAmount()).isEqualTo(BigDecimal.valueOf(78.32));
 
-        Assertions.assertFalse(total.get(0).getPaymentOverdue());
-        Assertions.assertFalse(total.get(1).getPaymentOverdue());
-        Assertions.assertFalse(total.get(2).getPaymentOverdue());
-        Assertions.assertFalse(total.get(3).getPaymentOverdue());
-        Assertions.assertFalse(total.get(4).getPaymentOverdue());
+        assertThat(total.get(0).getPaymentOverdue()).isFalse();
+        assertThat(total.get(1).getPaymentOverdue()).isFalse();
+        assertThat(total.get(2).getPaymentOverdue()).isFalse();
+        assertThat(total.get(3).getPaymentOverdue()).isFalse();
+        assertThat(total.get(4).getPaymentOverdue()).isFalse();
+    }
 
+    @Test
+    @Order(2)
+    void testTotalNextMonth() {
         //next month
-        total = paymentObjectPaymentService.getPaymentObjectPeriodTotal(currentDate.plusMonths(1L));
-        Assertions.assertNotNull(total);
+        var total = paymentObjectPaymentService
+                .getPaymentObjectPeriodTotal(currentDate.plusMonths(1L));
+        assertThat(total).isNotNull();
+        assertThat(total.get(4).getPaymentOverdue()).isTrue();
+    }
 
-        Assertions.assertTrue(total.get(4).getPaymentOverdue());
-
+    @Test
+    @Order(2)
+    void testForQuarter() {
         // for quarter
-        total = paymentObjectPaymentService.getPaymentObjectPeriodTotal(LocalDate.parse("05.04.2003", formatter));
-        Assertions.assertFalse(total.get(5).getPaymentOverdue());
 
-        total = paymentObjectPaymentService.getPaymentObjectPeriodTotal(LocalDate.parse("25.04.2003", formatter));
-        Assertions.assertFalse(total.get(5).getPaymentOverdue());
+        var total_bom_04_03 = paymentObjectPaymentService.getPaymentObjectPeriodTotal(LocalDate.parse("05.04.2003", formatter));
+        assertThat(total_bom_04_03.get(5).getPaymentOverdue()).isFalse();
 
-        total = paymentObjectPaymentService.getPaymentObjectPeriodTotal(LocalDate.parse("02.05.2003", formatter));
-        Assertions.assertFalse(total.get(5).getPaymentOverdue());
+        var total_eom_04_03 = paymentObjectPaymentService.getPaymentObjectPeriodTotal(LocalDate.parse("25.04.2003", formatter));
+        assertThat(total_eom_04_03.get(5).getPaymentOverdue()).isFalse();
 
-        total = paymentObjectPaymentService.getPaymentObjectPeriodTotal(LocalDate.parse("02.07.2003", formatter));
-        Assertions.assertFalse(total.get(5).getPaymentOverdue());
+        var total_bom_05_03 = paymentObjectPaymentService.getPaymentObjectPeriodTotal(LocalDate.parse("02.05.2003", formatter));
+        assertThat(total_bom_05_03.get(5).getPaymentOverdue()).isFalse();
 
-        total = paymentObjectPaymentService.getPaymentObjectPeriodTotal(LocalDate.parse("25.07.2003", formatter));
-        Assertions.assertTrue(total.get(5).getPaymentOverdue());
+        var total_eom_05_03 = paymentObjectPaymentService.getPaymentObjectPeriodTotal(LocalDate.parse("25.05.2003", formatter));
+        assertThat(total_eom_05_03.get(5).getPaymentOverdue()).isFalse();
 
+        var total_bom_07_03 = paymentObjectPaymentService.getPaymentObjectPeriodTotal(LocalDate.parse("02.07.2003", formatter));
+        assertThat(total_bom_07_03.get(5).getPaymentOverdue()).isFalse();
+
+        var total_eom_07_03 = paymentObjectPaymentService.getPaymentObjectPeriodTotal(LocalDate.parse("25.07.2003", formatter));
+        assertThat(total_eom_07_03.get(5).getPaymentOverdue()).isTrue();
+
+        var total_bom_10_03 = paymentObjectPaymentService.getPaymentObjectPeriodTotal(LocalDate.parse("02.10.2003", formatter));
+        assertThat(total_bom_10_03.get(5).getPaymentOverdue()).isTrue();
+
+        var total_eom_10_03 = paymentObjectPaymentService.getPaymentObjectPeriodTotal(LocalDate.parse("25.10.2003", formatter));
+        assertThat(total_eom_10_03.get(5).getPaymentOverdue()).isTrue();
+
+        var total_bom_02_04 = paymentObjectPaymentService.getPaymentObjectPeriodTotal(LocalDate.parse("02.02.2004", formatter));
+        assertThat(total_bom_02_04.get(5).getPaymentOverdue()).isTrue();
+
+        var total_eom_02_04 = paymentObjectPaymentService.getPaymentObjectPeriodTotal(LocalDate.parse("25.02.2004", formatter));
+        assertThat(total_eom_02_04.get(5).getPaymentOverdue()).isTrue();
+    }
+
+    @Test
+    @Order(2)
+    void testPaymentObjectPeriodById() throws Exception {
         //checks for getPaymentObjectPeriodById
-        PaymentObjectPeriodTotalDTO item;
+        Assertions.assertThrows(NotFoundException.class, () ->
+            paymentObjectPaymentService.getPaymentObjectPeriodById(200L, currentDate)
+        );
 
-        Assertions.assertThrows(NotFoundException.class, () -> {
-            paymentObjectPaymentService.getPaymentObjectPeriodById(200L, currentDate);
-        });
+        var item_1 = paymentObjectPaymentService.getPaymentObjectPeriodById(1L, currentDate);
+        assertThat(item_1.getPaymentDate()).isEqualTo(previousMonthDate);
 
-        item = paymentObjectPaymentService.getPaymentObjectPeriodById(1L, currentDate);
-        Assertions.assertEquals(previousMonthDate, item.getPaymentDate());
+        var item_2 = paymentObjectPaymentService.getPaymentObjectPeriodById(2L, currentDate);
+        assertThat(item_2.getPaymentDate()).isEqualTo(previousMonthDate);
 
-        item = paymentObjectPaymentService.getPaymentObjectPeriodById(2L, currentDate);
-        Assertions.assertEquals(previousMonthDate, item.getPaymentDate());
+        var item_3 = paymentObjectPaymentService.getPaymentObjectPeriodById(3L, currentDate);
+        assertThat(item_3.getPaymentDate()).isEqualTo(previousMonthDate);
 
-        item = paymentObjectPaymentService.getPaymentObjectPeriodById(3L, currentDate);
-        Assertions.assertEquals(previousMonthDate, item.getPaymentDate());
-
-        item = paymentObjectPaymentService.getPaymentObjectPeriodById(4L, currentDate);
-        Assertions.assertEquals(currentDate.withDayOfMonth(1), item.getPaymentDate());
+        var item_4 = paymentObjectPaymentService.getPaymentObjectPeriodById(4L, currentDate);
+        assertThat(item_4.getPaymentDate()).isEqualTo(currentDate.withDayOfMonth(1));
 
         int monthQuarter = monthQuarters[currentDate.getMonth().getValue() - 1];
         LocalDate currentQuarterStartDate = currentDate.withMonth(monthQuarter * 3 + 1).withDayOfMonth(1);
 
-        item = paymentObjectPaymentService.getPaymentObjectPeriodById(6L, currentDate);
-        Assertions.assertEquals(currentQuarterStartDate, item.getPaymentDate());
-
+        var item_6 = paymentObjectPaymentService.getPaymentObjectPeriodById(6L, currentDate);
+        assertThat(item_6.getPaymentDate()).isEqualTo(currentQuarterStartDate);
     }
 }
