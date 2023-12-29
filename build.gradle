@@ -22,8 +22,7 @@ processResources {
 }
 
 group = 'com.romanpulov'
-version = '0.4.2'
-sourceCompatibility = '17'
+version = '0.4.3'
 
 repositories {
 	mavenCentral()
@@ -41,7 +40,7 @@ dependencies {
 	implementation 'org.xerial:sqlite-jdbc:3.42.0.0'
 	implementation 'org.apache.poi:poi:5.0.0'
 
-	implementation 'com.romanpulov:jutils-core:0.4.0'
+	implementation 'com.romanpulov:jutils-core:0.4.1'
 
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
