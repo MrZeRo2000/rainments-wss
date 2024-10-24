@@ -22,7 +22,7 @@ processResources {
 }
 
 group = 'com.romanpulov'
-version = '0.4.3'
+version = '0.4.4'
 
 repositories {
 	mavenCentral()
@@ -37,10 +37,10 @@ dependencies {
 	//dialects to support SQLite
 	implementation 'org.hibernate.orm:hibernate-community-dialects'
 
-	implementation 'org.xerial:sqlite-jdbc:3.42.0.0'
-	implementation 'org.apache.poi:poi:5.0.0'
+	implementation 'org.xerial:sqlite-jdbc:3.46.0.0'
+	implementation 'org.apache.poi:poi:5.3.0'
 
-	implementation 'com.romanpulov:jutils-core:0.4.1'
+	implementation 'com.romanpulov:jutils-core:0.4.2'
 
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
