@@ -1,5 +1,4 @@
 package com.romanpulov.rainmentswss;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.romanpulov.rainmentswss.dto.PaymentObjectDTO;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeAll;
@@ -9,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.context.WebApplicationContext;
+import tools.jackson.databind.json.JsonMapper;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ControllerPaymentObjectTest extends ControllerMockMvcTest {
@@ -33,7 +33,7 @@ public class ControllerPaymentObjectTest extends ControllerMockMvcTest {
         ;
 
         PaymentObjectDTO paymentObjectDTO = new PaymentObjectDTO(null, "New Payment Object", null, null, null);
-        ObjectMapper mapper = new ObjectMapper();
+        JsonMapper mapper = new JsonMapper();
         String json = mapper.writeValueAsString(paymentObjectDTO);
         this.mvc.perform(MockMvcRequestBuilders.post("/payment-objects")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -43,7 +43,7 @@ public class ControllerPaymentObjectTest extends ControllerMockMvcTest {
         ;
 
         paymentObjectDTO = new PaymentObjectDTO(null, "Payment Object 2", "1M", "10D", 1L);
-        mapper = new ObjectMapper();
+        mapper = new JsonMapper();
         json = mapper.writeValueAsString(paymentObjectDTO);
         this.mvc.perform(MockMvcRequestBuilders.post("/payment-objects")
                 .contentType(MediaType.APPLICATION_JSON)

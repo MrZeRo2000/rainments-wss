@@ -2,10 +2,10 @@ package com.romanpulov.rainmentswss.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.romanpulov.rainmentswss.dto.serializer.LocalDateTimeDeserializer;
 import com.romanpulov.rainmentswss.dto.serializer.LocalDateTimeSerializer;
+import tools.jackson.databind.annotation.JsonDeserialize;
+import tools.jackson.databind.annotation.JsonSerialize;
 
 import java.time.LocalDateTime;
 

@@ -1,6 +1,5 @@
 package com.romanpulov.rainmentswss;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import com.romanpulov.rainmentswss.dto.PaymentDTO;
 import com.romanpulov.rainmentswss.dto.PaymentGroupDTO;
@@ -15,6 +14,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.web.context.WebApplicationContext;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
@@ -27,7 +27,7 @@ import java.time.format.DateTimeFormatter;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ControllerPaymentCustomTest extends ControllerMockMvcTest {
 
-    ObjectMapper mapper = new ObjectMapper();
+    JsonMapper mapper = new JsonMapper();
     String json;
 
     @BeforeAll

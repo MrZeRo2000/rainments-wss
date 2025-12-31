@@ -1,10 +1,10 @@
 package com.romanpulov.rainmentswss;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
@@ -32,7 +32,7 @@ public class ControllerMockMvcTest {
         logResult.add("==========================");
     }
 
-    protected ObjectMapper mapper = new ObjectMapper();
+    protected JsonMapper mapper = new JsonMapper();
     protected String json;
 
     protected final WebApplicationContext context;
