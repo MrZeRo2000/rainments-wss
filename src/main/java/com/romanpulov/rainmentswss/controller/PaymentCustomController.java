@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 public class PaymentCustomController {
 
@@ -104,7 +103,7 @@ public class PaymentCustomController {
                 .findAllByOrderByOrderIdAsc()
                 .stream()
                 .map(paymentObjectDTOMapper::entityToDTO)
-                .collect(Collectors.toList());
+                .toList();
 
         PaymentObject paymentObject = paymentObjectRepository
                 .findById(paymentObjectId)

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping(value = "/payments", produces = MediaType.APPLICATION_JSON_VALUE)
 public class PaymentController extends AbstractServiceRestController<Payment, PaymentDTO, PaymentService> {
